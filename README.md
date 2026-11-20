@@ -1,30 +1,32 @@
 # realtime-mock-interview
 
-발표(지문)를 듣고 AI가 **실시간으로 질문하는 음성 모의 면접**입니다. 모든 처리가 내 컴퓨터에서 도는 로컬 파이프라인(마이크 → VAD → Whisper → 판정 → LLM 질문 → 음성)이 기본입니다.
+**English** · [한국어](README.ko.md)
 
-## 특징
-- **일반 질문(랜덤):** 지문에서 미리 질문 은행을 만들어 두고, 남은 질문이 0~1개가 되면 3개를 다시 채웁니다. 이전 질문과 겹치지 않게, 지문의 앞·중간·뒤를 골고루 묻습니다.
-- **꼬리질문:** 내 답변에서 새로 나온 단어를 지문에서 찾아 그 문장만 근거로 이어서 묻습니다. 더 자세히 · 검증 · 근거 · 순서 묻기 유형, 최대 3번 연속.
-- **끼어들기:** 주제 이탈·반복·지문과 다른 숫자 등을 3초마다 확인해, 필요할 때 "말씀 중에 잠시만요"로 끼어듭니다.
-- **버튼으로 진행:** AI 질문이 끝나면 마이크가 열리고, `말하기`를 누른 뒤 바로 말하고 `답변 끝`으로 마칩니다.
-- **보고서:** 걸린 시간, 꼬리질문·끼어들기 횟수, 질문 종류(검정/파랑/빨강)별 기록, 지문 근거 기반 판정을 남깁니다.
-- 실제 녹음·전사는 로컬에만 두고, 클라우드 모델은 합성 데이터에만 쓰도록 설계했습니다.
+A voice-based mock interview where an AI listens to your presentation answers and asks questions in real time, grounded in a source passage. The default setup is a fully local pipeline: microphone → VAD → Whisper → verdict → LLM question → speech.
 
-## 설치
+## Features
+- **Regular questions (random):** a question bank is generated from the passage in advance. When 0–1 questions are left, it refills 3 more, never repeating earlier questions and spreading them across the start, middle, and end of the passage.
+- **Follow-up questions:** takes a new term from your answer, finds the passage sentence containing it, and asks only about that sentence. Types: elaborate, verify, rationale, and sequence (skipped steps). Up to 3 follow-ups in a row.
+- **Interjections:** every 3 seconds it checks for off-topic talk, repetition, or numbers that contradict the passage, and politely cuts in when needed.
+- **Button-driven turns:** the mic opens when the AI finishes its question; press `Talk`, speak right away, then press `Done` (Space works for both).
+- **Report:** elapsed time, follow-up and interjection counts, a color-coded record per question kind (black = regular, blue = follow-up, red = interjection), and verdicts grounded in the passage.
+- Real recordings and transcripts are meant to stay local; cloud models are meant for synthetic data only.
+
+## Setup
 ```bash
 uv venv --python 3.12 .venv
 uv pip install --python .venv/bin/python openai httpx pydantic fastapi "uvicorn[standard]" websockets numpy pytest faster-whisper silero-vad torch soundfile
-ollama serve &                      # 로컬 LLM (예: ollama pull phi4-mini)
+ollama serve &                      # local LLM (e.g. ollama pull phi4-mini)
 ```
-환경 변수: `OPENAI_API_KEY`(선택, 클라우드 비교용 · 커밋 금지), `OLLAMA_URL`(기본 http://localhost:11434)
+Environment variables: `OPENAI_API_KEY` (optional, for cloud comparisons; never commit it), `OLLAMA_URL` (default http://localhost:11434).
 
-## 실행
+## Run
 ```bash
 .venv/bin/python -W ignore -m qa_lab serve --port 8765   # http://127.0.0.1:8765
 .venv/bin/python -m pytest -q tests
 ```
 
-## 문서
-`docs/`에 모델 비교(`RANKING.md`, `MINI_SUITE.md`), 지연·발열 실험(`LATENCY_AB.md`), 보안(`SECURITY.md`)이 있습니다.
+## Docs
+`docs/` has model comparisons (`RANKING.md`, `MINI_SUITE.md`), latency and heat experiments (`LATENCY_AB.md`), and security notes (`SECURITY.md`). Most docs are written in Korean.
 
-> 실험용 프로젝트이며 표본이 작아 수치는 참고용입니다.
+> This is an experimental project. Sample sizes are small, so treat the numbers as indicative only.
