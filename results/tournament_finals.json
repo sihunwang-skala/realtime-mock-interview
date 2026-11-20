@@ -1,0 +1,709 @@
+{
+ "base": {
+  "strategy": "two_track",
+  "tts": "av"
+ },
+ "plan_size": 14,
+ "standings": [
+  {
+   "label": "결승 qwen3.5:4b + small + 끼어들기 rule",
+   "cfg": {
+    "strategy": "two_track",
+    "tts": "av",
+    "llm": "ollama:qwen3.5:4b",
+    "stt": "small",
+    "interjection": "rule"
+   },
+   "wall_sec": 95.6,
+   "mean_e2e": 1.42,
+   "under_2s": 1.0,
+   "mean_quality": 4.67,
+   "usable_rate": 1.0,
+   "mean_cer": 0.042,
+   "interj_f1": 1.0,
+   "false_interj": 0,
+   "rows": [
+    {
+     "id": "s01_normal",
+     "e2e": 1.417,
+     "question": "그런데 1.2 초라는 구체적인 수치에 도달하기 위해 실제로 어떤 캐시 전략과 비동기 처리 방식을 적용하시는지 더 자세히 설명해 주실 수 있나요?",
+     "interjected": false
+    },
+    {
+     "id": "s05_terms",
+     "e2e": 1.392,
+     "question": "그런데 이 기술적 조치들이 실제 운영 환경에서 어떻게 구현되는지 구체적인 근거나 수치적 데이터를 제시할 수 있나요?",
+     "interjected": false
+    },
+    {
+     "id": "s06_numbers",
+     "e2e": 1.446,
+     "question": "그런 성능 목표가 실제 시스템 아키텍처와 리소스 배분에서 어떻게 구현되는지 구체적으로 설명해 주세요.",
+     "interjected": false
+    },
+    {
+     "id": "s08_contradict_rfp",
+     "e2e": 1.543,
+     "question": "RFP 에 명시된 '2 초' 목표와 답변하신 '12 개월' 구축 기간이 서로 충돌하는 이유는 무엇인가요?",
+     "interjected": true
+    },
+    {
+     "id": "s11_ramble",
+     "e2e": 1.074,
+     "question": "보안 설계에서 접근 로그는 어떻게 관리하실 건가요?",
+     "interjected": true
+    }
+   ]
+  },
+  {
+   "label": "결승 qwen3.5:4b + small + 끼어들기 llm",
+   "cfg": {
+    "strategy": "two_track",
+    "tts": "av",
+    "llm": "ollama:qwen3.5:4b",
+    "stt": "small",
+    "interjection": "llm"
+   },
+   "wall_sec": 84.1,
+   "mean_e2e": 2.39,
+   "under_2s": 0.33,
+   "mean_quality": 4.58,
+   "usable_rate": 0.33,
+   "mean_cer": 0.042,
+   "interj_f1": 1.0,
+   "false_interj": 0,
+   "rows": [
+    {
+     "id": "s01_normal",
+     "e2e": 2.601,
+     "question": "그런데 응답 시간 목표가 1.2 초인데, 실제 캐시와 비동기 처리 방식이 그 속도를 보장할 수 있을까요?",
+     "interjected": false
+    },
+    {
+     "id": "s05_terms",
+     "e2e": 3.142,
+     "question": "그런데 구체적인 기술적 근거나 수치 데이터가 없는데, 이 보안 체계가 실제 위협에 얼마나 견고한지 어떻게 입증할 계획이냐요?",
+     "interjected": false
+    },
+    {
+     "id": "s06_numbers",
+     "e2e": 1.439,
+     "question": "그런 성능 목표가 실제로 구현 가능한지 구체적인 기술적 설계와 로드맵을 설명해 주실 수 있나요?",
+     "interjected": false
+    },
+    {
+     "id": "s08_contradict_rfp",
+     "e2e": 1.521,
+     "question": "RFP 에서 정해진 8 개월 구축 기간과 발표자 말씀하신 12 개월이 어떻게 다른 건가요?",
+     "interjected": true
+    },
+    {
+     "id": "s11_ramble",
+     "e2e": 2.038,
+     "question": "그럼 화목한 분위기와 산해 동호회 활동이 실제 업무 처리 속도와 고객 응대 시간을 개선하는 구체적인 근거가 무엇인지 설명해 주시겠어요.",
+     "interjected": true
+    }
+   ]
+  },
+  {
+   "label": "결승 qwen3.5:4b + large-v3-turbo + 끼어들기 rule",
+   "cfg": {
+    "strategy": "two_track",
+    "tts": "av",
+    "llm": "ollama:qwen3.5:4b",
+    "stt": "large-v3-turbo",
+    "interjection": "rule"
+   },
+   "wall_sec": 84.4,
+   "mean_e2e": 2.55,
+   "under_2s": 0.0,
+   "mean_quality": 4.88,
+   "usable_rate": 0.0,
+   "mean_cer": 0.0,
+   "interj_f1": 1.0,
+   "false_interj": 0,
+   "rows": [
+    {
+     "id": "s01_normal",
+     "e2e": 2.233,
+     "question": "그럼 그 1.2 초 목표에 실제로 적용되는 캐시 전략과 비동기 큐 처리 구조를 구체적으로 보여주시겠어요.",
+     "interjected": false
+    },
+    {
+     "id": "s05_terms",
+     "e2e": 2.872,
+     "question": "근거가 없는데 이렇게 구체적인 기술적 조치를 어떻게 보장할 계획인가요?",
+     "interjected": false
+    },
+    {
+     "id": "s06_numbers",
+     "e2e": null,
+     "question": null,
+     "interjected": true
+    },
+    {
+     "id": "s08_contradict_rfp",
+     "e2e": 2.449,
+     "question": "RFP 에 명시된 '2 초' 응답 시간 목표와 답변하신 '5 초' 예상치가 왜 다른지, 그리고 이 차이를 어떻게 해소할 계획인지 구체적으로 설명해 주시겠습니까.",
+     "interjected": true
+    },
+    {
+     "id": "s11_ramble",
+     "e2e": 1.764,
+     "question": "보안 설계에서 접근 로그는 어떻게 관리하실 건가요?",
+     "interjected": true
+    }
+   ]
+  },
+  {
+   "label": "결승 qwen3.5:4b + large-v3-turbo + 끼어들기 llm",
+   "cfg": {
+    "strategy": "two_track",
+    "tts": "av",
+    "llm": "ollama:qwen3.5:4b",
+    "stt": "large-v3-turbo",
+    "interjection": "llm"
+   },
+   "wall_sec": 87.9,
+   "mean_e2e": 3.47,
+   "under_2s": 0.0,
+   "mean_quality": 4.75,
+   "usable_rate": 0.0,
+   "mean_cer": 0.053,
+   "interj_f1": 1.0,
+   "false_interj": 0,
+   "rows": [
+    {
+     "id": "s01_normal",
+     "e2e": 3.891,
+     "question": "그런데 그 1.2 초 목표가 실제로 달성될 수 있는지, 캐시와 비동기 큐 방식이 어떤 구체적인 시나리오에서 실패할지 예외 상황을 설명해 주실 수 있나요?",
+     "interjected": false
+    },
+    {
+     "id": "s05_terms",
+     "e2e": 2.865,
+     "question": "근거가 없으니 구체적인 기술적 근거와 수치적 데이터를 제시해 주시겠어요?",
+     "interjected": false
+    },
+    {
+     "id": "s06_numbers",
+     "e2e": 3.648,
+     "question": "그런 성능을 유지하기 위해 실제로 어떤 기술적 조치나 인프라 구축을 할 계획이신가요?",
+     "interjected": false
+    },
+    {
+     "id": "s08_contradict_rfp",
+     "e2e": null,
+     "question": null,
+     "interjected": true
+    },
+    {
+     "id": "s11_ramble",
+     "e2e": 1.786,
+     "question": "보안 설계에서 접근 로그는 어떻게 관리하실 건가요?",
+     "interjected": true
+    }
+   ]
+  },
+  {
+   "label": "결승 phi4-mini:3.8b + small + 끼어들기 rule",
+   "cfg": {
+    "strategy": "two_track",
+    "tts": "av",
+    "llm": "ollamax:phi4-mini:3.8b",
+    "stt": "small",
+    "interjection": "rule"
+   },
+   "wall_sec": 110.4,
+   "mean_e2e": 1.02,
+   "under_2s": 1.0,
+   "mean_quality": 4.42,
+   "usable_rate": 1.0,
+   "mean_cer": 0.042,
+   "interj_f1": 1.0,
+   "false_interj": 0,
+   "rows": [
+    {
+     "id": "s01_normal",
+     "e2e": 1.192,
+     "question": "민원 접수 API의 캐시 및 비동기 Q 사용 방식에 대해 더 깊이 설명해 주시겠습니까?",
+     "interjected": false
+    },
+    {
+     "id": "s05_terms",
+     "e2e": 0.893,
+     "question": "개인정보 보호 방안에 대해 더 깊이 설명해 주세요. 특히 암호화 방법, 접근 로그 보관 기간, 키 관리를 포함한 구체적인 조치에 대해 말해주세요.",
+     "interjected": false
+    },
+    {
+     "id": "s06_numbers",
+     "e2e": 0.972,
+     "question": "이 민원 접수 API의 1.2초 목표 응답시간을 달성하기 위해 어떤 기술적 최적화 및 확장 조치를 취하실 계획인가요?",
+     "interjected": false
+    },
+    {
+     "id": "s08_contradict_rfp",
+     "e2e": 1.079,
+     "question": "초점: RFP(R4) '8개월' vs 답변 '12개월' | CHALLENGE",
+     "interjected": true
+    },
+    {
+     "id": "s11_ramble",
+     "e2e": 1.648,
+     "question": "민원 접수 API의 응답시간 목표를 어떻게 달성하실 계획인가요?",
+     "interjected": true
+    }
+   ]
+  },
+  {
+   "label": "결승 phi4-mini:3.8b + small + 끼어들기 llm",
+   "cfg": {
+    "strategy": "two_track",
+    "tts": "av",
+    "llm": "ollamax:phi4-mini:3.8b",
+    "stt": "small",
+    "interjection": "llm"
+   },
+   "wall_sec": 83.8,
+   "mean_e2e": 1.64,
+   "under_2s": 1.0,
+   "mean_quality": 4.25,
+   "usable_rate": 1.0,
+   "mean_cer": 0.042,
+   "interj_f1": 1.0,
+   "false_interj": 0,
+   "rows": [
+    {
+     "id": "s01_normal",
+     "e2e": 1.442,
+     "question": "민원 접수 API의 캐시 및 비동기 Q 사용 방식에 대해 더 설명해 주실 수 있나요?",
+     "interjected": false
+    },
+    {
+     "id": "s05_terms",
+     "e2e": 1.624,
+     "question": "개인정보 보호 방안에 대해 더 자세히 설명해 주시겠습니까? 특히 암호화 방법과 키 관리 방법에 대해요.",
+     "interjected": false
+    },
+    {
+     "id": "s06_numbers",
+     "e2e": 1.855,
+     "question": "직전 답변에서 응답시간, 동시 접속자 수, 가용성에 대해 더 자세히 설명하실 계획인가요?",
+     "interjected": false
+    },
+    {
+     "id": "s08_contradict_rfp",
+     "e2e": 1.26,
+     "question": "초점: RFP(R4) '8개월' vs 답변 '12개월'\nAction: CHALLENGE\nAction: VERIFY\nAction: CLARIFY",
+     "interjected": true
+    },
+    {
+     "id": "s11_ramble",
+     "e2e": 0.958,
+     "question": "보안 설계에서 접근 로그는 어떻게 관리하실 건가요?",
+     "interjected": true
+    }
+   ]
+  },
+  {
+   "label": "결승 phi4-mini:3.8b + large-v3-turbo + 끼어들기 rule",
+   "cfg": {
+    "strategy": "two_track",
+    "tts": "av",
+    "llm": "ollamax:phi4-mini:3.8b",
+    "stt": "large-v3-turbo",
+    "interjection": "rule"
+   },
+   "wall_sec": 85.4,
+   "mean_e2e": 2.15,
+   "under_2s": 0.33,
+   "mean_quality": 4.25,
+   "usable_rate": 0.33,
+   "mean_cer": 0.053,
+   "interj_f1": 1.0,
+   "false_interj": 0,
+   "rows": [
+    {
+     "id": "s01_normal",
+     "e2e": 1.895,
+     "question": "민원 접수 API의 캐시 및 비동기 큐 사용 방식에 대해 더 자세히 설명해 주시겠습니까?",
+     "interjected": false
+    },
+    {
+     "id": "s05_terms",
+     "e2e": 2.45,
+     "question": "개인정보는 AES256으로 암호화되고 접근로그는 1년 이상 보관하며, 키 관리는 HSM을 사용합니다. 이 방안이 충분히 보안할 수 있는지 확인할 수 있나요?",
+     "interjected": false
+    },
+    {
+     "id": "s06_numbers",
+     "e2e": 2.11,
+     "question": "초점: 목표응답시간과 동시접속성 목표를 달성하는 기술적 구현 방법을 설명하시오.",
+     "interjected": false
+    },
+    {
+     "id": "s08_contradict_rfp",
+     "e2e": 2.009,
+     "question": "초점: RFP(R4) '8개월' vs 답변 '12개월'; 이전 '12초' vs '5초'",
+     "interjected": true
+    },
+    {
+     "id": "s11_ramble",
+     "e2e": 2.567,
+     "question": "초점: 응답시간 목표 달성 방안\n답변 발췌: 불명확한 부분이 있으니, 민원 접수 API의 응답시간 목표를 달성하기 위한 구체적인 계획이나 방법에 대해 더 설명해 주시겠습니까?",
+     "interjected": true
+    }
+   ]
+  },
+  {
+   "label": "결승 phi4-mini:3.8b + large-v3-turbo + 끼어들기 llm",
+   "cfg": {
+    "strategy": "two_track",
+    "tts": "av",
+    "llm": "ollamax:phi4-mini:3.8b",
+    "stt": "large-v3-turbo",
+    "interjection": "llm"
+   },
+   "wall_sec": 85.2,
+   "mean_e2e": 2.95,
+   "under_2s": 0.0,
+   "mean_quality": 4.5,
+   "usable_rate": 0.0,
+   "mean_cer": 0.079,
+   "interj_f1": 1.0,
+   "false_interj": 0,
+   "rows": [
+    {
+     "id": "s01_normal",
+     "e2e": 3.101,
+     "question": "초점: 캐시와 비동기 큐 사용\nAction: DEEPEN\n초점: 민원 접수 API는 캐시와 비동기 큐를 사용해서 평균 응답시간을 1.2초 수준으로 유지하겠습니다. 이 기술이 응답 시간 목표 달성을 어떻게 보장할지에 대한 구체적인 설명을 요청합니다. 캐시 시스템의 효율성과 비동기 큐의 관리 방법에 대해 더 자세히 설명",
+     "interjected": false
+    },
+    {
+     "id": "s05_terms",
+     "e2e": null,
+     "question": null,
+     "interjected": true
+    },
+    {
+     "id": "s06_numbers",
+     "e2e": 2.79,
+     "question": "응답시간 목표 달성 계획을 더 깊이 설명해 주시겠습니까? 특히 동시접속성과 가용성에 대해서는?",
+     "interjected": false
+    },
+    {
+     "id": "s08_contradict_rfp",
+     "e2e": 2.163,
+     "question": "RFP(R4) '8개월' vs 답변 '12개월'; 이전 '12초' vs '5초'",
+     "interjected": true
+    },
+    {
+     "id": "s11_ramble",
+     "e2e": 1.803,
+     "question": "보안 설계에서 접근 로그는 어떻게 관리하실 건가요?",
+     "interjected": true
+    }
+   ]
+  },
+  {
+   "label": "결승 gpt-6-luna + small + 끼어들기 rule",
+   "cfg": {
+    "strategy": "two_track",
+    "tts": "av",
+    "llm": "openai:gpt-6-luna",
+    "stt": "small",
+    "interjection": "rule"
+   },
+   "wall_sec": 84.5,
+   "mean_e2e": 1.96,
+   "under_2s": 0.67,
+   "mean_quality": 5.0,
+   "usable_rate": 0.67,
+   "mean_cer": 0.042,
+   "interj_f1": 1.0,
+   "false_interj": 0,
+   "rows": [
+    {
+     "id": "s01_normal",
+     "e2e": 1.649,
+     "question": "캐시 적중률과 큐 적체가 달라져도 평균 1.2초를 유지할 수 있는지, 부하 시험 결과와 함께 지연시간 기준을 설명해 주시겠어요?",
+     "interjected": false
+    },
+    {
+     "id": "s05_terms",
+     "e2e": 2.797,
+     "question": "암호화 키의 생성·교체·폐기 절차와 접근 로그의 위변조 방지 방식, 그리고 각각의 적용 범위를 구체적으로 설명해 주시겠어요?",
+     "interjected": false
+    },
+    {
+     "id": "s06_numbers",
+     "e2e": 1.437,
+     "question": "동시 접속자 5,000명과 가용성 99.9%를 어떤 부하 시험과 운영 지표로 검증하고, 목표에 미달하면 어떻게 개선하실 계획인가요?",
+     "interjected": false
+    },
+    {
+     "id": "s08_contradict_rfp",
+     "e2e": 1.533,
+     "question": "RFP의 구축 기간은 8개월인데 12개월이 필요하다고 하셨습니다. 기간 차이가 생긴 이유와 8개월 안에 구축할 수 있는 방안을 설명해 주시겠어요?",
+     "interjected": true
+    },
+    {
+     "id": "s11_ramble",
+     "e2e": 1.007,
+     "question": "보안 설계에서 접근 로그는 어떻게 관리하실 건가요?",
+     "interjected": true
+    }
+   ]
+  },
+  {
+   "label": "결승 gpt-6-luna + small + 끼어들기 llm",
+   "cfg": {
+    "strategy": "two_track",
+    "tts": "av",
+    "llm": "openai:gpt-6-luna",
+    "stt": "small",
+    "interjection": "llm"
+   },
+   "wall_sec": 84.9,
+   "mean_e2e": 1.82,
+   "under_2s": 0.67,
+   "mean_quality": 4.92,
+   "usable_rate": 0.67,
+   "mean_cer": 0.042,
+   "interj_f1": 1.0,
+   "false_interj": 0,
+   "rows": [
+    {
+     "id": "s01_normal",
+     "e2e": 2.077,
+     "question": "비동기 처리로 접수 응답을 빠르게 하시더라도, 실제 저장과 후속 처리 완료 여부는 어떻게 보장하고 평균 1.2초는 어떤 부하 조건에서 측정하실 계획인가요?",
+     "interjected": false
+    },
+    {
+     "id": "s05_terms",
+     "e2e": 1.439,
+     "question": "암호화 키의 생성·교체·폐기와 HSM 장애 시 복구 절차를 구체적으로 설명해 주시고, 접근 로그의 위변조 방지와 실제 보관 기간을 어떻게 검증할 수 있는지도 알려주시겠어요?",
+     "interjected": false
+    },
+    {
+     "id": "s06_numbers",
+     "e2e": 1.937,
+     "question": "평균 1.2초와 동시 접속자 5,000명, 가용성 99.9%를 함께 보장하려면 어떤 부하 시험과 장애 복구 시험을 진행하고, 각각의 합격 기준은 어떻게 정하실 건가요?",
+     "interjected": false
+    },
+    {
+     "id": "s08_contradict_rfp",
+     "e2e": 1.648,
+     "question": "앞서 구축 기간 12개월을 말씀하셨는데, RFP에 8개월 요구가 실제로 없다면 그 일정은 어떤 범위와 전제에서 산정하신 건가요?",
+     "interjected": true
+    },
+    {
+     "id": "s11_ramble",
+     "e2e": 2.145,
+     "question": "회사 소개와 무관한 내용만 제시하셨는데, 민원 접수 API의 응답시간 목표를 충족할 설계와 부하 시험 결과를 구체적으로 말씀해 주시겠어요?",
+     "interjected": true
+    }
+   ]
+  },
+  {
+   "label": "결승 gpt-6-luna + large-v3-turbo + 끼어들기 rule",
+   "cfg": {
+    "strategy": "two_track",
+    "tts": "av",
+    "llm": "openai:gpt-6-luna",
+    "stt": "large-v3-turbo",
+    "interjection": "rule"
+   },
+   "wall_sec": 88.8,
+   "mean_e2e": 2.95,
+   "under_2s": 0.0,
+   "mean_quality": 5.0,
+   "usable_rate": 0.0,
+   "mean_cer": 0.053,
+   "interj_f1": 1.0,
+   "false_interj": 0,
+   "rows": [
+    {
+     "id": "s01_normal",
+     "e2e": 2.376,
+     "question": "평균 1.2초라는 목표는 어떤 부하 조건과 측정 구간을 기준으로 하며, 캐시 적중률과 큐 적체가 달라져도 지킬 수 있다는 근거는 무엇인가요?",
+     "interjected": false
+    },
+    {
+     "id": "s05_terms",
+     "e2e": 4.223,
+     "question": "개인정보 중 어떤 항목을 저장·전송 단계에서 암호화하고, HSM 기반 암호키의 발급·교체·폐기와 접근로그의 위변조 방지는 어떻게 운영하실 건가요?",
+     "interjected": false
+    },
+    {
+     "id": "s06_numbers",
+     "e2e": 2.263,
+     "question": "평균 1.2초와 동시접속자 5천 명, 가용성 99.9%를 어떤 부하·장애 조건에서 검증하고, 각각의 측정 기준과 근거 자료는 무엇인가요?",
+     "interjected": false
+    },
+    {
+     "id": "s08_contradict_rfp",
+     "e2e": 3.276,
+     "question": "RFP의 구축기간은 8개월인데 12개월이 필요하다고 하셨고, 응답시간도 앞서 12초와 5초로 다르게 제시하셨는데 각각 어떤 전제에서 나온 수치이며 RFP 기준에 맞춰 조정 가능한가요?",
+     "interjected": true
+    },
+    {
+     "id": "s11_ramble",
+     "e2e": 4.244,
+     "question": "직원들의 어떤 역량이나 경험을 말씀하시려던 건지, 이번 사업과 관련된 구체적인 내용을 설명해 주시겠어요?",
+     "interjected": true
+    }
+   ]
+  },
+  {
+   "label": "결승 gpt-6-luna + large-v3-turbo + 끼어들기 llm",
+   "cfg": {
+    "strategy": "two_track",
+    "tts": "av",
+    "llm": "openai:gpt-6-luna",
+    "stt": "large-v3-turbo",
+    "interjection": "llm"
+   },
+   "wall_sec": 86.2,
+   "mean_e2e": 2.9,
+   "under_2s": 0.0,
+   "mean_quality": 4.92,
+   "usable_rate": 0.0,
+   "mean_cer": 0.053,
+   "interj_f1": 1.0,
+   "false_interj": 0,
+   "rows": [
+    {
+     "id": "s01_normal",
+     "e2e": 2.333,
+     "question": "평균 1.2초만 제시하셨는데, 피크 시간대의 최대 응답시간과 큐 적체 시 처리 방안은 어떻게 정하셨나요?",
+     "interjected": false
+    },
+    {
+     "id": "s05_terms",
+     "e2e": 3.53,
+     "question": "AES256 암호화는 저장·전송 중 어떤 개인정보에 적용하고, HSM 기반 키의 생성·교체·폐기와 1년 이상 보관하는 접근로그의 위변조 방지는 어떻게 운영하실 건가요?",
+     "interjected": false
+    },
+    {
+     "id": "s06_numbers",
+     "e2e": 2.834,
+     "question": "평균 1.2초와 동시접속자 5천 명, 가용성 99.9%를 어떤 시험 조건과 측정 기준으로 검증하고, 목표를 못 맞추면 어떻게 개선하실 건가요?",
+     "interjected": false
+    },
+    {
+     "id": "s08_contradict_rfp",
+     "e2e": 2.66,
+     "question": "이번 답변에서는 구축기간을 12개월이라고 하셨는데, R4의 8개월 일정과 어떤 근거로 차이가 나는지 설명해 주시겠어요? 이전 답변의 12초와 5초도 각각 무엇을 가리키는지 명확히 구분해 주세요.",
+     "interjected": true
+    },
+    {
+     "id": "s11_ramble",
+     "e2e": 1.98,
+     "question": "보안 설계에서 접근 로그는 어떻게 관리하실 건가요?",
+     "interjected": true
+    }
+   ]
+  },
+  {
+   "label": "결승 qwen3.5:4b + small + 끼어들기 rule + 전략 precomputed",
+   "cfg": {
+    "strategy": "precomputed",
+    "tts": "av",
+    "llm": "ollama:qwen3.5:4b",
+    "stt": "small",
+    "interjection": "rule"
+   },
+   "wall_sec": 87.1,
+   "mean_e2e": 0.5,
+   "under_2s": 1.0,
+   "mean_quality": 2.92,
+   "usable_rate": 0.33,
+   "mean_cer": 0.042,
+   "interj_f1": 1.0,
+   "false_interj": 0,
+   "rows": [
+    {
+     "id": "s01_normal",
+     "e2e": 0.523,
+     "question": "보안 설계에서 접근 로그는 어떻게 관리하실 건가요?",
+     "interjected": false
+    },
+    {
+     "id": "s05_terms",
+     "e2e": 0.492,
+     "question": "보안 설계에서 접근 로그는 어떻게 관리하실 건가요?",
+     "interjected": false
+    },
+    {
+     "id": "s06_numbers",
+     "e2e": 0.487,
+     "question": "보안 설계에서 접근 로그는 어떻게 관리하실 건가요?",
+     "interjected": false
+    },
+    {
+     "id": "s08_contradict_rfp",
+     "e2e": 1.552,
+     "question": "RFP 에는 2 초를 명시하셨는데, 왜 12 개월이라는 긴 기간과 5 초라는 응답 시간을 제시하셨는지 근거를 설명해 주시겠어요.",
+     "interjected": true
+    },
+    {
+     "id": "s11_ramble",
+     "e2e": 0.97,
+     "question": "AI 분류 정확도 90%를 어떻게 검증하실 계획인가요?",
+     "interjected": true
+    }
+   ]
+  },
+  {
+   "label": "결승 qwen3.5:4b + small + 끼어들기 rule + TTS say",
+   "cfg": {
+    "strategy": "two_track",
+    "tts": "say",
+    "llm": "ollama:qwen3.5:4b",
+    "stt": "small",
+    "interjection": "rule"
+   },
+   "wall_sec": 83.9,
+   "mean_e2e": 2.11,
+   "under_2s": 0.0,
+   "mean_quality": 4.92,
+   "usable_rate": 0.0,
+   "mean_cer": 0.042,
+   "interj_f1": 1.0,
+   "false_interj": 0,
+   "rows": [
+    {
+     "id": "s01_normal",
+     "e2e": 2.16,
+     "question": "그런데 그 1.2 초 목표가 실제 부하 시에도 견딜 수 있는지, 캐시와 비동기 처리의 구체적인 설계 근거를 보여주시겠어요.",
+     "interjected": false
+    },
+    {
+     "id": "s05_terms",
+     "e2e": 2.022,
+     "question": "그럼 구체적인 기술적 구현 방식과 실제 적용 사례를 더 자세히 설명해 주시겠어요.",
+     "interjected": false
+    },
+    {
+     "id": "s06_numbers",
+     "e2e": 2.155,
+     "question": "그런 성능 목표가 실제 운영 환경에서 유지되기 위한 구체적인 아키텍처 설계와 병렬 처리 전략은 무엇인가요?",
+     "interjected": false
+    },
+    {
+     "id": "s08_contradict_rfp",
+     "e2e": 2.32,
+     "question": "RFP 에 명시된 '2 초' 목표와 답변하신 '12 개월' 구축 기간이 실제 성능을 보장할 수 있는지에 대해 구체적인 근거를 요구합니다.",
+     "interjected": true
+    },
+    {
+     "id": "s11_ramble",
+     "e2e": 1.711,
+     "question": "보안 설계에서 접근 로그는 어떻게 관리하실 건가요?",
+     "interjected": true
+    }
+   ]
+  }
+ ]
+}

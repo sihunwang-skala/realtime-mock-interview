@@ -1,0 +1,37 @@
+[2026-11-18 11:45:06.415] [ctranslate2] [thread 2169487] [warning] The Apple Metal (MPS) backend is experimental.
+s01_normal e2e 1.496 cer 0.024 interj False act DEEPEN | 보안 설계에서 접근 로그는 어떻게 관리하실 건가요?
+s02_short e2e 0.972 cer 0.0 interj False act CLARIFY | 보안 설계에서 접근 로그는 어떻게 관리하실 건가요?
+s03_long e2e 1.903 cer 0.069 interj False act DEEPEN | 보안 설계에서 접근 로그는 어떻게 관리하실 건가요?
+s04_pause e2e -4.256 cer 0.611 interj False act CLARIFY | 보안 설계에서 접근 로그는 어떻게 관리하실 건가요?
+s05_terms e2e 1.123 cer 0.022 interj False act DEEPEN | 보안 설계에서 접근 로그는 어떻게 관리하실 건가요?
+s06_numbers e2e 1.101 cer 0.158 interj False act DEEPEN | 보안 설계에서 접근 로그는 어떻게 관리하실 건가요?
+s07_vague e2e 1.354 cer 0.0 interj False act CLARIFY | 보안 설계에서 접근 로그는 어떻게 관리하실 건가요?
+s08_contradict_rfp e2e 2.182 cer 0.0 interj True act CHALLENGE | RFP에서 8개월이라는 기간이 명시되어 있는데, 답변에서는 12개월이라고 적혀 있습니다. 이 부분은 어떻게 
+s09_rfp_violation e2e 2.099 cer 0.0 interj True act CHALLENGE | 왜 1년 보관을 제안했지만 답변에서는 3개월로 변경되었는지 설명해 줄 수 있나요?
+s10_repeat_request e2e 1.942 cer 0.0 interj False act REPEAT | 개인정보 보호 방안을 설명해 주세요.
+s11_ramble e2e 1.622 cer 0.029 interj True act CLARIFY | AI 분류 정확도 90%를 어떻게 검증하실 계획인가요?
+s12_noise e2e 1.066 cer 0.292 interj False act CLARIFY | 보안 설계에서 접근 로그는 어떻게 관리하실 건가요?
+s13_repetition e2e 1.14 cer 0.833 interj False act CLARIFY | 보안 설계에서 접근 로그는 어떻게 관리하실 건가요?
+{
+ "e2e": {
+  "n": 10,
+  "mean": 0.784,
+  "p50": 1.131,
+  "p90": 1.907,
+  "p95": 1.924,
+  "max": 1.942,
+  "under_2s": 1.0
+ },
+ "timeout_rate": 0.0,
+ "mean_cer": 0.157,
+ "interjection": {
+  "tp": 3,
+  "fp": 0,
+  "fn": 1,
+  "tn": 9,
+  "precision": 1.0,
+  "recall": 0.75,
+  "false_interjection_rate": 0.0,
+  "missed_rate": 0.25
+ }
+}

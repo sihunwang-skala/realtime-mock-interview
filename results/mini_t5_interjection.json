@@ -1,0 +1,119 @@
+{
+ "rule": {
+  "wall_sec": 57.7,
+  "per_scenario": [
+   {
+    "id": "s01_normal",
+    "expected": false,
+    "interjected": false,
+    "kind": null,
+    "t_after_speech_start_s": null,
+    "interjection_audio_after_start_s": null
+   },
+   {
+    "id": "s08_contradict_rfp",
+    "expected": true,
+    "interjected": true,
+    "kind": "contradiction_rfp",
+    "t_after_speech_start_s": 6.2,
+    "interjection_audio_after_start_s": 7.141
+   },
+   {
+    "id": "s11_ramble",
+    "expected": true,
+    "interjected": true,
+    "kind": "off_topic",
+    "t_after_speech_start_s": 12.4,
+    "interjection_audio_after_start_s": 13.204
+   }
+  ],
+  "summary": {
+   "tp": 2,
+   "fp": 0,
+   "fn": 0,
+   "tn": 1,
+   "precision": 1.0,
+   "recall": 1.0,
+   "false_interjection_rate": 0.0,
+   "missed_rate": 0.0
+  }
+ },
+ "llm": {
+  "wall_sec": 56.5,
+  "per_scenario": [
+   {
+    "id": "s01_normal",
+    "expected": false,
+    "interjected": false,
+    "kind": null,
+    "t_after_speech_start_s": null,
+    "interjection_audio_after_start_s": null
+   },
+   {
+    "id": "s08_contradict_rfp",
+    "expected": true,
+    "interjected": true,
+    "kind": "repetition",
+    "t_after_speech_start_s": 7.7,
+    "interjection_audio_after_start_s": 8.595
+   },
+   {
+    "id": "s11_ramble",
+    "expected": true,
+    "interjected": true,
+    "kind": "off_topic",
+    "t_after_speech_start_s": 10.3,
+    "interjection_audio_after_start_s": 11.198
+   }
+  ],
+  "summary": {
+   "tp": 2,
+   "fp": 0,
+   "fn": 0,
+   "tn": 1,
+   "precision": 1.0,
+   "recall": 1.0,
+   "false_interjection_rate": 0.0,
+   "missed_rate": 0.0
+  }
+ },
+ "hybrid": {
+  "wall_sec": 55.9,
+  "per_scenario": [
+   {
+    "id": "s01_normal",
+    "expected": false,
+    "interjected": false,
+    "kind": null,
+    "t_after_speech_start_s": null,
+    "interjection_audio_after_start_s": null
+   },
+   {
+    "id": "s08_contradict_rfp",
+    "expected": true,
+    "interjected": true,
+    "kind": "contradiction_rfp",
+    "t_after_speech_start_s": 6.2,
+    "interjection_audio_after_start_s": 6.985
+   },
+   {
+    "id": "s11_ramble",
+    "expected": true,
+    "interjected": true,
+    "kind": "off_topic",
+    "t_after_speech_start_s": 15.0,
+    "interjection_audio_after_start_s": 16.088
+   }
+  ],
+  "summary": {
+   "tp": 2,
+   "fp": 0,
+   "fn": 0,
+   "tn": 1,
+   "precision": 1.0,
+   "recall": 1.0,
+   "false_interjection_rate": 0.0,
+   "missed_rate": 0.0
+  }
+ }
+}

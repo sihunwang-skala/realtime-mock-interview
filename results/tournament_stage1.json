@@ -1,0 +1,654 @@
+{
+ "base": {
+  "llm": "ollama:qwen2.5:7b",
+  "stt": "small",
+  "tts": "av",
+  "strategy": "two_track",
+  "interjection": "off"
+ },
+ "axes": [
+  {
+   "axis": "STT",
+   "field": "stt",
+   "rule": "stt",
+   "standings": [
+    {
+     "label": "STT=small",
+     "cfg": {
+      "llm": "ollama:qwen2.5:7b",
+      "stt": "small",
+      "tts": "av",
+      "strategy": "two_track",
+      "interjection": "off"
+     },
+     "wall_sec": 46.4,
+     "mean_e2e": 1.35,
+     "under_2s": 1.0,
+     "mean_quality": 3.83,
+     "usable_rate": 0.67,
+     "mean_cer": 0.042,
+     "interj_f1": null,
+     "false_interj": 0,
+     "rows": [
+      {
+       "id": "s01_normal",
+       "e2e": 1.453,
+       "quality": 2.0,
+       "question": "캐시와 비동기 Q를 사용해 평균 응답시간을 1.2초로 유지할 계획이细化问题理解，您是要求我进一步深入探讨关于民怨接收API使用缓存和异步队列来维持平均响应时间在1.2秒左右的计划。那么，我将深入询问关于具体实现细节和技术方案。请确认以下问题是否符合您的要求：\n\n我们计划如何具体配置缓存策略以确保高效",
+       "interjected": false
+      },
+      {
+       "id": "s05_terms",
+       "e2e": 1.272,
+       "quality": 5.0,
+       "question": "키 관리 과정에서 HSM을 사용한다고 하셨는데, 키 생성부터 폐기까지의 전체 키 생명주기 관리 과정은 어떻게 되나요?",
+       "interjected": false
+      },
+      {
+       "id": "s06_numbers",
+       "e2e": 1.319,
+       "quality": 4.5,
+       "question": "목표 응답시간 1.2초를 달성하기 위한 핵심 기술은 무엇인가요?",
+       "interjected": false
+      }
+     ]
+    },
+    {
+     "label": "STT=large-v3-turbo",
+     "cfg": {
+      "llm": "ollama:qwen2.5:7b",
+      "stt": "large-v3-turbo",
+      "tts": "av",
+      "strategy": "two_track",
+      "interjection": "off"
+     },
+     "wall_sec": 48.7,
+     "mean_e2e": 2.37,
+     "under_2s": 0.0,
+     "mean_quality": 4.75,
+     "usable_rate": 0.0,
+     "mean_cer": 0.053,
+     "interj_f1": null,
+     "false_interj": 0,
+     "rows": [
+      {
+       "id": "s01_normal",
+       "e2e": 2.369,
+       "quality": 4.75,
+       "question": "캐시와 비동기 큐를 활용한 구현 방법은 구체적으로 어떻게 되나요?",
+       "interjected": false
+      },
+      {
+       "id": "s05_terms",
+       "e2e": 2.268,
+       "quality": 4.75,
+       "question": "키 관리 과정에서 어떤 절차들이 포함되어 있는지 더 자세히 설명해 줄 수 있나요?",
+       "interjected": false
+      },
+      {
+       "id": "s06_numbers",
+       "e2e": 2.48,
+       "quality": 4.75,
+       "question": "목표응답시간이 1.2초인 이유는 무엇인가요? 이 시간은 어떤 요인들에 의해 결정되나요?",
+       "interjected": false
+      }
+     ]
+    },
+    {
+     "label": "STT=gpt-transcribe",
+     "cfg": {
+      "llm": "ollama:qwen2.5:7b",
+      "stt": "gpt-transcribe",
+      "tts": "av",
+      "strategy": "two_track",
+      "interjection": "off"
+     },
+     "wall_sec": 58.6,
+     "mean_e2e": 6.15,
+     "under_2s": 0.0,
+     "mean_quality": 4.67,
+     "usable_rate": 0.0,
+     "mean_cer": 0.06,
+     "interj_f1": null,
+     "false_interj": 0,
+     "rows": [
+      {
+       "id": "s01_normal",
+       "e2e": 5.51,
+       "quality": 5.0,
+       "question": "캐시와 비동기 큐를 사용해 평균 응답 시간을 1.2초로 유지할 계획이신데, 이 부분에 대해 더 자세히 설명해 주실 수 있나요? 예를 들어, 캐시 정책은 어떻게 설정하시고, 비동기 큐의 처리 능력은 어떻게 확보하실 계획인가요?",
+       "interjected": false
+      },
+      {
+       "id": "s05_terms",
+       "e2e": 4.56,
+       "quality": 4.5,
+       "question": "AES-256 암호화 방식은 어떤 특징이 있나요?",
+       "interjected": false
+      },
+      {
+       "id": "s06_numbers",
+       "e2e": 8.375,
+       "quality": 4.5,
+       "question": "목표 응답 시간이 평균 1.2초인 이유는 무엇인가요? 다른 요인들에 영향을 받지 않는다는 보장이 있나요?",
+       "interjected": false
+      }
+     ]
+    },
+    {
+     "label": "STT=base",
+     "cfg": {
+      "llm": "ollama:qwen2.5:7b",
+      "stt": "base",
+      "tts": "av",
+      "strategy": "two_track",
+      "interjection": "off"
+     },
+     "wall_sec": 51.7,
+     "mean_e2e": 1.08,
+     "under_2s": 1.0,
+     "mean_quality": 2.92,
+     "usable_rate": 0.33,
+     "mean_cer": 0.074,
+     "interj_f1": null,
+     "false_interj": 0,
+     "rows": [
+      {
+       "id": "s01_normal",
+       "e2e": 1.125,
+       "quality": 3.75,
+       "question": "API와 KC 간 비동기 통신 방식이 어떻게 구현되어 평균 응답시간을 1.2초로 유지할 수 있는지 더 자세히 설명해 주실 수 있나요?",
+       "interjected": false
+      },
+      {
+       "id": "s05_terms",
+       "e2e": 0.975,
+       "quality": 3.0,
+       "question": "키 관리 과정에서 ATSM을 어떻게 구현하고 있는지 더 자세히 설명해 줄 수 있나요?",
+       "interjected": false
+      },
+      {
+       "id": "s06_numbers",
+       "e2e": 1.142,
+       "quality": 2.0,
+       "question": "RFP에서 말한 5000명과 답변에서 나온 000명이 모순되네요. 이 부분 어떻게 설명하나요?",
+       "interjected": false
+      }
+     ]
+    }
+   ],
+   "survivors": [
+    "small",
+    "large-v3-turbo"
+   ]
+  },
+  {
+   "axis": "질문 전략",
+   "field": "strategy",
+   "rule": "usable",
+   "standings": [
+    {
+     "label": "질문 전략=two_track",
+     "cfg": {
+      "llm": "ollama:qwen2.5:7b",
+      "stt": "small",
+      "tts": "av",
+      "strategy": "two_track",
+      "interjection": "off"
+     },
+     "wall_sec": 42.0,
+     "mean_e2e": 1.34,
+     "under_2s": 1.0,
+     "mean_quality": 4.5,
+     "usable_rate": 1.0,
+     "mean_cer": 0.042,
+     "interj_f1": null,
+     "false_interj": 0,
+     "rows": [
+      {
+       "id": "s01_normal",
+       "e2e": 1.488,
+       "quality": 4.25,
+       "question": "캐시와 비동기 Q를 사용해 평균 응답시간을 1.2초로 유지하는 구체적인 방법은 무엇인가요?",
+       "interjected": false
+      },
+      {
+       "id": "s05_terms",
+       "e2e": 1.214,
+       "quality": 5.0,
+       "question": "HSM을 사용하는 키 관리 방안에 대해 더 자세히 설명해 줄 수 있나요? 예를 들어, 키 생성, 저장, 교체 과정은 어떻게 이루어지는지 궁금합니다.",
+       "interjected": false
+      },
+      {
+       "id": "s06_numbers",
+       "e2e": 1.317,
+       "quality": 4.25,
+       "question": "목표 응답시간 1.2초를 달성하기 위한 핵심 기술은 무엇인가요?",
+       "interjected": false
+      }
+     ]
+    },
+    {
+     "label": "질문 전략=precomputed",
+     "cfg": {
+      "llm": "ollama:qwen2.5:7b",
+      "stt": "small",
+      "tts": "av",
+      "strategy": "precomputed",
+      "interjection": "off"
+     },
+     "wall_sec": 42.4,
+     "mean_e2e": 0.56,
+     "under_2s": 1.0,
+     "mean_quality": 3.17,
+     "usable_rate": 0.33,
+     "mean_cer": 0.042,
+     "interj_f1": null,
+     "false_interj": 0,
+     "rows": [
+      {
+       "id": "s01_normal",
+       "e2e": 0.653,
+       "quality": 2.5,
+       "question": "보안 설계에서 접근 로그는 어떻게 관리하실 건가요?",
+       "interjected": false
+      },
+      {
+       "id": "s05_terms",
+       "e2e": 0.507,
+       "quality": 4.25,
+       "question": "보안 설계에서 접근 로그는 어떻게 관리하실 건가요?",
+       "interjected": false
+      },
+      {
+       "id": "s06_numbers",
+       "e2e": 0.509,
+       "quality": 2.75,
+       "question": "보안 설계에서 접근 로그는 어떻게 관리하실 건가요?",
+       "interjected": false
+      }
+     ]
+    },
+    {
+     "label": "질문 전략=direct",
+     "cfg": {
+      "llm": "ollama:qwen2.5:7b",
+      "stt": "small",
+      "tts": "av",
+      "strategy": "direct",
+      "interjection": "off"
+     },
+     "wall_sec": 49.1,
+     "mean_e2e": 4.68,
+     "under_2s": 0.0,
+     "mean_quality": 4.5,
+     "usable_rate": 0.0,
+     "mean_cer": 0.042,
+     "interj_f1": null,
+     "false_interj": 0,
+     "rows": [
+      {
+       "id": "s01_normal",
+       "e2e": 4.992,
+       "quality": 4.25,
+       "question": "캐시와 비동기 Q를 사용하는 구체적인 방법은 어떻게 되나요?",
+       "interjected": false
+      },
+      {
+       "id": "s05_terms",
+       "e2e": 4.272,
+       "quality": 4.75,
+       "question": "AES-256 암호화 방식에 대해 더 자세히 설명해 줄 수 있나요?",
+       "interjected": false
+      },
+      {
+       "id": "s06_numbers",
+       "e2e": 4.764,
+       "quality": 4.5,
+       "question": "응답시간 목표를 달성하기 위한 구체적인 계획은 어떻게 되나요?",
+       "interjected": false
+      }
+     ]
+    },
+    {
+     "label": "질문 전략=hybrid",
+     "cfg": {
+      "llm": "ollama:qwen2.5:7b",
+      "stt": "small",
+      "tts": "av",
+      "strategy": "hybrid",
+      "interjection": "off"
+     },
+     "wall_sec": 50.0,
+     "mean_e2e": 4.54,
+     "under_2s": 0.0,
+     "mean_quality": 3.75,
+     "usable_rate": 0.0,
+     "mean_cer": 0.042,
+     "interj_f1": null,
+     "false_interj": 0,
+     "rows": [
+      {
+       "id": "s01_normal",
+       "e2e": 3.981,
+       "quality": 2.5,
+       "question": "보안 설계에서 접근 로그는 어떻게 관리하실 건가요?",
+       "interjected": false
+      },
+      {
+       "id": "s05_terms",
+       "e2e": 4.103,
+       "quality": 4.25,
+       "question": "보안 설계에서 접근 로그는 어떻게 관리하실 건가요?",
+       "interjected": false
+      },
+      {
+       "id": "s06_numbers",
+       "e2e": 5.528,
+       "quality": 4.5,
+       "question": "응답시간 목표를 달성하기 위해 어떤 최적화 기법을 사용하실 계획인가요?",
+       "interjected": false
+      }
+     ]
+    }
+   ],
+   "survivors": [
+    "two_track",
+    "precomputed"
+   ]
+  },
+  {
+   "axis": "끼어들기 정책",
+   "field": "interjection",
+   "rule": "ij",
+   "standings": [
+    {
+     "label": "끼어들기 정책=rule",
+     "cfg": {
+      "llm": "ollama:qwen2.5:7b",
+      "stt": "small",
+      "tts": "av",
+      "strategy": "two_track",
+      "interjection": "rule"
+     },
+     "wall_sec": 53.7,
+     "mean_e2e": 1.82,
+     "under_2s": 0.67,
+     "mean_quality": null,
+     "usable_rate": 0.0,
+     "mean_cer": 0.018,
+     "interj_f1": 1.0,
+     "false_interj": 0,
+     "rows": [
+      {
+       "id": "s01_normal",
+       "e2e": 1.413,
+       "quality": null,
+       "question": "캐시와 비동기 Q를 사용해 평균 응답시간을 1.2초로 유지하는 구체적인 방법은 어떻게 되나요?",
+       "interjected": false
+      },
+      {
+       "id": "s08_contradict_rfp",
+       "e2e": 1.594,
+       "quality": null,
+       "question": "12개월 구축 기간이 RFP와 다른 근거는 무엇인가요?",
+       "interjected": true
+      },
+      {
+       "id": "s11_ramble",
+       "e2e": 2.465,
+       "quality": null,
+       "question": "민원 접수 API와 관련된 정보만 주셨는데, 설립 연도나 사무실 위치는 어떻게 사용되는지 설명이 필요합니다. API의 기능과 관련된 정보를 좀 더 제공해 주실 수 있나요?",
+       "interjected": true
+      }
+     ]
+    },
+    {
+     "label": "끼어들기 정책=llm",
+     "cfg": {
+      "llm": "ollama:qwen2.5:7b",
+      "stt": "small",
+      "tts": "av",
+      "strategy": "two_track",
+      "interjection": "llm"
+     },
+     "wall_sec": 57.6,
+     "mean_e2e": 2.2,
+     "under_2s": 0.33,
+     "mean_quality": null,
+     "usable_rate": 0.0,
+     "mean_cer": 0.018,
+     "interj_f1": 1.0,
+     "false_interj": 0,
+     "rows": [
+      {
+       "id": "s01_normal",
+       "e2e": 2.513,
+       "quality": null,
+       "question": "캐시와 비동기 Q를 활용해 평균 응답시간을 1.2초로 유지하는 구체적인 방법은 무엇인가요?",
+       "interjected": false
+      },
+      {
+       "id": "s08_contradict_rfp",
+       "e2e": 1.579,
+       "quality": null,
+       "question": "12개월 구축 기간이 RFP에서 8개월로 제시된 것과 모순되는 것 같습니다. 이 부분을 어떻게 설명할 수 있을까요?",
+       "interjected": true
+      },
+      {
+       "id": "s11_ramble",
+       "e2e": 2.495,
+       "quality": null,
+       "question": "왜 작년부터 올해까지 봉사활동과 체육대회를 언급하셨나요? 이 부분은 회사의 기술 능력이나 민원 접수 API의 성능과 관련이 있는가요?",
+       "interjected": true
+      }
+     ]
+    },
+    {
+     "label": "끼어들기 정책=hybrid",
+     "cfg": {
+      "llm": "ollama:qwen2.5:7b",
+      "stt": "small",
+      "tts": "av",
+      "strategy": "two_track",
+      "interjection": "hybrid"
+     },
+     "wall_sec": 57.7,
+     "mean_e2e": 1.76,
+     "under_2s": 0.67,
+     "mean_quality": null,
+     "usable_rate": 0.0,
+     "mean_cer": 0.018,
+     "interj_f1": 1.0,
+     "false_interj": 0,
+     "rows": [
+      {
+       "id": "s01_normal",
+       "e2e": 1.436,
+       "quality": null,
+       "question": "캐시와 비동기 Q를 사용해 평균 응답시간을 1.2초로 유지할 계획이신데, 이 부분에 대한 구체적인 구현 방안은 어떻게 계획하고 계신가요?",
+       "interjected": false
+      },
+      {
+       "id": "s08_contradict_rfp",
+       "e2e": 1.716,
+       "quality": null,
+       "question": "12개월 구축 기간이지만 8개월만에 RFP 기준 2초 응답시간을 달성할 계획은 있으신가요?",
+       "interjected": true
+      },
+      {
+       "id": "s11_ramble",
+       "e2e": 2.133,
+       "quality": null,
+       "question": "역시나요? 그럼 저희 회사의 설립 연도와 주요 활동에 대해 좀 더 구체적으로 설명해주실 수 있을까요? 특히 프로젝트 수행과 관련된 부분은 어떻게 되는지 궁금합니다.",
+       "interjected": true
+      }
+     ]
+    },
+    {
+     "label": "끼어들기 정책=off",
+     "cfg": {
+      "llm": "ollama:qwen2.5:7b",
+      "stt": "small",
+      "tts": "av",
+      "strategy": "two_track",
+      "interjection": "off"
+     },
+     "wall_sec": 57.2,
+     "mean_e2e": 1.76,
+     "under_2s": 0.67,
+     "mean_quality": null,
+     "usable_rate": 0.0,
+     "mean_cer": 0.018,
+     "interj_f1": 0.0,
+     "false_interj": 0,
+     "rows": [
+      {
+       "id": "s01_normal",
+       "e2e": 1.42,
+       "quality": null,
+       "question": "캐시와 비동기 Q를 사용해 평균 응답시간을 1.2초로 유지할 계획이细化问题理解，您希望我进一步深入探讨关于民怨接收API使用缓存和异步队列来维持平均响应时间在1.2秒左右的计划。请问您能否详细说明具体的实现方案和技术细节？",
+       "interjected": false
+      },
+      {
+       "id": "s08_contradict_rfp",
+       "e2e": 1.612,
+       "quality": null,
+       "question": "12개월 구축 기간이 RFP에 명시된 8개월보다 길어요. 이 부분 어떻게 설명하죠?",
+       "interjected": false
+      },
+      {
+       "id": "s11_ramble",
+       "e2e": 2.252,
+       "quality": null,
+       "question": "민원 접수 API의 응답시간 목표를 위해 어떤 기술적 방안을 사용하실 예정인가요?",
+       "interjected": false
+      }
+     ]
+    }
+   ],
+   "survivors": [
+    "rule",
+    "llm"
+   ]
+  },
+  {
+   "axis": "TTS",
+   "field": "tts",
+   "rule": "tts",
+   "standings": [
+    {
+     "label": "TTS=av",
+     "cfg": {
+      "llm": "ollama:qwen2.5:7b",
+      "stt": "small",
+      "tts": "av",
+      "strategy": "two_track",
+      "interjection": "rule"
+     },
+     "wall_sec": 48.7,
+     "mean_e2e": 1.35,
+     "under_2s": 1.0,
+     "mean_quality": 4.67,
+     "usable_rate": 1.0,
+     "mean_cer": 0.042,
+     "interj_f1": null,
+     "false_interj": 0,
+     "rows": [
+      {
+       "id": "s01_normal",
+       "e2e": 1.426,
+       "quality": 4.5,
+       "question": "캐시와 비동기 Q를 사용해 평균 응답시간을 1.2초로 유지하는 구체적인 방법이 궁금합니다.",
+       "interjected": false
+      },
+      {
+       "id": "s05_terms",
+       "e2e": 1.248,
+       "quality": 4.75,
+       "question": "HSM을 사용하는 키 관리 방안에 대해 자세히 설명해 줄 수 있나요?",
+       "interjected": false
+      },
+      {
+       "id": "s06_numbers",
+       "e2e": 1.363,
+       "quality": 4.75,
+       "question": "목표 응답시간이 1.2초인 이유는 무엇인가요?",
+       "interjected": false
+      }
+     ]
+    },
+    {
+     "label": "TTS=say",
+     "cfg": {
+      "llm": "ollama:qwen2.5:7b",
+      "stt": "small",
+      "tts": "say",
+      "strategy": "two_track",
+      "interjection": "rule"
+     },
+     "wall_sec": 45.6,
+     "mean_e2e": 2.31,
+     "under_2s": 0.0,
+     "mean_quality": 4.67,
+     "usable_rate": 0.0,
+     "mean_cer": 0.042,
+     "interj_f1": null,
+     "false_interj": 0,
+     "rows": [
+      {
+       "id": "s01_normal",
+       "e2e": 2.425,
+       "quality": 4.5,
+       "question": "캐시와 비동기 Q를 사용해 평균 응답시간을 1.2초로 유지할 계획이구나. 이 방법으로 어떤 부분들이 최적화되는지 좀 더 설명해 줄 수 있나?",
+       "interjected": false
+      },
+      {
+       "id": "s05_terms",
+       "e2e": 2.208,
+       "quality": 5.0,
+       "question": "키 관리 과정에서 HSM을 사용한다고 하셨는데, 키 생성부터 폐기까지의 전체 흐름은 어떻게 되나요?",
+       "interjected": false
+      },
+      {
+       "id": "s06_numbers",
+       "e2e": 2.301,
+       "quality": 4.5,
+       "question": "목표 응답시간이 평균 1.2초인 이유는 무엇인가요?",
+       "interjected": false
+      }
+     ]
+    }
+   ],
+   "survivors": [
+    "av",
+    "say"
+   ]
+  }
+ ],
+ "best_single_config": {
+  "llm": "ollama:qwen2.5:7b",
+  "stt": "small",
+  "tts": "av",
+  "strategy": "two_track",
+  "interjection": "rule"
+ },
+ "survivors": {
+  "STT": [
+   "small",
+   "large-v3-turbo"
+  ],
+  "질문 전략": [
+   "two_track",
+   "precomputed"
+  ],
+  "끼어들기 정책": [
+   "rule",
+   "llm"
+  ],
+  "TTS": [
+   "av",
+   "say"
+  ]
+ }
+}

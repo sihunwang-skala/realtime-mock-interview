@@ -1,0 +1,527 @@
+{
+ "case": "B",
+ "opts": {
+  "llm": "ollama:qwen2.5:7b",
+  "stt": "small",
+  "interjection": "hybrid",
+  "strategy": "precomputed"
+ },
+ "components": {
+  "llm": "ollama:qwen2.5:7b",
+  "stt": "faster-whisper:small@mps",
+  "tts": "macos-avspeech:Yuna",
+  "vad": "silero 600ms"
+ },
+ "hardware": {
+  "machine": "arm64",
+  "platform": "macOS-26.3.1-arm64-arm-64bit",
+  "cpu": "Apple M2 Pro 32GB"
+ },
+ "when": "2026-11-18 11:47:56",
+ "audio_path": "synthetic Yuna TTS wav -> real-time paced frames -> VoiceRuntime (VAD/STT/LLM/TTS). Playback = sink emission, no browser.",
+ "summary": {
+  "e2e": {
+   "n": 10,
+   "mean": 0.784,
+   "p50": 1.131,
+   "p90": 1.907,
+   "p95": 1.924,
+   "max": 1.942,
+   "under_2s": 1.0
+  },
+  "timeout_rate": 0.0,
+  "mean_cer": 0.157,
+  "interjection": {
+   "tp": 3,
+   "fp": 0,
+   "fn": 1,
+   "tn": 9,
+   "precision": 1.0,
+   "recall": 0.75,
+   "false_interjection_rate": 0.0,
+   "missed_rate": 0.25
+  }
+ },
+ "results": [
+  {
+   "id": "s01_normal",
+   "timed_out": false,
+   "interjected": false,
+   "interjections": [],
+   "interjection_responses": [],
+   "expect": {
+    "interject": false
+   },
+   "stt_text": "민원 접수 API는 캐시와 비동기 Q를 사용해서 평균 응답시간을 1.2초 수준으로 유지하겠습니다.",
+   "cer": 0.024,
+   "action": "DEEPEN",
+   "question": "보안 설계에서 접근 로그는 어떻게 관리하실 건가요?",
+   "assessment": {
+    "sufficiency": 0.7,
+    "contradictions": [],
+    "off_topic": 0.0,
+    "repetitive": false,
+    "unsupported_claims": [],
+    "covered_reqs": [],
+    "summary": "민원 접수 API는 캐시와 비동기 Q를 사용해서 평균 응답시간을 1.2초 수준으로 유지하겠습니다."
+   },
+   "e2e_s": 1.496,
+   "stages": {
+    "speech_end_to_vad_end": 0.6,
+    "stt_final": 0.895,
+    "answer_analysis": 0.0,
+    "first_token": 0.0,
+    "tts_first_chunk": 0.001
+   }
+  },
+  {
+   "id": "s02_short",
+   "timed_out": false,
+   "interjected": false,
+   "interjections": [],
+   "interjection_responses": [],
+   "expect": {
+    "interject": false
+   },
+   "stt_text": "네, 암호화하겠습니다.",
+   "cer": 0.0,
+   "action": "CLARIFY",
+   "question": "보안 설계에서 접근 로그는 어떻게 관리하실 건가요?",
+   "assessment": {
+    "sufficiency": 0.25,
+    "contradictions": [],
+    "off_topic": 0.0,
+    "repetitive": false,
+    "unsupported_claims": [],
+    "covered_reqs": [],
+    "summary": "네, 암호화하겠습니다."
+   },
+   "e2e_s": 0.972,
+   "stages": {
+    "speech_end_to_vad_end": 0.613,
+    "stt_final": 0.359,
+    "answer_analysis": 0.0,
+    "first_token": 0.0,
+    "tts_first_chunk": 0.0
+   }
+  },
+  {
+   "id": "s03_long",
+   "timed_out": false,
+   "interjected": false,
+   "interjections": [],
+   "interjection_responses": [],
+   "expect": {
+    "interject": false
+   },
+   "stt_text": "저희는 먼저 로드밸런서를 2대 2중화하고 오토스케일링으로 동시 접속자 5000명까지 대응합니다. 또한 읽기 요청은 레디스캣으로 처리하고 쓰기 요청은 메시지 퀴로 비동기 처리합니다. 데이터베이스는 읽기 복제본을 세대 두어 응답시간을 평균 1.2초 이내로 유지합니다. 부하 테스트는 100% 전에 매번 수행합니다.",
+   "cer": 0.069,
+   "action": "DEEPEN",
+   "question": "보안 설계에서 접근 로그는 어떻게 관리하실 건가요?",
+   "assessment": {
+    "sufficiency": 0.7999999999999999,
+    "contradictions": [],
+    "off_topic": 0.0,
+    "repetitive": false,
+    "unsupported_claims": [],
+    "covered_reqs": [],
+    "summary": "저희는 먼저 로드밸런서를 2대 2중화하고 오토스케일링으로 동시 접속자 5000명까지 대응합니다. 또한 읽기 "
+   },
+   "e2e_s": 1.903,
+   "stages": {
+    "speech_end_to_vad_end": 0.59,
+    "stt_final": 1.312,
+    "answer_analysis": 0.0,
+    "first_token": 0.0,
+    "tts_first_chunk": 0.0
+   }
+  },
+  {
+   "id": "s04_pause",
+   "timed_out": false,
+   "interjected": false,
+   "interjections": [],
+   "interjection_responses": [],
+   "expect": {
+    "interject": false,
+    "pause": true
+   },
+   "stt_text": "응답시간은 캐시로 줄이겠습니다.",
+   "cer": 0.611,
+   "action": "CLARIFY",
+   "question": "보안 설계에서 접근 로그는 어떻게 관리하실 건가요?",
+   "assessment": {
+    "sufficiency": 0.25,
+    "contradictions": [],
+    "off_topic": 0.0,
+    "repetitive": false,
+    "unsupported_claims": [],
+    "covered_reqs": [],
+    "summary": "응답시간은 캐시로 줄이겠습니다."
+   },
+   "e2e_s": -4.256,
+   "stages": {
+    "speech_end_to_vad_end": -4.635,
+    "stt_final": 0.378,
+    "answer_analysis": 0.0,
+    "first_token": 0.0,
+    "tts_first_chunk": 0.0
+   }
+  },
+  {
+   "id": "s05_terms",
+   "timed_out": false,
+   "interjected": false,
+   "interjections": [],
+   "interjection_responses": [],
+   "expect": {
+    "interject": false
+   },
+   "stt_text": "개인정보는 AES-256으로 암호화하고 접근 로그는 1년 이상 보관합니다. 키 관리는 HSM을 사용합니다.",
+   "cer": 0.022,
+   "action": "DEEPEN",
+   "question": "보안 설계에서 접근 로그는 어떻게 관리하실 건가요?",
+   "assessment": {
+    "sufficiency": 0.5,
+    "contradictions": [],
+    "off_topic": 0.0,
+    "repetitive": false,
+    "unsupported_claims": [],
+    "covered_reqs": [],
+    "summary": "개인정보는 AES-256으로 암호화하고 접근 로그는 1년 이상 보관합니다. 키 관리는 HSM을 사용합니다."
+   },
+   "e2e_s": 1.123,
+   "stages": {
+    "speech_end_to_vad_end": 0.614,
+    "stt_final": 0.509,
+    "answer_analysis": 0.0,
+    "first_token": 0.0,
+    "tts_first_chunk": 0.0
+   }
+  },
+  {
+   "id": "s06_numbers",
+   "timed_out": false,
+   "interjected": false,
+   "interjections": [],
+   "interjection_responses": [],
+   "expect": {
+    "interject": false
+   },
+   "stt_text": "목표 응답시간은 평균 1.2초이고, 동시 접속자는 5천 명, 가용성은 99.9%입니다.",
+   "cer": 0.158,
+   "action": "DEEPEN",
+   "question": "보안 설계에서 접근 로그는 어떻게 관리하실 건가요?",
+   "assessment": {
+    "sufficiency": 0.7,
+    "contradictions": [],
+    "off_topic": 0.0,
+    "repetitive": false,
+    "unsupported_claims": [],
+    "covered_reqs": [],
+    "summary": "목표 응답시간은 평균 1.2초이고, 동시 접속자는 5천 명, 가용성은 99.9%입니다."
+   },
+   "e2e_s": 1.101,
+   "stages": {
+    "speech_end_to_vad_end": 0.629,
+    "stt_final": 0.472,
+    "answer_analysis": 0.0,
+    "first_token": 0.0,
+    "tts_first_chunk": 0.0
+   }
+  },
+  {
+   "id": "s07_vague",
+   "timed_out": false,
+   "interjected": false,
+   "interjections": [],
+   "interjection_responses": [],
+   "expect": {
+    "interject": false,
+    "follow": "CLARIFY|VERIFY|DEEPEN"
+   },
+   "stt_text": "저희 회사는 경험이 많아서 잘 해결하겠습니다. 걱정하지 않으셔도 됩니다.",
+   "cer": 0.0,
+   "action": "CLARIFY",
+   "question": "보안 설계에서 접근 로그는 어떻게 관리하실 건가요?",
+   "assessment": {
+    "sufficiency": 0.25,
+    "contradictions": [],
+    "off_topic": 0.0,
+    "repetitive": false,
+    "unsupported_claims": [],
+    "covered_reqs": [],
+    "summary": "저희 회사는 경험이 많아서 잘 해결하겠습니다. 걱정하지 않으셔도 됩니다."
+   },
+   "e2e_s": 1.354,
+   "stages": {
+    "speech_end_to_vad_end": 0.635,
+    "stt_final": 0.719,
+    "answer_analysis": 0.0,
+    "first_token": 0.0,
+    "tts_first_chunk": 0.0
+   }
+  },
+  {
+   "id": "s08_contradict_rfp",
+   "timed_out": false,
+   "interjected": true,
+   "interjections": [
+    {
+     "t_after_speech_start": 6.19671724998625,
+     "kind": "contradiction_rfp",
+     "reason": "RFP(R1) '2초' vs 답변 '5초'",
+     "policy": "I3_hybrid",
+     "partial": "민원 접수 API 응답시간은 평균 5초 정도로 예상하고 있고 구축 기간은 12..."
+    }
+   ],
+   "interjection_responses": [
+    {
+     "interjection": true,
+     "question": "RFP에서 요구한 응답시간은 2초인데, 답변에서는 5초라고 적혀 있습니다. 이 부분은 어떻게 설명하십니까?",
+     "marks": {
+      "INTERJECTION_TRIGGERED": 144753.278325208,
+      "QUESTION_GENERATION_STARTED": 144753.279893,
+      "QUESTION_FIRST_TOKEN": 144753.832160416,
+      "TTS_FIRST_AUDIO_CHUNK": 144754.14094325,
+      "AUDIO_FIRST_PLAYED": 144754.140943916
+     },
+     "kind": "contradiction_rfp"
+    }
+   ],
+   "expect": {
+    "interject": true,
+    "kind": "contradiction_rfp"
+   },
+   "stt_text": "민원 접수 API 응답시간은 평균 5초 정도로 예상하고 있고 구축 기간은 12개월이 필요합니다. 그리고 계속 말씀드리면 부하 상황에서는 그렇습니다.",
+   "cer": 0.0,
+   "action": "CHALLENGE",
+   "question": "RFP에서 8개월이라는 기간이 명시되어 있는데, 답변에서는 12개월이라고 적혀 있습니다. 이 부분은 어떻게 설명하십니까?",
+   "assessment": {
+    "sufficiency": 0.7,
+    "contradictions": [
+     "RFP(R4) '8개월' vs 답변 '12개월'"
+    ],
+    "off_topic": 0.0,
+    "repetitive": false,
+    "unsupported_claims": [],
+    "covered_reqs": [],
+    "summary": "민원 접수 API 응답시간은 평균 5초 정도로 예상하고 있고 구축 기간은 12개월이 필요합니다. 그리고 계속"
+   },
+   "e2e_s": 2.182,
+   "stages": {
+    "speech_end_to_vad_end": 0.622,
+    "stt_final": 0.556,
+    "answer_analysis": 0.0,
+    "first_token": 0.653,
+    "tts_first_chunk": 0.351
+   },
+   "interjection_audio_after_speech_start_s": 7.074
+  },
+  {
+   "id": "s09_rfp_violation",
+   "timed_out": false,
+   "interjected": true,
+   "interjections": [
+    {
+     "t_after_speech_start": 6.210186541022267,
+     "kind": "contradiction_rfp",
+     "reason": "RFP(R3) '1년' vs 답변 '3개월'",
+     "policy": "I3_hybrid",
+     "partial": "개인정보 접근 로그는 비용 문제로 3개월만 보관하려고 합니다. 이 부분은 협의 가능한"
+    }
+   ],
+   "interjection_responses": [
+    {
+     "interjection": true,
+     "question": "3개월 로그 보관은 개인정보 보호에 어려움이 있나요? 왜 1년 보관을 제안한 RFP에는 반영되지 않았나요?",
+     "marks": {
+      "INTERJECTION_TRIGGERED": 144767.751369166,
+      "QUESTION_GENERATION_STARTED": 144767.751417666,
+      "QUESTION_FIRST_TOKEN": 144768.0979845,
+      "TTS_FIRST_AUDIO_CHUNK": 144768.382601583,
+      "AUDIO_FIRST_PLAYED": 144768.382602416
+     },
+     "kind": "contradiction_rfp"
+    }
+   ],
+   "expect": {
+    "interject": true,
+    "kind": "contradiction_rfp"
+   },
+   "stt_text": "개인정보 접근 로그는 비용 문제로 3개월만 보관하려고 합니다. 이 부분은 협의 가능하다고 생각합니다.",
+   "cer": 0.0,
+   "action": "CHALLENGE",
+   "question": "왜 1년 보관을 제안했지만 답변에서는 3개월로 변경되었는지 설명해 줄 수 있나요?",
+   "assessment": {
+    "sufficiency": 0.7,
+    "contradictions": [
+     "RFP(R3) '1년' vs 답변 '3개월'"
+    ],
+    "off_topic": 0.0,
+    "repetitive": false,
+    "unsupported_claims": [],
+    "covered_reqs": [],
+    "summary": "개인정보 접근 로그는 비용 문제로 3개월만 보관하려고 합니다. 이 부분은 협의 가능하다고 생각합니다."
+   },
+   "e2e_s": 2.099,
+   "stages": {
+    "speech_end_to_vad_end": 0.618,
+    "stt_final": 0.592,
+    "answer_analysis": 0.0,
+    "first_token": 0.547,
+    "tts_first_chunk": 0.342
+   },
+   "interjection_audio_after_speech_start_s": 6.856
+  },
+  {
+   "id": "s10_repeat_request",
+   "timed_out": false,
+   "interjected": false,
+   "interjections": [],
+   "interjection_responses": [],
+   "expect": {
+    "interject": false,
+    "action": "REPEAT"
+   },
+   "stt_text": "죄송한데 질문을 다시 한 번 말씀해 주시겠어요?",
+   "cer": 0.0,
+   "action": "REPEAT",
+   "question": "개인정보 보호 방안을 설명해 주세요.",
+   "assessment": {
+    "sufficiency": 0.25,
+    "contradictions": [],
+    "off_topic": 0.0,
+    "repetitive": false,
+    "unsupported_claims": [],
+    "covered_reqs": [],
+    "summary": "죄송한데 질문을 다시 한 번 말씀해 주시겠어요?"
+   },
+   "e2e_s": 1.942,
+   "stages": {
+    "speech_end_to_vad_end": 0.631,
+    "stt_final": 1.311,
+    "answer_analysis": 0.0,
+    "first_token": 0.0,
+    "tts_first_chunk": 0.0
+   }
+  },
+  {
+   "id": "s11_ramble",
+   "timed_out": false,
+   "interjected": true,
+   "interjections": [
+    {
+     "t_after_speech_start": 15.376511124981334,
+     "kind": "off_topic",
+     "reason": "답변이 제시된 민원 접수 API의 응답시간 목표 달성 계획에서 벗어난 내용으로 회사 설립 연도, 사무실 위치, 직원 화목성, 워크숍 및 창립기념일 행사에 대한 내용을 포함하고 있습니다.",
+     "policy": "I3_hybrid",
+     "partial": "저희 회사는 2000년에 설립되어 지금까지 여러 프로젝트를 수행했습니다. 사무실은 판교에 있고 직원들은 매우 화목하며 매년 워크숍을 갑니다. 창립기념일에는 전 직원이"
+    }
+   ],
+   "interjection_responses": [
+    {
+     "interjection": true,
+     "question": "보안 설계에서 접근 로그는 어떻게 관리하실 건가요?",
+     "marks": {
+      "INTERJECTION_TRIGGERED": 144794.22044575,
+      "QUESTION_GENERATION_STARTED": 144794.2204885,
+      "QUESTION_FIRST_TOKEN": 144794.22053075,
+      "TTS_FIRST_AUDIO_CHUNK": 144794.220838583,
+      "AUDIO_FIRST_PLAYED": 144794.220839125
+     },
+     "kind": "off_topic"
+    }
+   ],
+   "expect": {
+    "interject": true,
+    "kind": "off_topic"
+   },
+   "stt_text": "저희 회사는 2000년에 설립되어 지금까지 여러 프로젝트를 수행했습니다. 사무실은 판교에 있고 직원들은 매우 화목하며 매년 워크숍을 갑니다. 창립기념일에는 전 직원이 모여 행사를 열고 산해 동호회도 활발합니다. 작년에는 봉사활동도 다녀왔고 올해는 체육대회를 계획하고 있습니다. 군의 식당 음식도 좋다는 평가를 받고 있습니다.",
+   "cer": 0.029,
+   "action": "CLARIFY",
+   "question": "AI 분류 정확도 90%를 어떻게 검증하실 계획인가요?",
+   "assessment": {
+    "sufficiency": 0.7999999999999999,
+    "contradictions": [],
+    "off_topic": 0.8,
+    "repetitive": false,
+    "unsupported_claims": [],
+    "covered_reqs": [],
+    "summary": "저희 회사는 2000년에 설립되어 지금까지 여러 프로젝트를 수행했습니다. 사무실은 판교에 있고 직원들은 매우"
+   },
+   "e2e_s": 1.622,
+   "stages": {
+    "speech_end_to_vad_end": 0.62,
+    "stt_final": 1.002,
+    "answer_analysis": 0.0,
+    "first_token": 0.0,
+    "tts_first_chunk": 0.0
+   },
+   "interjection_audio_after_speech_start_s": 15.391
+  },
+  {
+   "id": "s12_noise",
+   "timed_out": false,
+   "interjected": false,
+   "interjections": [],
+   "interjection_responses": [],
+   "expect": {
+    "interject": false
+   },
+   "stt_text": "퀴시와 기동기툴로 응답시간을 의성위치로 유지하겠습니다.",
+   "cer": 0.292,
+   "action": "CLARIFY",
+   "question": "보안 설계에서 접근 로그는 어떻게 관리하실 건가요?",
+   "assessment": {
+    "sufficiency": 0.25,
+    "contradictions": [],
+    "off_topic": 0.0,
+    "repetitive": false,
+    "unsupported_claims": [],
+    "covered_reqs": [],
+    "summary": "퀴시와 기동기툴로 응답시간을 의성위치로 유지하겠습니다."
+   },
+   "e2e_s": 1.066,
+   "stages": {
+    "speech_end_to_vad_end": 0.624,
+    "stt_final": 0.441,
+    "answer_analysis": 0.0,
+    "first_token": 0.0,
+    "tts_first_chunk": 0.0
+   }
+  },
+  {
+   "id": "s13_repetition",
+   "timed_out": false,
+   "interjected": false,
+   "interjections": [],
+   "interjection_responses": [],
+   "expect": {
+    "interject": true,
+    "kind": "repetition"
+   },
+   "stt_text": "응답시간을 빠르게 하겠습니다",
+   "cer": 0.833,
+   "action": "CLARIFY",
+   "question": "보안 설계에서 접근 로그는 어떻게 관리하실 건가요?",
+   "assessment": {
+    "sufficiency": 0.25,
+    "contradictions": [],
+    "off_topic": 0.0,
+    "repetitive": false,
+    "unsupported_claims": [],
+    "covered_reqs": [],
+    "summary": "응답시간을 빠르게 하겠습니다"
+   },
+   "e2e_s": 1.14,
+   "stages": {
+    "speech_end_to_vad_end": 0.607,
+    "stt_final": 0.533,
+    "answer_analysis": 0.0,
+    "first_token": 0.0,
+    "tts_first_chunk": 0.0
+   }
+  }
+ ]
+}

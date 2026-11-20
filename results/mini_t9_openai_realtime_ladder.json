@@ -1,0 +1,179 @@
+{
+ "judge": "gpt-6.2-sol",
+ "models": {
+  "gpt-realtime-2.1-mini": {
+   "status": "IMPLEMENTED_AND_VERIFIED",
+   "e2e": {
+    "n": 3,
+    "mean": 1.658,
+    "p50": 1.688,
+    "p90": 1.699,
+    "p95": 1.701,
+    "max": 1.702,
+    "under_2s": 1.0
+   },
+   "rows": [
+    {
+     "id": "s01_normal",
+     "e2e_s": 1.688,
+     "question": "캐시 만료 시점이나 장애가 났을 때 큐 재처리 방식은 어떻게 설계하셨나요?",
+     "error": null,
+     "scores": {
+      "relevance": 5,
+      "grounded": 5,
+      "depth": 4,
+      "natural": 3,
+      "note": "캐시 만료와 장애 시 큐 재처리 설계를 묻는 구체적인 후속 질문이지만, 두 상황을 한 문장에 묶어 캐시 만료 때도 큐를 재처리하는지 묻는 것처럼 들립니다."
+     },
+     "score": 4.25
+    },
+    {
+     "id": "s08_contradict_rfp",
+     "e2e_s": 1.584,
+     "question": "딱 하나만 지적하자면, 평균 응답 시간 5초와 구축 기간 12개월이 맞는지, 실제 부하 구동 시나 예외 발생 시에도 안정적으로 유지되는지 검증 계획은 어떻게 되나요?",
+     "error": null,
+     "scores": {
+      "relevance": 5,
+      "grounded": 5,
+      "depth": 4,
+      "natural": 3,
+      "note": "5초·12개월이라는 수치를 짚어 부하와 예외 상황의 검증 계획을 묻지만, 구축 기간의 타당성과 응답시간의 안정성을 한 문장에 묶어 다소 어색합니다."
+     },
+     "score": 4.25
+    },
+    {
+     "id": "s11_ramble",
+     "e2e_s": 1.702,
+     "question": "평가에 도움이 되게, 이런 분위기와 활동들이 실제로 조직성과나 프로젝트 결과에 어떤 영향을 줬나요?",
+     "error": null,
+     "scores": {
+      "relevance": 4,
+      "grounded": 4,
+      "depth": 3,
+      "natural": 4,
+      "note": "사내 분위기와 활동이 실제 성과로 이어졌는지 묻는 점은 좋지만, 핵심 평가 항목인 민원 접수 API 응답시간 목표와 달성 계획은 짚지 못했습니다."
+     },
+     "score": 3.75
+    }
+   ],
+   "wall_sec": 63.3,
+   "mean_quality_1to5": 4.08
+  },
+  "gpt-realtime-2": {
+   "status": "IMPLEMENTED_AND_VERIFIED",
+   "e2e": {
+    "n": 3,
+    "mean": 1.749,
+    "p50": 1.8,
+    "p90": 1.819,
+    "p95": 1.822,
+    "max": 1.824,
+    "under_2s": 1.0
+   },
+   "rows": [
+    {
+     "id": "s01_normal",
+     "e2e_s": 1.824,
+     "question": "캐시 갱신 시점과 큐 적체가 발생했을 때, 평균 응답시간 1.2초를 어떻게 보장합니까?",
+     "error": null,
+     "scores": {
+      "relevance": 5,
+      "grounded": 5,
+      "depth": 5,
+      "natural": 4,
+      "note": "평균 1.2초 목표를 캐시 갱신과 큐 적체 상황에서도 지킬 방안을 묻는 구체적인 꼬리질문이지만, 두 상황을 연결하는 표현이 조금 어색합니다."
+     },
+     "score": 4.75
+    },
+    {
+     "id": "s08_contradict_rfp",
+     "e2e_s": 1.622,
+     "question": "부하 상황에서 평균 5초라면, 피크 시 응답 지연을 2초 이하로 줄이기 위한 구체적인 성능 목표와 검증 계획은 무엇입니까?",
+     "error": null,
+     "scores": {
+      "relevance": 5,
+      "grounded": 4,
+      "depth": 5,
+      "natural": 4,
+      "note": "부하 상황의 평균 5초를 짚어 성능 목표와 검증 계획을 구체화하지만, 2초 기준은 앞선 답변에 없고 피크 시 어떤 지표로 측정할지도 불명확합니다."
+     },
+     "score": 4.5
+    },
+    {
+     "id": "s11_ramble",
+     "e2e_s": 1.8,
+     "question": "말씀하신 활동들이 실제 프로젝트 성과나 고객 가치에 어떻게 측정 가능하게 기여했는지 구체적인 지표로 설명해 주시겠습니까?",
+     "error": null,
+     "scores": {
+      "relevance": 4,
+      "grounded": 3,
+      "depth": 4,
+      "natural": 4,
+      "note": "앞서 언급한 사내 활동의 효과를 지표로 확인하려는 질문이지만, 특정 활동을 짚거나 본래의 API 응답시간 목표로 돌아오지는 않습니다."
+     },
+     "score": 3.75
+    }
+   ],
+   "wall_sec": 64.4,
+   "mean_quality_1to5": 4.33
+  },
+  "gpt-realtime-2.1": {
+   "status": "IMPLEMENTED_AND_VERIFIED",
+   "e2e": {
+    "n": 3,
+    "mean": 2.221,
+    "p50": 2.216,
+    "p90": 2.562,
+    "p95": 2.606,
+    "max": 2.649,
+    "under_2s": 0.333
+   },
+   "rows": [
+    {
+     "id": "s01_normal",
+     "e2e_s": 2.216,
+     "question": "캐시 갱신 지연이나 큐 적체로 응답이 늦어질 때, 타임아웃과 재시도 정책은 어떻게 설계하셨나요?",
+     "error": null,
+     "scores": {
+      "relevance": 5,
+      "grounded": 5,
+      "depth": 5,
+      "natural": 5,
+      "note": "답변에서 제시한 캐시와 비동기 큐를 짚고, 지연 상황에서의 타임아웃과 재시도 정책을 자연스럽게 묻습니다."
+     },
+     "score": 5.0
+    },
+    {
+     "id": "s08_contradict_rfp",
+     "e2e_s": 1.797,
+     "question": "부하 상황에서 평균 5초라면 정상 트래픽 기준의 목표 응답시간과 이에 대한 SLA는 어떻게 설정하셨나요?",
+     "error": null,
+     "scores": {
+      "relevance": 5,
+      "grounded": 5,
+      "depth": 4,
+      "natural": 5,
+      "note": "부하 상황의 평균 5초를 근거로 정상 트래픽에서의 응답시간 목표와 SLA를 구체화하도록 묻는 자연스러운 후속 질문입니다."
+     },
+     "score": 4.75
+    },
+    {
+     "id": "s11_ramble",
+     "e2e_s": 2.649,
+     "question": "그런 조직문화 활동이 실제 사업 성과나 위험 관리 개선에 어떻게 기여했는지 정량적 근거로 설명해 주실 수 있나요?",
+     "error": null,
+     "scores": {
+      "relevance": 4,
+      "grounded": 4,
+      "depth": 4,
+      "natural": 5,
+      "note": "직전 답변의 조직문화 활동을 짚고 정량적 근거를 요구한 점은 좋지만, 원래 질문인 민원 접수 API의 응답시간 목표로 논의를 되돌리지는 못했습니다."
+     },
+     "score": 4.25
+    }
+   ],
+   "wall_sec": 65.1,
+   "mean_quality_1to5": 4.67
+  }
+ }
+}

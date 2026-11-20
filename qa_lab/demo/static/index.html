@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QA Lab – Case Selector</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--fg:#1b1f24;--mut:#6b7280;--line:#e3e6ea;--ok:#0a7d33;--warn:#b45309;--bad:#b91c1c;--acc:#2457d6}
+@media(prefers-color-scheme:dark){:root{--bg:#14171b;--card:#1d2127;--fg:#e8eaed;--mut:#9aa3ad;--line:#2d333b;--ok:#4ade80;--warn:#fbbf24;--bad:#f87171;--acc:#7aa2ff}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 -apple-system,system-ui,"Apple SD Gothic Neo",sans-serif}
+main{max-width:1100px;margin:0 auto;padding:16px}h1{font-size:20px;margin:0 0 12px}h2{font-size:15px;margin:0 0 8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px}
+.case{cursor:pointer}.case.sel{outline:2px solid var(--acc)}.case.off{opacity:.55;cursor:not-allowed}
+.b{display:inline-block;font-size:11px;padding:1px 7px;border-radius:99px;border:1px solid currentColor}
+.IMPLEMENTED_AND_VERIFIED{color:var(--ok)}.IMPLEMENTED_NOT_VERIFIED{color:var(--warn)}.BLOCKED,.NOT_IMPLEMENTED{color:var(--bad)}
+label{display:block;font-size:12px;color:var(--mut);margin-top:6px}select,button,input{font:inherit;padding:6px 8px;border-radius:7px;border:1px solid var(--line);background:var(--card);color:var(--fg);width:100%}
+button{cursor:pointer;width:auto}button.p{background:var(--acc);color:#fff;border-color:var(--acc)}button:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.tabs{display:flex;gap:6px;margin:14px 0 8px}.tabs button.on{background:var(--acc);color:#fff}
+pre{white-space:pre-wrap;word-break:break-word;margin:0;font-size:12px}.mut{color:var(--mut)}.err{color:var(--bad)}.fu{color:#3b82f6;font-weight:600}
+#log{max-height:260px;overflow:auto;border:1px solid var(--line);border-radius:8px;padding:8px}table{border-collapse:collapse;width:100%;font-size:12px}td,th{border-bottom:1px solid var(--line);padding:4px 6px;text-align:left;overflow-wrap:anywhere;word-break:break-word}#livecap,#livefinal{overflow-wrap:anywhere;word-break:break-word}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--mut);margin-right:6px}.dot.on{background:var(--ok)}
+.guide{font-size:18px;font-weight:600;padding:14px 16px;border-radius:10px;background:color-mix(in srgb,var(--acc) 12%,var(--card));border:1px solid var(--acc);margin-bottom:12px}
+@keyframes spin{to{transform:rotate(360deg)}}.guide[data-clock]::after{content:attr(data-clock);float:right;font-variant-numeric:tabular-nums;color:var(--acc);font-size:30px;font-weight:800;margin-left:12px}
+.guide.busy::before{content:"";display:inline-block;width:20px;height:20px;margin-right:10px;vertical-align:-3px;border:3px solid var(--line);border-top-color:var(--acc);border-radius:50%;animation:spin .8s linear infinite}
+.stepno{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--acc);color:#fff;font-size:12px;margin-right:6px}
+.sec{margin:14px 0 6px;font-size:15px;font-weight:600}
+button.big{font-size:17px;padding:12px 26px;border-radius:10px}button.big:not(.p){border:2px solid var(--acc)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}.seg button{border:0;border-radius:0;background:var(--card)}.seg button.on{background:var(--acc);color:#fff}
+.prog{display:flex;gap:4px;margin:6px 0}.prog i{flex:1;height:8px;border-radius:4px;background:var(--line)}.prog i.done{background:var(--ok)}.prog i.cur{background:var(--acc)}
+details.adv>summary{cursor:pointer;font-weight:600}
+button{transition:transform .08s,filter .08s,box-shadow .08s}button:not(:disabled):hover{filter:brightness(1.06);box-shadow:0 1px 6px rgba(0,0,0,.18)}
+button:not(:disabled):active{transform:scale(.94);filter:brightness(.85);box-shadow:inset 0 2px 6px rgba(0,0,0,.35)}
+@keyframes flash{0%{box-shadow:0 0 0 0 var(--ok)}40%{box-shadow:0 0 0 7px color-mix(in srgb,var(--ok) 45%,transparent);background:var(--ok);color:#fff}100%{box-shadow:0 0 0 0 transparent}}
+button.flash{animation:flash .6s ease-out}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 var(--acc)}50%{box-shadow:0 0 0 8px transparent}}button.pulse{animation:pulse 1.2s infinite;border:2px solid var(--acc)}
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:#111;color:#fff;padding:12px 20px;border-radius:24px;font-size:16px;font-weight:600;opacity:0;pointer-events:none;transition:all .2s;z-index:99;max-width:90vw;box-shadow:0 4px 18px rgba(0,0,0,.4)}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+</style></head><body><main>
+<h1>QA Lab — 실시간 발표 Q&amp;A 아키텍처 비교 데모</h1>
+<p class="mut" style="margin:-6px 0 10px">📊 실험 결과는 아래 <b>[측정 결과]</b> 탭에 있어요 · 🎙 마이크로 직접 해 보려면 <b>[C. 실제 음성]</b> 탭</p>
+<details class="adv card" id="adv" open><summary>⚙ 구성·API 키 설정 (여기서 목소리 TTS를 고릅니다) <span class="mut" id="cfgsum"></span></summary>
+<div class="grid" id="cases" style="margin-top:8px"></div>
+<div class="card" id="keycard" hidden style="margin-top:10px"><h2>OpenAI API 키 (Case C · 클라우드 LLM용)</h2><div id="keystate" class="mut" style="margin-bottom:6px"></div>
+<div class="row"><input id="key" type="password" placeholder="sk-..." autocomplete="off" style="max-width:420px"><button class="p" id="savekey">저장 후 확인</button><span id="keyres" class="mut">서버 로컬 .env에만 저장, 화면/로그에 다시 표시되지 않음 · 합성 데이터만 전송됨</span></div></div>
+<div class="card" style="margin-top:10px"><h2>구성 선택 <span class="mut" id="whyc"></span></h2>
+<div class="grid" id="opts"></div></div></details>
+<div id="verr" class="err" style="margin:6px 0;font-weight:600"></div>
+<div class="tabs"><button data-t="live" class="on">C. 실제 음성 (마이크)</button><button data-t="text">A. LLM↔LLM 텍스트</button><button data-t="vsim">B. LLM↔LLM 음성</button><button data-t="runs">🧪 내 실험 결과</button><button data-t="tts">🔊 목소리 비교</button><button data-t="res">측정 결과</button><button data-t="listen">🔊 테스트 음성 듣기</button><button data-t="real">🎙 실제 녹음 Q&A</button></div>
+<div id="t-live" class="card">
+ <div id="cwarn" class="card" hidden style="border-color:var(--bad)"><b>⚠ Case C는 내 목소리와 RFP 텍스트를 OpenAI로 전송합니다.</b> 공개/합성 RFP로만 쓰세요. 질문은 모델이 직접 만들며(우리 평가 로직 통제 불가), 끼어들기는 OpenAI 자체 기능(내가 말하면 AI가 멈춤)만 됩니다.<label style="margin-top:6px"><input type="checkbox" id="consent" style="width:auto"> 위 내용을 이해했고 동의합니다</label></div>
+ <div id="done"></div>
+ <div id="statusbar" style="position:sticky;top:0;z-index:20;background:var(--card);padding:6px 0 2px;border-bottom:1px solid var(--line);margin-bottom:8px"><div id="guide" class="guide">👋 준비가 끝났으면 아래 [시작]을 눌러 주세요.</div>
+ <div id="clockbox" style="font-size:22px;font-weight:700;margin:-4px 0 6px;min-height:1.7em"></div></div>
+ <div class="sec"><span class="stepno">1</span>준비</div>
+ <div class="row" style="align-items:center"><b>답변 끝내는 방식</b><select id="turn" style="max-width:420px"><option value="manual">버튼으로 직접 누름 (실제 사용 · 추천)</option><option value="auto">자동 감지 (테스트용 · 말 사이 쉬면 끊길 수 있음)</option></select></div>
+ <div class="row" style="align-items:center"><label><input type="checkbox" id="ptt" checked> <b>말하기도 버튼으로 시작</b> <span class="mut">(AI 질문이 끝나면 마이크는 바로 열리고, [🎤 말하기]를 누른 뒤 바로 말해요 · 스페이스바로도 가능)</span></label></div>
+ <div id="turnhint" class="mut" style="margin-bottom:6px"></div>
+ <label style="display:block;color:var(--fg);font-size:14px"><input type="checkbox" id="serverplay" checked style="width:auto"> 🔊 AI 소리를 <b>맥 스피커로 직접 재생</b> (브라우저에서 소리가 안 날 때 우회 · 추천)</label>
+ <label style="display:block;color:var(--fg);font-size:14px"><input type="checkbox" id="rawmic" checked style="width:auto"> 🎤 마이크 에코/잡음 제거 끄기 (내 목소리가 너무 작게 들어갈 때 · 추천)</label>
+ <details open style="margin:8px 0"><summary><b>📄 지문으로 질문받기 (선택)</b> <span class="mut">— Case B 전용, 비워두면 기본 RFP 질문</span></summary>
+  <textarea id="passage" rows="6" style="width:100%" placeholder="예: AI agent 관련 글을 붙여넣으세요. 공개/합성 글만 권장. AI가 이 지문으로 첫 질문을 말로 합니다."></textarea>
+  <div id="pcount" class="mut" style="text-align:right">0자 (공백 제외 0자) · 문장 약 0개</div>
+  <div class="row" style="align-items:center"><button class="p" id="setpassage">📥 지문 넣기</button><button id="clearpassage">지우기</button><span id="passagestat" class="mut">붙여넣은 뒤 [지문 넣기]를 누르면 적용 여부가 여기에 표시돼요.</span></div>
+  <div class="mut">지문은 내 컴퓨터의 서버에만 저장되고(Case B), 로컬 LLM이 질문을 만듭니다. 외장·클라우드 모델을 고르면 지문 텍스트가 해당 모델로 갑니다.</div></details>
+ <div class="sec"><span class="stepno">2</span>진행 <span class="mut" id="paircount" style="font-weight:400"></span></div>
+ <div class="prog" id="prog"></div>
+ <div class="row" style="align-items:center"><b>지금 하는 쌍</b><select id="pairtype" style="max-width:360px"><option value="문답">문답문답 (정상 대답)</option><option value="끼어들기 유도">끼어들기 유도 (모순·딴소리·반복)</option></select><span class="mut" id="pairhint"></span></div>
+ <div id="miccheck" class="card" hidden style="border-color:var(--acc);margin-top:10px"><b>🎤 마이크 확인</b>
+  <div id="micmsg" style="margin:6px 0">확인 중…</div><div id="micname" class="mut"></div>
+  <div class="row" style="align-items:center"><b>마이크 선택</b><select id="micsel" style="max-width:520px"></select></div>
+  <div class="row" style="align-items:center"><b>스피커 선택</b><select id="outsel" style="max-width:520px"><option value="">기본 출력 장치</option></select></div>
+  <div class="mut">🍎 "iPhone 마이크"가 선택돼 있으면 폰 마이크예요. 맥북 마이크는 보통 "MacBook Pro 마이크"처럼 표시돼요.</div>
+  <div style="height:14px;background:var(--line);border-radius:7px;margin:8px 0;overflow:hidden"><div id="micbar" style="height:14px;width:0;background:var(--ok)"></div></div>
+  <div class="row"><button class="p" id="micgo" disabled>✅ 이 마이크로 시작</button><button id="spktest">🔈 스피커 테스트(삐 소리)</button><button id="miccancel">취소</button></div></div>
+ <div class="row" style="margin-top:10px"><button class="p big" id="start">🎙 시작</button><button class="p big" id="talk">🎤 말하기 <span class="mut">(스페이스)</span></button><button class="big" id="finish">✅ 답변 끝 <span class="mut">(스페이스)</span></button></div>
+ <div class="row"><button id="repeat">🔁 질문 다시 듣기</button><button id="skip">⏭ 질문 건너뛰기</button><button id="end">⏹ 세션 종료(리포트 보기)</button></div>
+ <div id="livebox" class="card" style="margin:8px 0"><b>🎤 내 목소리</b> <span id="livestate" class="mut">시작하면 입력 레벨과 받아쓰기가 여기에 계속 표시돼요.</span>
+  <div id="livemeter" style="height:16px;background:var(--line);border-radius:8px;margin:8px 0;overflow:hidden"><div id="livebar" style="height:16px;width:0;background:var(--ok);transition:width .06s"></div></div>
+  <div id="liveno" class="err" style="font-weight:600"></div><div id="audstat" class="mut">🔊 AI 음성: 아직 없음</div>
+  <div class="row"><button id="beep2">🔈 스피커 테스트(삐)</button><button id="altplay">▶ 마지막 질문 다시 틀기(대체 재생)</button></div><div class="mut">소리가 안 들리면: ① [스피커 테스트]가 들리는지 → ② [대체 재생]이 들리는지 확인하세요. 둘 다 안 들리면 맥 출력 장치/음량 문제예요.</div>
+  <div class="mut">📝 Whisper 실시간 받아쓰기 <span class="mut">(말하는 동안 3초마다 갱신, 최근 약 14초 분량)</span></div>
+  <div id="livecap" style="min-height:2.6em;font-size:16px"></div><div id="livefinal" class="mut" style="margin-top:4px"></div></div>
+ <div id="convbox" class="card" style="margin:8px 0"><b>🗒 대화 전사</b> <span class="mut">(AI 질문과 내 답변이 순서대로 쌓여요 · 이 화면에만 표시)</span><div id="convlog" style="max-height:320px;overflow:auto;margin-top:6px;line-height:1.7"></div></div>
+ <div style="margin:6px 0"><span class="dot" id="dot"></span><span id="state">대기</span> <span class="mut" id="lat"></span></div>
+ <div class="sec"><span class="stepno">3</span>끝나면</div>
+ <div class="row"><button id="saverec" title="이번 세션의 로그와 리포트를 JSON 파일로 저장">💾 기록 저장</button><button id="resetrec" title="화면의 로그/리포트를 비움">🗑 기록 지우기</button></div>
+ <details style="margin:6px 0"><summary class="mut">개발자용 옵션</summary><label><input type="checkbox" id="showtxt" checked style="width:auto"> 질문 텍스트 표시 (연습 중에는 꺼두세요)</label></details>
+ <div id="log" style="margin-top:8px"></div><div id="report"></div></div>
+<div id="t-text" class="card" hidden><div class="row"><button class="p" id="runtext">Presenter↔Evaluator 시작</button><span class="mut">선택한 LLM/전략/끼어들기 정책 사용 (로컬 Ollama)</span></div><pre id="textout"></pre></div>
+<div id="t-vsim" class="card" hidden><div class="row"><button class="p" id="runvsim">음성 시뮬레이션 시작</button><span class="mut">실제 TTS→VAD→STT→평가→TTS 경로 통과, 약 1~2분</span></div><pre id="vsimout"></pre></div>
+<div id="t-listen" class="card" hidden><div class="mut">Case B(투트랙+혼합 끼어들기) 실행에서 재생한 사용자 답변 음성과 AI 응답. 음성은 합성(macOS Yuna)입니다.</div><div id="listenout"></div></div>
+<div id="t-real" class="card" hidden><div class="mut">멘토링 녹음에서 자른 실제 질문/답변(로컬 전용·저장소에 올라가지 않음). 답변 중간의 "끝점"은 AI가 사용자 발화가 끝났다고 판단한 시점입니다.</div><div id="realout"></div></div>
+<div id="t-runs" class="card" hidden><div id="runsout" class="mut">로딩…</div></div>
+<div id="t-tts" class="card" hidden><div id="ttsout" class="mut">로딩…</div></div>
+<div id="t-res" class="card" hidden><div id="resout" class="mut">로딩…</div></div>
+<div id="toast"></div></main>
+<script>
+const $=s=>document.querySelector(s);let cases=[],sel=null,opts={};
+const KEYS=[["llm","LLM"],["stt","STT"],["tts","목소리 (TTS)"],["vad","Turn detection / VAD"],["strategy","Question strategy"],["interjection","Interjection policy"]];
+async function init(){cases=await (await fetch('/api/cases')).json();
+ $('#cases').innerHTML=cases.map(c=>{const off=['BLOCKED','NOT_IMPLEMENTED'].includes(c.status);return `<div class="card case ${off?'off':''}" data-id="${c.id}"><h2>Case ${c.id}: ${c.name}</h2><span class="b ${c.status}">${c.status}</span><p class="mut">${c.reason}</p><div class="mut">전송: ${c.transport}<br>로컬 전용: ${c.local_only?'예':'아니오 (외부 전송 가능)'}</div></div>`}).join('');
+ document.querySelectorAll('.case').forEach(e=>e.onclick=()=>{const c=cases.find(x=>x.id==e.dataset.id);if(['BLOCKED','NOT_IMPLEMENTED'].includes(c.status)){$('#whyc').textContent=`Case ${c.id} 선택 불가: ${c.status} — ${c.reason}`;return}pick(c.id)});
+ pick(cases.find(c=>!['BLOCKED','NOT_IMPLEMENTED'].includes(c.status))?.id)}
+function pick(id){$('#cwarn').hidden=id!='C';if(!id)return;sel=cases.find(c=>c.id==id);$('#whyc').textContent='';document.querySelectorAll('.case').forEach(e=>e.classList.toggle('sel',e.dataset.id==id));
+ opts={};$('#opts').innerHTML=KEYS.map(([k,l])=>{const v=sel.options[k]||[];return `<div><label>${l}</label><select data-k="${k}">${v.map(x=>`<option ${x.startsWith('BLOCKED')?'disabled':''}>${x}</option>`).join('')||'<option>—</option>'}</select></div>`}).join('');
+ document.querySelectorAll('#opts select').forEach(s=>s.onchange=()=>{if(s.dataset.k=='tts'){try{localStorage.setItem('qa_tts',s.value)}catch(e){}}validate()});
+ // sensible defaults
+ const d={strategy:'two_track',llm:'ollama:phi4-mini:3.8b',interjection:'rule',stt:'faster-whisper:small@mps',tts:'supertonic:F1'};try{const sv=localStorage.getItem('qa_tts');if(sv)d.tts=sv}catch(e){}document.querySelectorAll('#opts select').forEach(s=>{if(d[s.dataset.k]&&[...s.options].some(o=>o.value==d[s.dataset.k]))s.value=d[s.dataset.k]});validate()}
+function cur(){const o={case:sel.id};document.querySelectorAll('#opts select').forEach(s=>{if(s.value&&s.value!='—')o[s.dataset.k]=s.value.replace(/@.*/,'').replace('silero(600ms)','').replace('macos-avspeech:Yuna','av').replace('macos-say:Yuna','say').replace('faster-whisper:','')});
+ if(o.tts=='' )delete o.tts;delete o.vad;return o}
+let _pw='';async function prewarm(){if(!sel||sel.id=='C')return;const o=cur();delete o.case;const q=new URLSearchParams({case:sel.id,...o,turn:$('#turn')?$('#turn').value:'manual'}).toString();if(q===_pw)return;_pw=q;try{await fetch('/api/prewarm?'+q)}catch(e){_pw=''}}
+async function validate(){updateKeyBox();const r=await (await fetch('/api/validate',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(cur())})).json();$('#verr').textContent=r.errors.join(' / ');const bad=r.errors.length>0;if(!bad)prewarm();['start','runtext','runvsim'].forEach(i=>$('#'+i).disabled=bad);return !bad}
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x==b));['live','text','vsim','runs','tts','res','listen','real'].forEach(t=>$('#t-'+t).hidden=t!=b.dataset.t);if(b.dataset.t=='runs')loadRuns();if(b.dataset.t=='tts')loadTts();if(b.dataset.t=='res')loadRes();if(b.dataset.t=='listen')loadListen();if(b.dataset.t=='real')loadReal()});
+// ---------- live voice ----------
+let ws,ac,node,stream,playT=0,srcs=[],lastSeq=0,offset=0,firstPlay=null,playedS=0,totalS=0;
+const SL=[];let lastReport=null,lastComponents=null;const log=(m,c)=>{SL.push({t:new Date().toISOString(),msg:m,cls:c||''});const d=document.createElement('div');d.textContent=m;if(c)d.className=c;$('#log').prepend(d)};
+const wl=`class P extends AudioWorkletProcessor{process(i){const x=i[0][0];if(x){const o=new Int16Array(x.length);for(let k=0;k<x.length;k++)o[k]=Math.max(-1,Math.min(1,x[k]))*32767;this.port.postMessage(o.buffer,[o.buffer])}return true}}registerProcessor('p',P)`;
+function flush(){srcs.forEach(s=>{try{s.stop()}catch(e){}});srcs=[];if(ac)playT=ac.currentTime}
+function play(buf){if(firstPlay===null)window.lastQ=[];(window.lastQ=window.lastQ||[]).push(buf.slice(0));const f=new Int16Array(buf),a=new Float32Array(f.length);for(let i=0;i<f.length;i++)a[i]=f[i]/32768;if(ac.state!=='running')ac.resume().catch(()=>{});const b=ac.createBuffer(1,a.length,16000);b.copyToChannel(a,0);const s=ac.createBufferSource();s.buffer=b;s.connect(ac.destination);
+ playT=Math.max(playT,ac.currentTime+0.02);if(firstPlay===null){firstPlay=playT;const serverTs=performance.now()/1000+offset+(playT-ac.currentTime);ws.send(JSON.stringify({type:'audio_started',server_clock_ts:serverTs}))}s.start(playT);playT+=b.duration;totalS+=b.duration;srcs.push(s);$('#audstat').textContent='🔊 AI 음성 수신 '+totalS.toFixed(1)+'초 분량 · 오디오 상태: '+ac.state+' · 재생시각 '+ac.currentTime.toFixed(1)+'/'+playT.toFixed(1)+(ac.sinkId?' · 출력 장치 지정됨':'')+(ac.state!=='running'?' ⚠ 브라우저가 소리를 막고 있어요 — 화면을 한 번 클릭해 보세요':'')}
+let talking=false;const pttOn=()=>$('#ptt')&&$('#ptt').checked&&$('#turn').value=='manual';
+function pttSync(){if(ws&&ws.readyState==1)ws.send(JSON.stringify({type:'ptt',on:pttOn()}));$('#talk').style.display=pttOn()?'':'none'}
+function turnUI(){pttSync();const man=$('#turn').value=='manual';$('#turnhint').innerHTML=man?'🟢 <b>말씀을 마치면 <u>[답변 끝]</u> 버튼(또는 스페이스바)을 눌러 주세요.</b> 그 전에는 중간에 쉬어도 AI가 끼어들거나 대답하지 않아요.':'🟡 말이 잠깐 멈추면 AI가 답이 끝난 줄 알 수 있어요. 테스트용으로만 쓰세요.';$('#finish').className=man?'p':'';$('#finish').textContent=man?'답변 끝 (스페이스바)':'답변 끝'}
+$('#turn').onchange=turnUI;turnUI();document.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>b.blur()));
+document.addEventListener('keydown',e=>{if(e.code==='Space'&&ws&&ws.readyState===1&&$('#turn').value==='manual'&&!/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)){e.preventDefault();(pttOn()&&!talking)?$('#talk').click():$('#finish').click()}});
+$('#start').onclick=async()=>{['finish','talk','repeat','skip','end'].forEach(i=>$('#'+i).disabled=false);if(!await validate())return;const o=cur();delete o.case;const q=new URLSearchParams({case:sel.id,...(sel.id=='C'?{}:o),turn:$('#turn').value});window.SP=!!$('#serverplay').checked&&sel.id!='C';window.RAWMIC=!!$('#rawmic').checked;if(window.SP)q.set('serverplay','1');const pt=($('#passage')?.value||'').trim();if(pt&&sel.id!='C'){await fetch('/api/passage',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({text:pt,llm:o.llm})});q.set('passage','1')}if(sel.id=='C'){if(!$('#consent').checked){alert('Case C는 음성이 OpenAI로 전송됩니다. 동의 체크 후 시작하세요.');return}q.set('consent','1')}
+ stream=await navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:true,noiseSuppression:true,sampleRate:16000}});
+ ac=(window.__ac&&window.__ac.state!='closed')?window.__ac:new AudioContext({sampleRate:16000});try{await ac.resume()}catch(e){}try{if(window.OUT_ID&&ac.setSinkId)await ac.setSinkId(window.OUT_ID)}catch(e){}await ac.audioWorklet.addModule(URL.createObjectURL(new Blob([wl],{type:'text/javascript'})));
+ node=new AudioWorkletNode(ac,'p');const _src=ac.createMediaStreamSource(stream);_src.connect(node);const _an=ac.createAnalyser();_an.fftSize=1024;_src.connect(_an);startMeter(_an);
+ ws=new WebSocket(`ws://${location.host}/ws/voice?${q}`);ws.binaryType='arraybuffer';lastSeq=0;
+ node.port.onmessage=e=>{if(ws.readyState==1&&micOn)ws.send(e.data)};
+ ws.onopen=()=>{const t0=performance.now()/1000;pttSync();ws.send(JSON.stringify({type:'ping',t0}))};
+ ws.onmessage=e=>{if(typeof e.data!=='string'){micGate({type:'audio'});play(e.data);return}const m=JSON.parse(e.data);micGate(m);convGate(m);
+  if(m.type=='pong'){const t1=performance.now()/1000;offset=m.server_ts-(m.t0+t1)/2;return}
+  if(m.seq!==undefined&&m.seq&&m.seq<=lastSeq){return}if(m.seq)lastSeq=m.seq;   // drop duplicate / late events
+  if(m.type=='SESSION_READY'){lastComponents=m.components;log('── 새 세션 ──','mut');log('연결됨: '+JSON.stringify(m.components));ws.send(JSON.stringify({cmd:'START'}))}
+  else if(m.type=='CMD_RESULT'){if(!m.ok)log(`명령 거절 ${m.cmd}: ${m.error}`,'err')}
+  else if(m.type=='LATENCY'){$('#lat').textContent=' · 지연: '+Object.entries(m.data).map(([k,v])=>k.replace(/_/g,' ')+' '+v+'s').join(', ')}
+  else if(m.type=='ERROR'){log('오류/지원 불가: '+(m.errors||m.data?.errors||[]).join(' / '),'err')}
+  else if(m.type=='AGENT_SPEAKING'&&m.data?.state=='interrupted'){flush();log('사용자 끼어들기 → AI 발화 중단','mut');ws.send(JSON.stringify({type:'played',seconds:Math.max(0,ac.currentTime-firstPlay),total:totalS||1}))}
+  else if(m.type=='AGENT_INTERJECTED'){{const KL={contradiction_rfp:'지문/요구사항과 다른 숫자를 말해서',contradiction_prior:'앞서 한 말과 숫자가 달라서',repetition:'같은 설명이 반복돼서',off_topic:'질문과 상관없는 말이 이어져서',overlong:'너무 길게 말해서',unsupported:'근거 없이 단정해서'};log(`⚡ AI가 끼어들었어요 — 이유: ${KL[m.data.kind]||m.data.kind} (${m.data.kind})`,'err')}}
+  else if(m.type=='REPORT_READY'){renderReport(m.report);renderDone(m.report);$('#state').textContent='세션 종료됨 — 리포트 확인';$('#dot').className='dot';['finish','repeat','skip','end'].forEach(i=>$('#'+i).disabled=true);setTimeout(()=>{node&&node.disconnect();stream&&stream.getTracks().forEach(t=>t.stop())},300)}
+  else{ $('#state').textContent=(m.type=='USER_SPEAKING'&&$('#turn').value=='manual')?'듣는 중… 말씀을 마치면 [답변 끝]을 누르세요':m.type;$('#dot').className='dot'+(['USER_SPEAKING','AGENT_SPEAKING'].includes(m.type)?' on':'');
+   if(m.type=='USER_SPEAKING'){$('#livestate').textContent='🟢 말하는 중으로 감지됨';if(m.data?.partial){$('#livecap').textContent=m.data.partial;$('#livecap').dataset.t=Date.now()}}
+   if(m.type=='USER_SPEAKING'&&m.data?.partial&&$('#showtxt').checked)log('부분 전사: '+m.data.partial,'mut');
+   if(m.type=='AGENT_THINKING'||m.type=='USER_SPEAKING'){firstPlay=null;totalS=0}
+   if(m.type=='ANSWER_COMPLETED'&&!m.data?.late){$('#livestate').textContent='⚪ 답변 확정';$('#livefinal').textContent='✅ 확정된 전사: '+(m.data?.text||'');$('#livecap').textContent=''}
+   if(m.type=='ANSWER_COMPLETED'&&$('#showtxt').checked)log('내 답변: '+m.data.text);
+   if(m.type=='QUESTION_STARTED')log(m.data.interjection?'⚡ 끼어들기 질문: '+m.data.text:m.data.followup?'🔗 꼬리질문 '+m.data.fu_depth+'/'+m.data.fu_max+' ('+m.data.fu_type+')'+($('#showtxt').checked?': '+m.data.text:' 재생됨 (텍스트 숨김)'):($('#showtxt').checked?'🎲 일반 질문(랜덤): '+m.data.text:'AI 질문 재생됨 (텍스트 숨김)'),m.data.interjection?'err':m.data.followup?'fu':'')}};
+ ws.onclose=()=>{clockStop(true);window.pairsDone=false;$('#guide').classList.remove('busy');if($('#guide').textContent.indexOf('끝')<0)$('#guide').textContent='⏹ 연결이 끝났어요.';$('#state').textContent='종료';node&&node.disconnect();stream&&stream.getTracks().forEach(t=>t.stop());ac&&ac.close()}};
+const cmd=c=>()=>ws&&ws.readyState==1&&ws.send(JSON.stringify({cmd:c}));
+function resetRecord(){if(SL.length&&!confirm('화면의 기록을 지울까요? (저장하지 않은 기록은 사라집니다)'))return;SL.length=0;lastReport=null;$('#log').innerHTML='';$('#report').innerHTML='';$('#lat').textContent='';$('#state').textContent='대기';$('#dot').className='dot'}
+function saveRecord(){if(!SL.length&&!lastReport){alert('저장할 기록이 없습니다');return}const o={saved_at:new Date().toISOString(),case:sel?.id,config:lastComponents,log:[...SL].reverse().map(x=>({time:x.t,text:x.msg})).reverse(),report:lastReport};const b=new Blob([JSON.stringify(o,null,1)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='qa-lab-session-'+new Date().toISOString().replace(/[:.]/g,'-').slice(0,19)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+$('#resetrec').onclick=resetRecord;$('#saverec').onclick=saveRecord;
+let pairN=0;const PAIRS=10;
+function pairUI(){const t=$('#pairtype').value;$('#paircount').textContent=`— ${Math.min(pairN+1,PAIRS)}/${PAIRS}번째 쌍`;$('#prog').innerHTML=Array.from({length:PAIRS},(_,i)=>`<i class="${i<pairN?'done':i==pairN?'cur':''}"></i>`).join('');
+ $('#pairhint').textContent=t=='문답'?'→ 평소처럼 정상적으로 대답하세요. 이때 AI가 끼어들면 "잘못 끼어든 것"이에요.':'→ 대답 중에 지문과 다른 숫자를 말하거나, 딴소리·같은 말 반복을 섞어 보세요. 이때 AI가 끼어들면 정상이에요.'}
+$('#pairtype').onchange=pairUI;
+$('#talk').onclick=()=>{if(!(ws&&ws.readyState==1))return;talking=true;cmd('START_ANSWER')();$('#state').textContent='듣는 중… 말씀을 마치면 [답변 끝]을 누르세요'};
+$('#ptt').onchange=turnUI;
+$('#finish').onclick=()=>{talking=false;if(ws&&ws.readyState==1)ws.send(JSON.stringify({type:'pair_label',label:$('#pairtype')?.value||''}));cmd('FINISH_ANSWER')();clockStart('[답변 끝] 후 다음 질문까지');pairN++;if(pairN==5)$('#pairtype').value='끼어들기 유도';if(pairN>=PAIRS){window.pairsDone=true;$('#guide').textContent='🎉 10쌍 완료! 마지막 질문을 들은 뒤 [세션 종료]를 눌러 결과를 확인하세요.';$('#end').classList.add('pulse')}pairUI()};
+const GUIDE={'대기':'👋 준비가 끝났으면 [시작]을 눌러 주세요.','AGENT_SPEAKING':'🔊 AI가 질문하는 중이에요. 끝까지 들어 주세요.','AGENT_THINKING':'질문 생성 중입니다… 잠시만 기다려 주세요','USER_SPEAKING':'🎤 말씀하세요! 다 끝나면 [답변 끝]을 눌러 주세요.','세션 종료됨 — 리포트 확인':'✅ 끝! 아래 측정 요약을 확인하고 [기록 저장]을 눌러 주세요.','종료':'⏹ 세션이 끝났어요.'};
+new MutationObserver(()=>{if(window.pairsDone){$('#guide').textContent='🎉 10쌍 완료! 마지막 질문을 들은 뒤 [세션 종료]를 눌러 결과를 확인하세요.';return}const s=$('#state').textContent;const g=s.startsWith('듣는 중')?GUIDE.USER_SPEAKING:GUIDE[s];if(g){$('#guide').textContent=g;$('#guide').classList.toggle('busy',s=='AGENT_THINKING')}}).observe($('#state'),{childList:true,characterData:true,subtree:true});
+setInterval(()=>{const v=[...document.querySelectorAll('#opts select')].map(s=>s.value);if(v.length)$('#cfgsum').textContent='— '+(sel?.id||'')+' · '+v.slice(0,3).join(' · ').replace('ollamax:','외장 ')},1000);
+const _startOrig=$('#start').onclick;
+function micCheck(){return new Promise(async res=>{const box=$('#miccheck');box.hidden=false;$('#micgo').disabled=true;$('#micbar').style.width='0';$('#micname').textContent='';$('#micmsg').textContent='마이크 권한 확인 중… (브라우저가 묻으면 [허용]을 눌러 주세요)';
+ let stream,ctx,raf,done=false;const finish=ok=>{if(done)return;done=true;cancelAnimationFrame(raf);stream&&stream.getTracks().forEach(t=>t.stop());ctx&&ctx.close();box.hidden=true;res(ok)};
+ $('#miccancel').onclick=()=>finish(false);$('#micgo').onclick=()=>finish(true);
+ try{stream=await navigator.mediaDevices.getUserMedia({audio:true})}catch(e){const m={NotAllowedError:'브라우저가 마이크를 막았어요. 주소창 왼쪽 자물쇠 → 마이크 → 허용으로 바꾼 뒤 다시 눌러 주세요.',NotFoundError:'마이크를 찾지 못했어요. 마이크 연결과 macOS 설정 → 사운드 → 입력을 확인해 주세요.',NotReadableError:'다른 앱이 마이크를 쓰고 있어요. 그 앱을 끄고 다시 눌러 주세요.'};$('#micmsg').innerHTML='❌ '+(m[e.name]||('마이크를 열 수 없어요: '+e.name));return}
+ const tr=stream.getAudioTracks()[0];$('#micname').textContent='사용 중인 마이크: '+(tr.label||'(이름 없음)')+(tr.muted?' · ⚠ 음소거 상태':'')+' — 바꾸려면 macOS 설정 → 사운드 → 입력에서 선택하세요.';
+ ctx=new AudioContext();const src=ctx.createMediaStreamSource(stream),an=ctx.createAnalyser();an.fftSize=1024;src.connect(an);const buf=new Float32Array(an.fftSize);let mx=0,t0=performance.now();
+ $('#micmsg').textContent='🗣 아무 말이나 해 보세요. 막대가 움직이면 정상이에요. (3초)';$('#micgo').disabled=false;
+ const tick=()=>{an.getFloatTimeDomainData(buf);let s=0;for(const v of buf)s+=v*v;const r=Math.sqrt(s/buf.length);mx=Math.max(mx,r);$('#micbar').style.width=Math.min(100,r*400)+'%';
+  const el=performance.now()-t0;if(el>3000){$('#micmsg').innerHTML=mx>0.02?'✅ 소리가 잘 들어와요. 시작해도 좋아요.':'⚠ 소리가 거의 안 들려요. 마이크가 맞는지, 입력 음량이 너무 낮지 않은지 확인하세요. (그래도 시작할 수는 있어요)'}
+  raf=requestAnimationFrame(tick)};tick()})}
+window.MIC_ID=null;const _gum=navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
+navigator.mediaDevices.getUserMedia=c=>{if(window.RAWMIC&&c&&c.audio&&typeof c.audio=='object')c={...c,audio:{...c.audio,echoCancellation:false,noiseSuppression:false,autoGainControl:true}};if(window.MIC_ID&&c&&c.audio){c={...c,audio:{...(c.audio===true?{}:c.audio),deviceId:{exact:window.MIC_ID}}}}return _gum(c)};   // use the mic chosen in the check window
+function micCheck2(){return new Promise(async res=>{const box=$('#miccheck');box.hidden=false;$('#micgo').disabled=true;$('#micbar').style.width='0';$('#micname').textContent='';$('#micmsg').textContent='마이크 권한 확인 중… (브라우저가 묻으면 [허용]을 눌러 주세요)';
+ let stream,ctx,raf,done=false,gen=0;const stop=()=>{cancelAnimationFrame(raf);stream&&stream.getTracks().forEach(t=>t.stop());ctx&&ctx.close();stream=ctx=null};const finish=ok=>{if(done)return;done=true;stop();box.hidden=true;res(ok)};
+ $('#miccancel').onclick=()=>finish(false);$('#micgo').onclick=()=>{window.MIC_ID=$('#micsel').value||null;finish(true)};
+ const open=async id=>{stop();const my=++gen;try{stream=await _gum({audio:id?{deviceId:{exact:id}}:true})}catch(e){const m={NotAllowedError:'브라우저가 마이크를 막았어요. 주소창 왼쪽 자물쇠 → 마이크 → 허용으로 바꾼 뒤 다시 눌러 주세요.',NotFoundError:'마이크를 찾지 못했어요. 마이크 연결과 macOS 설정 → 사운드 → 입력을 확인해 주세요.',NotReadableError:'다른 앱이 마이크를 쓰고 있어요. 그 앱을 끄고 다시 눌러 주세요.'};$('#micmsg').innerHTML='❌ '+(m[e.name]||('마이크를 열 수 없어요: '+e.name));return false}
+  if(my!=gen)return;const tr=stream.getAudioTracks()[0];$('#micname').textContent='사용 중인 마이크: '+(tr.label||'(이름 없음)')+(tr.muted?' · ⚠ 음소거 상태':'');
+  ctx=new AudioContext();const src=ctx.createMediaStreamSource(stream),an=ctx.createAnalyser();an.fftSize=1024;src.connect(an);const buf=new Float32Array(an.fftSize);let mx=0,t0=performance.now();
+  $('#micmsg').textContent='🗣 아무 말이나 해 보세요. 막대가 움직이면 정상이에요. (3초)';$('#micgo').disabled=false;
+  const tick=()=>{if(my!=gen)return;an.getFloatTimeDomainData(buf);let s=0;for(const v of buf)s+=v*v;const r=Math.sqrt(s/buf.length);mx=Math.max(mx,r);$('#micbar').style.width=Math.min(100,r*400)+'%';
+   if(performance.now()-t0>3000)$('#micmsg').innerHTML=mx>0.02?'✅ 소리가 잘 들어와요. 시작해도 좋아요.':'⚠ 소리가 거의 안 들려요. 마이크 선택과 입력 음량을 확인하세요. (그래도 시작할 수는 있어요)';raf=requestAnimationFrame(tick)};tick();return stream.getAudioTracks()[0].getSettings().deviceId};
+ const cur=await open(window.MIC_ID);if(cur===false)return;
+ const devs=(await navigator.mediaDevices.enumerateDevices()).filter(d=>d.kind=='audioinput'&&d.deviceId!='communications');
+ $('#micsel').innerHTML=devs.map(d=>`<option value="${d.deviceId}" ${d.deviceId==cur?'selected':''}>${d.label||'마이크'}${/iphone|ipad/i.test(d.label)?'  📱(폰)':/macbook|내장|built-in/i.test(d.label)?'  💻(맥북)':''}</option>`).join('');
+ $('#micsel').onchange=()=>open($('#micsel').value);fillOutputs()})}
+const VC={'맞음':'var(--ok)','부분 맞음':'var(--warn)','틀림':'var(--bad)','모름':'var(--mut)'};
+const vd=t=>t&&t.verdict?`<b style="color:${VC[t.verdict]||'inherit'}">${esc(t.verdict)}</b> ${esc(t.why||'')}<div class="mut">참고(지문): ${esc(t.ref||'')}</div>`:'';
+const esc=s=>String(s??'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'})[c]);
+async function renderDone(r){const m=r.metrics||{},asked=r.asked||[],mt=m.turns||[];const f1=(x,d=2)=>x==null?'-':Number(x).toFixed(d);
+ const conv=[];if(asked[0])conv.push(['AI 첫 질문','',asked[0],'','','']);
+ (r.turns||[]).forEach((t,i)=>{const x=mt[i]||{};if(t.interjection)conv.push(['<span class="err">⚡ AI 끼어들기</span>','',`<span class="err">${esc(t.question)}</span>`,'',r.run_id?rateSel(r.run_id,i,null):'','']);else{if(t.stt_text)conv.push(['🧑 나(받아쓴 글)',x.label||'',t.stt_text,'','',vd(t)]);if(t.question){const fu=['DEEPEN','CLARIFY','VERIFY','CHALLENGE'].includes(t.action);conv.push([fu?`<span class="fu">🔗 AI 꼬리질문 ${t.fu_depth||''}/3 (${esc(t.fu_type||'')})</span>`:'🎲 AI 일반 질문(랜덤)','',fu?`<span class="fu">${esc(t.question)}</span>`:t.question,x.e2e_s!=null?x.e2e_s+'초':'-',r.run_id?rateSel(r.run_id,i,null):'',t.fu_note?`<span class="mut">${esc(t.fu_note)}</span>`:''])}}});
+ let h=`<div class="guide" style="background:color-mix(in srgb,var(--ok) 18%,var(--card));border-color:var(--ok);font-size:22px">🎉 실험이 끝났습니다!</div>
+ <div class="card" style="margin-bottom:10px"><b>⏱ 걸린 시간·측정</b><div style="line-height:1.8">총 소요 <b>${f1(m.wall_s,0)}초</b> · 주고받은 턴 <b>${m.n_turns??'-'}</b>개 · 🔗 AI 꼬리질문 <b>${(r.turns||[]).filter(t=>!t.interjection&&['DEEPEN','CLARIFY','VERIFY','CHALLENGE'].includes(t.action)).length}</b>개 · AI 끼어들기 <b>${m.n_interjections??0}</b>회 ${(m.interjection_times_s||[]).length?'(말 시작 후 '+m.interjection_times_s.join(', ')+'초)':''}<br>[답변 끝] 후 첫 소리까지 평균 <b>${f1(m.e2e_mean_s)}초</b> · 최대 <b>${f1(m.e2e_max_s)}초</b> · 2초 이내 <b>${m.under_2s??'-'}</b><br>모델 ${esc(m.llm)} · 추정 비용 <b>$${m.est_cost_usd??0}</b> ${m.cloud?'(클라우드 추정)':'(로컬 0원)'}</div></div>
+ <div class="card" style="margin-bottom:10px"><b>🗒 내 질문·답변 전사</b> <span class="mut">(Whisper가 받아쓴 글 그대로 · 이 화면에만 표시되고 밖으로 나가지 않아요)</span>
+ <table><tr><th>#</th><th>누구</th><th>쌍 유형</th><th>내용</th><th>응답</th><th>질문 점수(1~5)</th><th>AI 판정(참고용)·참고 정답</th></tr>${conv.map((c,i)=>`<tr><td>${i+1}</td><td>${c[0]}</td><td>${esc(c[1])}</td><td>${String(c[2]).startsWith('<span')?c[2]:esc(c[2])}</td><td>${c[3]}</td><td>${c[4]}</td><td>${c[5]||''}</td></tr>`).join('')}</table></div>`;
+ try{const rk=await (await fetch('/api/ranking')).json();const fin=(rk.rows||[]).filter(x=>x.stage=='결승');const o=cur();const norm=s=>String(s||'').replace(/^ollamax?:/,'');
+  const mine=x=>norm(x.cfg.llm)==norm(o.llm)&&x.cfg.strategy==o.strategy&&x.cfg.interjection==o.interjection&&String(o.stt).includes(x.cfg.stt)&&(/av/i.test(String(o.tts))?'av':'say')==x.cfg.tts;
+  const me=fin.find(mine);const top=fin.slice(0,10);
+  h+=`<div class="card"><b>🏆 우리 랭킹 (토너먼트 결승)</b> <span class="mut">— 이번 실험 구성은 ⭐로 표시</span><div style="margin:6px 0">${me?`이번 구성은 토너먼트 <b>${fin.indexOf(me)+1}위 / ${fin.length}개</b>, 점수 <b>${f1(me.score,1)}</b>, 토너먼트 측정 응답 <b>${f1(me.mean_e2e)}초</b> ↔ 이번 실제 음성 평균 <b>${f1(m.e2e_mean_s)}초</b>`:'이번 구성은 토너먼트 결승 조합에 없어요(비교만 참고).'}</div>
+  <table><tr><th>순위</th><th>조합</th><th>점수</th><th>토너먼트 응답(초)</th><th>비용(1,000질문)</th></tr>${top.map((x,i)=>`<tr${mine(x)?' style="background:color-mix(in srgb,var(--acc) 14%,var(--card));font-weight:600"':''}><td>${i+1}</td><td>${mine(x)?'⭐ ':''}${x.cloud?'☁️ ':''}LLM ${esc(norm(x.cfg.llm))} · 받아쓰기 ${esc(x.cfg.stt)} · 끼어들기 ${esc(x.cfg.interjection)} · TTS ${esc(x.cfg.tts)}</td><td>${f1(x.score,1)}</td><td>${f1(x.mean_e2e)}</td><td>${x.cloud?'$'+f1(x.cost_per_1000):'0 (로컬)'}</td></tr>`).join('')}</table>
+  <div class="mut">토너먼트는 합성 음성으로 쟀고, 이번 값은 실제 목소리로 쟀어요. 서로 직접 비교하지 말고 참고만 하세요. 전체 랭킹은 [측정 결과] 탭에서 볼 수 있어요.</div></div>`}catch(e){}
+ $('#done').innerHTML=h;$('#done').scrollIntoView({behavior:'smooth',block:'start'})}
+
+// ---------- my live experiment runs (PoC) ----------
+const T=(head,rows)=>`<table><tr>${head.map(x=>`<th>${x}</th>`).join('')}</tr>${rows.map(c=>`<tr>${c.map(x=>`<td>${x??'-'}</td>`).join('')}</tr>`).join('')}</table>`;
+async function rate(rid,turn,v){await fetch(`/api/live_runs/${rid}/rating`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({turn,score:v===''?null:+v})});toast('⭐ 질문 점수 저장: '+(v||'취소'))}
+function rateSel(rid,turn,cur){return `<select style="width:auto" onchange="rate('${rid}',${turn},this.value)"><option value="">점수</option>${[5,4,3,2,1].map(n=>`<option value="${n}"${cur==n?' selected':''}>${n}점</option>`).join('')}</select>`}
+async function loadRuns(){const el=$('#runsout');const runs=await (await fetch('/api/live_runs')).json();const f=(x,d=2)=>x==null?'-':Number(x).toFixed(d);
+ if(!runs.length){el.innerHTML='아직 저장된 실험이 없어요. [C. 실제 음성] 탭에서 실험한 뒤 [세션 종료]를 누르면 여기에 자동으로 쌓여요.';return}
+ const ok=runs.filter(r=>r.e2e_mean_s!=null);const avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:null;
+ const nrm=runs.reduce((s,r)=>s+(r.ij?.normal_pairs||0),0),fi=runs.reduce((s,r)=>s+(r.ij?.false_interjections||0),0),ind=runs.reduce((s,r)=>s+(r.ij?.induce_pairs||0),0),ca=runs.reduce((s,r)=>s+(r.ij?.caught||0),0);
+ const q=runs.filter(r=>r.quality_mean!=null);
+ let h=`<h2 style="margin:0 0 6px">🧪 내 실험 결과 모음 <span class="mut" style="font-weight:400">— 사람이 직접 말해서 잰 결과(PoC, 이 컴퓨터에만 저장)</span></h2>
+ <div class="card" style="margin-bottom:10px"><b>전체 요약 (${runs.length}회)</b><div style="line-height:1.9">[답변 끝] 후 첫 소리까지 평균 <b>${f(avg(ok.map(r=>r.e2e_mean_s)))}초</b> · 가장 느린 값 <b>${f(Math.max(...ok.map(r=>r.e2e_max_s||0)))}초</b> · 2초 목표 달성 회차 <b>${ok.filter(r=>r.e2e_mean_s<=2).length}/${ok.length}</b><br>
+ 문답문답(정상 대답)에서 <b>잘못 끼어든 비율 ${nrm?Math.round(fi/nrm*100)+'%':'-'}</b> (${fi}/${nrm}) · 끼어들기 유도에서 <b>제대로 끼어든 비율 ${ind?Math.round(ca/ind*100)+'%':'-'}</b> (${ca}/${ind})<br>
+ 내가 매긴 질문 점수 평균 <b>${q.length?f(avg(q.map(r=>r.quality_mean)),1)+'점':'-'}</b> ${q.length?'':'(상세에서 AI 질문마다 1~5점을 매기면 여기에 반영돼요)'}</div></div>`;
+ h+=T(['시작 시각','구성','지문(자)','턴','평균 응답(초)','최대(초)','2초 이내','끼어들기(전체)','오탐/유도적중','내 점수','비용','상세'],runs.map(r=>[r.saved_at.replace('T',' '),`${esc(String(r.config.llm||'').replace('ollamax:','외장 ').replace('ollama:',''))} · ${esc(r.config.interjection||'')}`,r.passage_chars||'-',r.n_turns??'-',f(r.e2e_mean_s),f(r.e2e_max_s),r.under_2s||'-',r.n_interjections??'-',r.ij?`${r.ij.false_interjections}/${r.ij.normal_pairs} · ${r.ij.caught}/${r.ij.induce_pairs}`:'-',r.quality_mean!=null?f(r.quality_mean,1)+'점('+r.n_rated+')':'-',r.cloud?'$'+f(r.cost,4):'0 (로컬)',`<button onclick="showRun('${r.id}')">열기</button> <button onclick="delRun('${r.id}')">삭제</button>`]));
+ h+='<div id="rundetail" style="margin-top:12px"></div><p class="mut">오탐 = 정상 대답(문답) 중 AI가 잘못 끼어든 횟수/전체, 유도적중 = 끼어들기 유도 쌍에서 AI가 끼어든 횟수/전체. 실제 목소리 전사는 이 컴퓨터(data/live_runs, git 제외)에만 있어요.</p>';el.innerHTML=h}
+async function delRun(id){if(!confirm('이 실험 기록을 삭제할까요?'))return;await fetch('/api/live_runs/'+id,{method:'DELETE'});loadRuns()}
+async function renderRunDetail(id,d,prog){const r=d.report||{},m=r.metrics||{},mt=m.turns||[];const rows=[];if((r.asked||[])[0])rows.push(['AI 첫 질문','',r.asked[0],'','','']);
+ let ijN=0;(r.turns||[]).forEach((t,i)=>{const x=mt[i]||{};if(t.interjection){const ij=(r.interjections||[])[ijN++]||{};const KL2={contradiction_rfp:'지문/요구사항과 다른 숫자를 말해서',contradiction_prior:'앞서 한 말과 숫자가 달라서',repetition:'같은 설명이 반복돼서',off_topic:'질문과 상관없는 말이 이어져서',overlong:'답변이 제한 시간을 넘겨서',unsupported:'근거 없이 단정해서'};const sec=ij.t_after_speech_start!=null?Math.round(ij.t_after_speech_start):null;
+ if(ij.partial)rows.push(['🧑 나(끼어들기 전 말)','',ij.partial,'','','<span class="mut">AI가 끼어들기 직전까지 받아쓴 내용(마지막 부분)</span>']);
+ rows.push(['<span class="err">⚡ AI 끼어들기</span>','',`<span class="err">${esc(t.question)}</span>`,'',rateSel(id,i,d.ratings?.[i]),`<b>${sec!=null?sec+'초째 ':''}끼어들어 재질문</b><div class="mut">${esc(KL2[ij.kind||t.kind]||ij.kind||t.kind||'')}${ij.reason?' · '+esc(ij.reason):''}</div>`])}else{if(t.stt_text)rows.push(['🧑 나(받아쓴 글)',x.label||'',t.stt_text,'','',vd(t)+`<div style="margin-top:6px"><b>실제 정답(모범 답안)</b>: ${t.model_answer?esc(t.model_answer):'(만들지 못했어요)'}</div>`]);if(t.question){const fu=['DEEPEN','CLARIFY','VERIFY','CHALLENGE'].includes(t.action);rows.push([fu?`<span class="fu">🔗 AI 꼬리질문 ${t.fu_depth||''}/3 (${esc(t.fu_type||'')})</span>`:'🎲 AI 일반 질문(랜덤)','',fu?`<span class="fu">${esc(t.question)}</span>`:t.question,x.e2e_s!=null?x.e2e_s+'초':'-',rateSel(id,i,d.ratings?.[i]),t.fu_note?`<span class="mut">${esc(t.fu_note)}</span>`:''])}}});
+ const c=d.config||{};const _empty=(r.turns||[]).length?'':'<div class="card err" style="margin:6px 0">이 실험에는 기록된 턴이 없어요. 첫 질문만 있고 답변 후의 질문·답변이 저장되지 않았습니다(서버 오류로 중단된 세션일 수 있어요).</div>';$('#rundetail').innerHTML=`<b>${d.saved_at.replace('T',' ')} 상세</b> ${r.partial_save?'<span class="err">(세션 종료 없이 저장됨)</span>':''}<div class="card" style="margin:6px 0;line-height:1.8">목소리 <b>${esc(c.tts||'')}</b> · 끼어들기 <b>${esc(c.interjection||'')}</b> · 답변 끝내기 <b>${c.turn_mode==='manual'?'버튼으로 직접':'자동 감지'}</b> · 질문 방식 <b>${esc(c.strategy||'')}</b> · 모델 <b>${esc(c.llm||'')}</b> · 받아쓰기 <b>${esc(c.stt||'')}</b></div>${_empty}`+T(['누구','쌍 유형','내용','응답','질문 점수(1~5)','AI 판정(참고용)·참고 정답'],rows.map(c=>c.map((x,i)=>i==2&&!String(x).startsWith('<span')?esc(x):x)));const sm=await (await fetch('/api/live_runs/'+id+'/summary')).json();$('#rundetail').insertAdjacentHTML('beforeend',`<details style="margin-top:10px"><summary><b>📋 공유용 요약 (설정, 시간, 질문과 답변 전부)</b> <span class="mut">${esc(sm.path||'')}</span></summary><div class="row"><button id="cpsum">복사</button></div><pre id="sumtxt" style="max-height:420px;overflow:auto">${esc(sm.text||'')}</pre></details>`);$('#cpsum').onclick=()=>{navigator.clipboard.writeText(sm.text||'');toast('요약을 복사했어요')};if(prog)$('#rundetail').insertAdjacentHTML('afterbegin',`<div class="card" style="margin:6px 0">⏳ ${prog}</div>`)}
+async function showRun(id){const tok=window._runTok=(window._runTok||0)+1;$('#rundetail').innerHTML='<div class="mut">⏳ 불러오는 중…</div>';$('#rundetail').scrollIntoView({behavior:'smooth'});
+ let d=await (await fetch('/api/live_runs/'+id)).json();await renderRunDetail(id,d,null);                                  // the report is shown at once, without the reference answers / grades
+ const pl=await (await fetch('/api/live_runs/'+id+'/grade_plan',{method:'POST'})).json();const todo=pl.todo||[];
+ for(let k=0;k<todo.length&&tok===window._runTok;k++){await renderRunDetail(id,d,`정답과 평가를 만드는 중 ${k+1}/${todo.length} — 만들어지는 대로 아래 표에 채워져요 (한 번 만들면 저장돼서 다음엔 바로 나와요)`);try{await fetch('/api/live_runs/'+id+'/grade',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({i:todo[k]})})}catch(e){}d=await (await fetch('/api/live_runs/'+id)).json()}
+ if(tok===window._runTok&&todo.length)await renderRunDetail(id,d,null)}
+
+// ---- live wait clock: counts up until the AI starts speaking ----
+let _clk=null,_gen0=null;
+function clockStart(label){clockStop(true);const t0=performance.now();const show=()=>{const sec=((performance.now()-t0)/1000).toFixed(1);if(performance.now()-t0>30000&&!window.__clkWarn){window.__clkWarn=1;toast('⚠ 30초 넘게 응답이 없어요 — 서버 상태를 확인하세요')}const gs=_gen0?` · <span style="color:var(--warn)">AI 질문 생성 중 ${((performance.now()-_gen0)/1000).toFixed(1)}초</span>`:'';delete $('#guide').dataset.clock;$('#clockbox').innerHTML=`⏱ ${label}…`};  /* running seconds are still measured (sec) but not shown live; the green result below is what we show */show();_clk={t0,label,iv:setInterval(show,100)}}
+function clockStop(silent){window.__clkWarn=0;_gen0=null;if(!_clk)return;clearInterval(_clk.iv);const s=((performance.now()-_clk.t0)/1000).toFixed(1);if(silent)delete $('#guide').dataset.clock;else $('#guide').dataset.clock='✅ '+s+'초';$('#clockbox').innerHTML=silent?'':`✅ ${_clk.label} → <b style="color:var(--ok)">${s}초</b> 만에 AI가 말을 시작했어요`;_clk=null}
+
+// ---- sound diagnostics ----
+function wavBlob(chunks){let n=0;chunks.forEach(c=>n+=c.byteLength);const b=new ArrayBuffer(44+n),v=new DataView(b);const w=(o,s)=>[...s].forEach((c,i)=>v.setUint8(o+i,c.charCodeAt(0)));w(0,'RIFF');v.setUint32(4,36+n,true);w(8,'WAVEfmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,16000,true);v.setUint32(28,32000,true);v.setUint16(32,2,true);v.setUint16(34,16,true);w(36,'data');v.setUint32(40,n,true);let o=44;chunks.forEach(c=>{new Uint8Array(b,o,c.byteLength).set(new Uint8Array(c));o+=c.byteLength});return new Blob([b],{type:'audio/wav'})}
+$('#altplay').onclick=()=>{if(!(window.lastQ&&window.lastQ.length)){toast('아직 받은 AI 음성이 없어요');return}const a=new Audio(URL.createObjectURL(wavBlob(window.lastQ)));a.volume=1;a.play().then(()=>toast('▶ 대체 재생 중 — 소리가 들리나요?')).catch(e=>toast('재생 실패: '+e.name))};
+$('#beep2').onclick=()=>{try{const c=new AudioContext(),o=c.createOscillator(),g=c.createGain();o.frequency.value=660;g.gain.value=0.2;o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+0.6);setTimeout(()=>c.close(),900);toast('🔈 "삐" 소리가 들렸나요?')}catch(e){toast('재생 실패')}};
+async function fillOutputs(){try{const ds=(await navigator.mediaDevices.enumerateDevices()).filter(d=>d.kind=='audiooutput');if(!ds.length)return;$('#outsel').innerHTML='<option value="">기본 출력 장치</option>'+ds.map(d=>`<option value="${d.deviceId}"${d.deviceId==window.OUT_ID?' selected':''}>${d.label||'스피커'}${/iphone|ipad/i.test(d.label)?'  📱(폰)':/macbook|내장|built-in|speaker/i.test(d.label)?'  💻(맥북)':''}</option>`).join('');$('#outsel').onchange=async()=>{window.OUT_ID=$('#outsel').value||null;try{if(window.__ac&&window.__ac.setSinkId)await window.__ac.setSinkId(window.OUT_ID||'');toast('스피커를 바꿨어요 — [스피커 테스트]로 확인하세요')}catch(e){toast('이 브라우저는 스피커 선택을 지원하지 않아요(Chrome 권장)')}}}catch(_){}}
+// ---- mic gating: mic is off while the AI talks, on again for my turn ----
+let micOn=true,synthDone=false,micOffAt=0;
+function setMic(on){if(micOn===on)return;micOn=on;try{stream&&stream.getAudioTracks().forEach(t=>t.enabled=on)}catch(_){}
+ $('#livemeter').style.visibility=on?'visible':'hidden';$('#livestate').textContent=on?'🎤 내 차례 — 말씀하세요 (다 끝나면 [답변 끝])':'🔇 AI가 말하는 중 — 마이크는 꺼져 있어요';if(!on){micOffAt=Date.now();$('#livebar').style.width='0'}}
+function micGate(m){const t=m.type;if(window.SP){if(t=='AGENT_SPEAKING'&&m.data?.state=='started'){clockStop(false);$('#audstat').textContent='🔊 맥 스피커로 직접 재생 중 (서버 재생 모드)'}if(t=='AGENT_SPEAKING'&&m.data?.state=='server_played'){setTimeout(()=>setMic(true),80);return}}if(t=='AGENT_THINKING')talking=false;if(t=='AGENT_THINKING'){if(!_clk)clockStart('AI가 질문을 만드는 중');_gen0=performance.now()}if(t=='audio'||t=='SESSION_ENDED'||t=='ERROR')clockStop(t!='audio');if(t=='AGENT_THINKING'||t=='audio'||t=='SESSION_READY'||(t=='AGENT_SPEAKING'&&m.data?.state=='started')){synthDone=false;setMic(false)}
+ else if(t=='AGENT_SPEAKING'&&m.data?.state=='synth_done')synthDone=true;else if(t=='SESSION_ENDED'){synthDone=true;micOn=false;setMic(true)}}
+setInterval(()=>{if(micOn||window.SP||typeof ac=='undefined'||!ac)return;const el=Date.now()-micOffAt;if((synthDone&&ac.currentTime>=playT-0.02&&el>150)||el>90000)setMic(true)},25);   // reopen the mic the moment the AI's last sample has played (was 300+600 ms late)
+// ---- running transcript of the whole conversation ----
+window._ansNodes=[];function convAdd(who,text,cls){const d=document.createElement('div');d.className=cls||'';d.innerHTML=`<b>${who}</b> ${esc(text)}`;$('#convlog').appendChild(d);$('#convlog').scrollTop=1e9;if(who.indexOf('나')>=0&&who.indexOf('AI')<0)window._ansNodes.push(d)}
+function convGate(m){const t=m.type,d=m.data||{};if(t=='LATENCY'){const dd=document.createElement('div');dd.style.cssText='margin-left:18px;font-size:13px;color:var(--mut)';dd.innerHTML='⏱ '+[d.stt_s!=null?`받아쓰기 <b>${d.stt_s}초</b>`:'',d.generate_s!=null?`AI 질문 생성(첫 글자까지) <b>${d.generate_s}초</b>`:'',d.tts_s!=null?`음성 만들기 <b>${d.tts_s}초</b>`:'',`= 총 <b>${d.total_s}초</b>`].filter(Boolean).join(' · ');$('#convlog').appendChild(dd);$('#convlog').scrollTop=1e9;$('#lat').innerHTML=dd.innerHTML}if(t=='ANSWER_COMPLETED'&&d.late){const dd=document.createElement('div');dd.innerHTML=`📋 <span class="mut">위 내 답변 평가:</span> <b style="color:${VC[d.verdict]||'inherit'}">${esc(d.verdict)}</b> ${esc(d.why||'')} <span class="mut">· 참고(지문): ${esc(d.ref||'')}</span>`;dd.style.cssText='margin-left:18px;font-size:13px;border-left:3px solid var(--line);padding-left:8px';const an=window._ansNodes.shift();if(an&&an.parentNode)an.insertAdjacentElement('afterend',dd);else $('#convlog').appendChild(dd)}if(t=='QUESTION_STARTED'&&d.text)convAdd(d.interjection?'⚡ AI(끼어들기)':d.repeat?'🤖 AI(다시 듣기)':d.followup?`🔗 AI 꼬리질문 ${d.fu_depth}/${d.fu_max} (${d.fu_type})`:'🎲 AI 일반 질문(랜덤)',d.text,d.interjection?'err':d.followup?'fu':'');if(t=='ANSWER_COMPLETED'&&d.text&&!d.late)convAdd('🧑 나',d.text,'')}
+let _uiv=null;setInterval(async()=>{try{const v=(await (await fetch('/api/ui_version',{cache:'no-store'})).json()).v;if(_uiv===null)_uiv=v;else if(v!==_uiv&&!$('#updbar')){const b=document.createElement('div');b.id='updbar';b.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99;background:#b45309;color:#fff;padding:10px;text-align:center;font-weight:700';b.innerHTML='🔄 화면이 새 버전으로 업데이트됐어요 — 진행 중인 세션이 없을 때 <u style="cursor:pointer" onclick="location.reload()">여기를 눌러 새로고침</u>';document.body.appendChild(b)}}catch(_){}},4000);
+
+// ---- question bank progress (the server prepares questions + model answers as soon as the passage is entered) ----
+let _bankT=null;
+function pollBank(){clearInterval(_bankT);const tick=async()=>{if(!window.__pkey)return;try{const s=await (await fetch('/api/passage_status/'+window.__pkey)).json();const el=$('#passagestat');
+  el.innerHTML=`✅ 지문 적용됨 — 지금까지 질문 <b>${s.n}개</b> 만들었어요 ${s.exhausted?'<span class="mut">(지문에서 더 만들 질문이 없어요)</span>':s.extending?'<span class="mut">· 보충 중…</span>':s.done?'<span class="mut">· 안 물어본 질문이 1개 이하로 남으면 3개씩 자동으로 더 만들어요</span>':'<span class="mut">· 만드는 중… 바로 [시작]해도 돼요</span>'}`}catch(_){}};tick();_bankT=setInterval(tick,2000)}
+
+// ---------- voice comparison ----------
+function useVoice(val,label){const sel=[...document.querySelectorAll('#opts select')].find(s=>[...s.options].some(o=>o.value===val));if(!sel){toast('이 목소리는 아직 목록에 없어요 — 서버를 다시 켜야 해요');return}sel.value=val;sel.dispatchEvent(new Event('change'));toast('🔊 목소리를 '+label+'(으)로 바꿨어요 — [C. 실제 음성]에서 시작하세요')}
+async function loadTts(){const el=$('#ttsout');const d=await (await fetch('/api/tts_samples')).json();if(!d.items.length){el.innerHTML='비교 소리가 아직 없어요.';return}
+ const g={};d.items.forEach(m=>{(g[m.engine+'|'+m.voice]=g[m.engine+'|'+m.voice]||[]).push(m)});
+ const file=m=>m.engine.startsWith('macOS')?`yuna_compact_${m.i}.wav`:m.engine.startsWith('OpenAI')?`openai_${m.voice}_${m.i}.wav`:`supertonic_${m.voice}_${m.i}.wav`;
+ const val=m=>m.engine.startsWith('macOS')?'macos-avspeech:Yuna':m.engine.startsWith('OpenAI')?'openai-tts:'+m.voice:'supertonic:'+m.voice;
+ const rows=Object.values(g).map(ms=>{ms.sort((a,b)=>a.i-b.i);return {ms,avg:ms.reduce((s,x)=>s+x.synth_s,0)/ms.length}}).sort((a,b)=>a.avg-b.avg);
+ el.innerHTML=`<h2 style="margin:0 0 6px">🔊 목소리 비교 <span class="mut" style="font-weight:400">— 같은 문장 3개를 읽은 소리 · 평균 합성 시간이 짧은 순서</span></h2>
+ <div class="card" style="margin-bottom:10px">들어 보고 마음에 드는 목소리의 <b>[이 목소리로 쓰기]</b>를 누르세요. <b>평균 합성(초)</b> = 문장을 소리로 만드는 데 걸린 시간의 평균(짧을수록 AI가 빨리 말해요). ☁️ OpenAI는 질문 문장이 밖으로 나가요.</div>`
+ +T(['순위','목소리','평균 합성(초)',...d.sentences.map((s,i)=>'문장 '+(i+1)+'<div class="mut" style="font-weight:400">'+esc(s)+'</div>'),''],rows.map((r,i)=>{const m=r.ms[0];const name=(m.engine.startsWith('OpenAI')?'☁️ ':'')+m.engine.replace('(현재)',' (지금 쓰는 것)')+' '+m.voice;return [i+1,'<b>'+esc(name)+'</b>',r.avg.toFixed(2),...r.ms.map(x=>`<audio controls preload="none" style="width:230px" src="/tts_samples/${file(x)}"></audio><div class="mut">길이 ${x.audio_s}초</div>`),`<button onclick="useVoice('${val(m)}','${esc(m.voice)}')">이 목소리로 쓰기</button>`]}))}
+const TOASTS={start:'🎙 [시작]을 눌렀어요',finish:'✅ [답변 끝]을 눌렀어요 — AI가 곧 답해요',repeat:'🔁 [질문 다시 듣기]를 눌렀어요',skip:'⏭ [질문 건너뛰기]를 눌렀어요',end:'⏹ [세션 종료]를 눌렀어요 — 리포트를 만드는 중',saverec:'💾 [기록 저장]을 눌렀어요',resetrec:'🗑 기록을 지웠어요',setpassage:'📥 [지문 넣기]를 눌렀어요',clearpassage:'지문을 지웠어요',micgo:'✅ 이 마이크로 시작해요',miccancel:'취소했어요'};
+let _toastT=0;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(_toastT);_toastT=setTimeout(()=>t.classList.remove('on'),1800)}
+document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.disabled)return;
+ if(b.id=='micgo'||b.id=='spktest'){try{if(!(window.__ac&&window.__ac.state!='closed'))window.__ac=new AudioContext({sampleRate:16000});window.__ac.resume()}catch(_){}}   // create/unlock audio output inside the click (browser autoplay rule)
+ if(b.id=='spktest'){try{const c=window.__ac,o=c.createOscillator(),g=c.createGain();o.frequency.value=660;g.gain.value=0.15;o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+0.6);$('#micmsg').textContent='🔈 "삐" 소리가 들렸나요? 안 들리면 macOS 설정 → 사운드 → 출력 장치(내장 스피커/이어폰)와 음량을 확인하세요.'}catch(_){}}b.classList.remove('flash');void b.offsetWidth;b.classList.add('flash');toast(TOASTS[b.id]||('눌렀어요: '+b.textContent.trim().slice(0,24)))},true);
+let _meterRaf=0;function startMeter(an){cancelAnimationFrame(_meterRaf);const buf=new Float32Array(an.fftSize);let quiet=performance.now();
+ const tick=()=>{an.getFloatTimeDomainData(buf);let s=0;for(const v of buf)s+=v*v;const r=Math.sqrt(s/buf.length);$('#livebar').style.width=Math.min(100,r*400)+'%';
+  if(r>0.015||!micOn)quiet=performance.now();$('#liveno').textContent=(performance.now()-quiet>6000)?'⚠ 6초 넘게 소리가 안 들어와요. 마이크 선택/음량을 확인하세요.':'';_meterRaf=requestAnimationFrame(tick)};tick()}
+$('#start').onclick=async()=>{if(await micCheck2()){$('#livecap').textContent='';$('#livefinal').textContent='';$('#guide').textContent='첫 질문 생성 중입니다… (지문을 읽는 중이라 길면 10초쯤 걸려요)';$('#guide').classList.add('busy');clockStart('첫 질문 준비 중');_startOrig()}};
+$('#setpassage').onclick=async()=>{const t=$('#passage').value.trim();if(!t){$('#passagestat').textContent='⚠ 지문이 비어 있어요. 글을 붙여넣어 주세요.';return}
+ const r=await (await fetch('/api/passage',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({text:t,llm:cur().llm})})).json();window.__pkey=r.key;pollBank();
+ const nt=t.replace(/\r/g,'').replace(/\n{2,}/g,'\u0001').replace(/\s*\n\s*/g,' ').replace(/\u0001/g,'\n');const n=nt.split(/(?<=[.!?。])\s+|\n+/).filter(x=>x.trim().length>=10).length;
+ $('#passagestat').innerHTML=`✅ 지문 적용됨 — ${r.chars.toLocaleString()}자, 문장 약 ${n}개. 긴 글은 처음·중간·끝에서 골고루 뽑아 질문을 만들어요. 이제 아래 <b>[🎙 시작]</b>을 누르세요.`+(r.chars>=150000?' <span class="err">(150,000자까지만 사용돼요)</span>':'')};
+const pCount=()=>{const t=$('#passage').value;const nt=t.replace(/\r/g,'').replace(/\n{2,}/g,'\u0001').replace(/\s*\n\s*/g,' ').replace(/\u0001/g,'\n');const n=nt.split(/(?<=[.!?。])\s+|\n+/).filter(x=>x.trim().length>=10).length;const c=t.length;
+ $('#pcount').innerHTML=`<b>${c.toLocaleString()}자</b> (공백 제외 ${t.replace(/\s/g,'').length.toLocaleString()}자) · 문장 약 ${n}개`+(c>150000?' <span class="err">· 150,000자를 넘으면 앞쪽 150,000자만 사용돼요</span>':'')};
+$('#passage').addEventListener('input',pCount);pCount();
+$('#clearpassage').onclick=async()=>{$('#passage').value='';pCount();await fetch('/api/passage',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({text:''})});$('#passagestat').textContent='지문을 지웠어요. 시작하면 기본 RFP 질문이 나와요.'};
+$('#start').addEventListener('click',()=>{$('#convlog').innerHTML='';micOn=true;setMic(false);pairN=0;window.pairsDone=false;$('#end').classList.remove('pulse');$('#done').innerHTML='';$('#pairtype').value='문답';pairUI()});
+pairUI();$('#repeat').onclick=()=>{flush();cmd('REPEAT_QUESTION')();clockStart('질문 다시 듣기')};$('#skip').onclick=()=>{flush();cmd('SKIP_QUESTION')();clockStart('다음 질문 준비 중')};$('#end').onclick=()=>{cmd('END_SESSION')();clockStop(true);$('#guide').classList.remove('busy')};
+function renderReport(r){lastReport=r;const rows=(r.turns||[]).map((t,i)=>`<tr><td>${i+1}</td><td>${t.interjection?'(끼어들기) ':''}${t.question||''}</td><td>${t.stt_text||''}</td><td>${t.action||t.kind||''}</td></tr>`).join('');
+ $('#report').innerHTML=`<h2>리포트</h2><p class="mut">질문 원문/답변 전사는 리포트에서만 표시됩니다.</p><div class="mut">처음 질문: ${(r.asked||[])[0]||''}</div><table><tr><th>#</th><th>다음 질문</th><th>직전 답변 전사</th><th>Action</th></tr>${rows}</table>${metricsHtml(r.metrics)}`}
+function metricsHtml(m){if(!m)return'';const th=['#','유형','쌍 유형','응답(초)','받아쓰기','분석','질문 첫 글자','음성 첫 조각','답변 글자수'];const g=(t,k)=>t.stages_s&&t.stages_s[k]!=null?t.stages_s[k].toFixed(2):'-';
+return `<h3>📏 측정 요약</h3><div class="mut">총 소요 ${m.wall_s}초 · 턴 ${m.n_turns}개 · 끼어들기 ${m.n_interjections}회 ${m.interjection_times_s.length?'(말 시작 후 '+m.interjection_times_s.join(', ')+'초)':''} · 응답 평균 ${m.e2e_mean_s??'-'}초 / 최대 ${m.e2e_max_s??'-'}초 · 2초 이내 ${m.under_2s??'-'} · 모델 ${m.llm} · 추정 비용 $${m.est_cost_usd} ${m.cloud?'(클라우드 추정)':'(로컬 0원)'}</div><table><tr>${th.map(x=>'<th>'+x+'</th>').join('')}</tr>${m.turns.map(t=>`<tr><td>${t.n}</td><td>${t.kind}</td><td>${t.label||'-'}</td><td><b>${t.e2e_s??'-'}</b></td><td>${g(t,'받아쓰기 완료')}</td><td>${g(t,'답변 분석 완료')}</td><td>${g(t,'질문 첫 글자')}</td><td>${g(t,'음성 첫 조각')}</td><td>${t.answer_chars}</td></tr>`).join('')}</table><div class="mut">${m.cost_note} 단계 시간은 [답변 끝]을 누른 시점부터의 누적 초예요.</div>`}
+// ---------- sims ----------
+async function post(u,b){const r=await fetch(u,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(b)});return r.json()}
+$('#runtext').onclick=async()=>{const o=cur();$('#textout').textContent='실행 중… (LLM이 실제로 서로 대화합니다)';const lg=await post('/api/simulate',{llm:o.llm,strategy:o.strategy,interjection:o.interjection,turns:4});
+ $('#textout').textContent=lg.phaseA.map(x=>`[발표:${x.topic}/${x.behaviour}] 대기 질문 ${x.pending}개`).join('\n')+'\n\n'+lg.phaseB.map(x=>`Q: ${x.question}\nA(${x.behaviour}): ${x.answer}\n끼어들기: ${JSON.stringify(x.interjection)}  → ${x.action}: ${x.next_question} (${x.first_token_s}s)`).join('\n\n')};
+$('#runvsim').onclick=async()=>{const o=cur();$('#vsimout').textContent='실행 중…';const r=await post('/api/voice_sim',{...o,turns:3});$('#vsimout').textContent=JSON.stringify(r,null,1)};
+async function loadRes(){
+const r=await (await fetch('/api/results')).json();const m=r.mini,tm=r.timing;
+const f=(x,d=1)=>x==null?'-':Number(x).toFixed(d);const pc=x=>x==null?'-':Math.round(x*100)+'%';
+const bar=(p,good=true)=>{const v=Math.round((p||0)*100);const c=good?(v>=70?'#0a7d33':v>=40?'#b45309':'#b91c1c'):(v<=20?'#0a7d33':v<=50?'#b45309':'#b91c1c');return `<div style="display:flex;align-items:center;gap:6px"><div style="width:90px;height:8px;background:var(--line);border-radius:4px"><div style="width:${v}%;height:8px;background:${c};border-radius:4px"></div></div>${v}%</div>`};
+const T=(head,rows)=>`<table><tr>${head.map(x=>`<th>${x}</th>`).join('')}</tr>${rows.map(c=>`<tr>${c.map(x=>`<td>${x??'-'}</td>`).join('')}</tr>`).join('')}</table>`;
+const S=(n,t,sec,intro)=>`<h2 style="margin-top:22px">${n}. ${t}${sec?` <span class="mut" style="font-weight:400">· 시험에 걸린 시간 ${f(sec,0)}초</span>`:''}</h2><p class="mut" style="margin:2px 0 8px">${intro}</p>`;
+const syn={};r.synthetic.forEach(x=>syn[x.run]=x);
+const B=m.t6?.B?.e2e,A=m.t6?.A?.e2e,C=m.t6?.C?.e2e;let h='';
+h+=`<div class="card" style="background:var(--bg)"><b>용어 먼저 (쉬운 말)</b><ul style="margin:6px 0 0 18px">
+<li><b>답이 오기까지 걸리는 시간</b> = 내가 말을 끝낸 순간부터 AI가 말을 시작할 때까지. 목표는 <b>2초 이내</b>(대화가 어색하지 않은 한계).</li>
+<li><b>보통</b> = 여러 번 해 본 값의 가운데. <b>가장 느린 경우</b> = 그중 제일 오래 걸린 값.</li>
+<li><b>받아쓰기 틀린 비율</b> = 사람 말을 글로 옮길 때 틀린 글자의 비율. <b>낮을수록 좋아요</b>(0.1 = 100글자 중 10글자 틀림).</li>
+<li><b>끼어들기</b> = 내가 말하는 도중에 AI가 "잠깐만요" 하고 끊고 들어오는 것.</li></ul></div>`;
+// ---- one-line conclusions
+const t4=r.t4,bs=t4[0]?.summary,sp=t4[1]?.summary;
+h+=`<div class="card" style="margin-top:12px"><b>📌 한눈에 보는 결론</b><ol style="margin:6px 0 0 18px;line-height:1.7">
+<li><b>가장 빠른 건 OpenAI 음성 모델(C)</b>: 보통 <b>${f(C?.p50,2)}초</b>. 다만 질문을 AI가 알아서 만들어서 우리가 질문 내용을 통제하기 어렵고, <b>내 목소리가 외부(OpenAI)로 나갑니다</b>.</li>
+<li><b>내 컴퓨터 안에서만 돌리는 방식(B)</b>은 보통 <b>${f(B?.p50,2)}초</b>로 2초 언저리예요. 사람 목소리에서는 1.5초~4.3초로 들쭉날쭉합니다.</li>
+<li><b>제일 큰 문제는 "말하다 잠깐 쉬면 AI가 답이 끝난 줄 아는 것"</b>이에요. 사람이 한 번 대답하는 동안 AI가 평균 <b>7번</b> 끊고 들어올 뻔했습니다. 미리 질문을 준비해 두고 1.5초 기다리는 방식으로 <b>절반 가까이(2.7번→1.3번)</b> 줄였어요.</li>
+<li><b>"미리 만들어 둔 질문 읽기"는 빠르지만 위험해요.</b> 방금 한 대답과 상관없는 질문이 나올 수 있어서, 속도만 보고 고르면 안 됩니다.</li>
+<li><b>사람 목소리 받아쓰기는 큰 모델(turbo)이 훨씬 정확</b>해요(틀린 비율 0.32→0.13). 클라우드 <b>gpt-transcribe</b>가 합성 음성에서는 가장 정확했습니다(0.06).</li>
+<li><b>최신 GPT 모델들은 질문 품질이 모두 좋아요</b>(5점 만점에 4.7~5.0). 서로 차이는 작아요. 가격은 공식 가격표로 확인했고(10번 표), <b>실제 파이프라인에서 가성비는 gpt-5.4-mini(품질 5.0, 1.71초, 질문 1,000개 약 $1.20)</b>, 가장 저렴한 건 gpt-6-luna(약 $0.14)지만 2.26초로 2초를 넘겼어요. 클라우드는 합성 데이터에만 쓸 수 있어서 내 컴퓨터 모델(phi4-mini)이 점수상 더 위예요.</li>
+<li><b>전체 조합(601개)은 일부러 안 쟀어요.</b> 한 번에 하나씩 바꿔서 2개씩 올리는 <b>토너먼트로 약 42번만</b> 쟀고(1단계 14 · 2단계 14 · 결승 14), 결승 1위는 <b>phi4-mini + small 받아쓰기 + 끼어들기 규칙</b>, 2위는 <b>qwen3.5:4b + 같은 구성</b>이에요. 표본이 3개씩이라 <b>경향</b>으로 봐 주세요.</li><li><b>데모 기본 설정 = 토너먼트 1위 구성</b>으로 맞춰 뒀어요(⭐ 표시): LLM phi4-mini:3.8b(외장하드) · 받아쓰기 small · TTS AVSpeech · 전략 two_track · 끼어들기 rule. 단 끼어들기 rule은 실제 사람 목소리에서 잘못 끼어드는 문제가 있어 <b>실제 음성 검증이 아직 필요</b>합니다.</li></ol></div>`;
+// ---- ranking (tournament)
+try{const rk=await (await fetch('/api/ranking')).json();const rows=rk.rows||[];const sc=[...new Set(rows.flatMap(x=>x.scenarios))];const win={};rows.forEach(x=>{if(x.window)win[x.stage]=x.window});
+h+=`<div class="card" style="margin-top:12px"><b>🏆 조합 랭킹 (토너먼트)</b> <span class="mut">— 한 번에 하나만 바꾸고 나머지는 고정, 2개씩 올림</span>`;
+h+=`<details open style="margin:8px 0"><summary><b>어떻게 쟀나 (측정 방식)</b></summary><ul style="margin:6px 0 0 18px;line-height:1.7">
+<li><b>날짜·장비:</b> 2026-11-19, Apple M2 Pro 32GB. 내 컴퓨터 AI + 외장하드(SAMSUNG)에 있는 AI를 같은 조건으로 비교했어요.</li>
+<li><b>입력:</b> 합성 한국어 음성 시나리오를 모든 조합에 똑같이 재생(실제 녹음은 쓰지 않음).</li>
+<li><b>조합당 시나리오 3개, 1회씩:</b> 속도·품질 비교는 <code>s01_normal, s05_terms, s06_numbers</code>, 끼어들기 비교는 <code>s01_normal, s08_contradict_rfp, s11_ramble</code>. 반복·평균은 없음(표본 3).</li>
+<li><b>답변 끝내는 방식:</b> 사용자가 <b>[답변 끝] 버튼</b>을 누르는 방식. 테스트에서는 <b>실제 말이 끝나는 순간에 버튼이 눌렸다고 가정</b>했어요. 응답 시간 = 버튼 → AI 첫 소리(서버 기준).</li>
+<li><b>품질 채점:</b> gpt-6-luna가 질문이 답에 맞는지·근거·깊이·자연스러움을 1~5점으로 채점(합성 텍스트만 전송). 모델은 미리 불러 둔 상태로 쟀고 첫 로드 시간은 뺐어요.</li>
+<li><b>측정 시간대:</b> ${Object.entries(win).map(([k,v])=>k+' '+v[0]+' ~ '+v[1]).join(' · ')||'-'} · <b>측정한 조합 ${rows.length}개</b> (조합당 응답 3개 = ${rows.length*3}개 응답)</li></ul></details>`;
+h+=`<div class="card" style="margin:8px 0;background:#f3f8ff"><b>⭐ 데모에 기본 적용된 구성</b>: LLM phi4-mini:3.8b(외장하드) · 받아쓰기 faster-whisper small · TTS macOS AVSpeech(Yuna) · 질문 전략 two_track · 끼어들기 rule. 아래 랭킹에서 ⭐가 붙은 줄이 이 구성이에요(결승 1위).</div>`;
+h+=`<p class="mut" style="margin:6px 0"><b>점수(100점 만점)</b> = ${Object.entries(rk.weights).map(([k,v])=>rk.labels[k]+' '+Math.round(v*100)+'%').join(' + ')}. 측정 안 된 지표는 빼고 가중치를 다시 나눠요. ☁️ = 클라우드 사용(실제 RFP·녹음에는 못 씀). ±3점은 동률로 보세요. 단계가 다른 점수는 직접 비교하지 마세요.</p>`;
+const costTxt=x=>x.cloud?'<b>$'+f(x.cost_per_1000,2)+'</b> <span class="mut">(1개 ≈ $'+(x.cost_per_1000/1000).toFixed(5)+')</span>':'0 <span class="mut">(로컬)</span>';
+const isDef=c=>(c.llm=='ollamax:phi4-mini:3.8b'||c.llm=='ollama:phi4-mini:3.8b')&&c.stt=='small'&&c.strategy=='two_track'&&c.interjection=='rule'&&c.tts=='av';window.__rk=rows;
+const cfgTxt=c=>(isDef(c)?'<b>⭐ 데모 기본값</b> ':'')+`LLM <b>${(c.llm||'').replace('ollamax:','외장 ').replace('ollama:','').replace('openai:','☁ ')}</b> · 받아쓰기 ${c.stt} · 전략 ${c.strategy} · 끼어들기 ${c.interjection} · TTS ${c.tts}`;
+const fin=rows.filter(x=>x.stage=='결승');const TR=(a,b)=>T(a,b).replace('<table>','<table class="rk">');
+if(fin.length){h+=`<p style="margin:10px 0 4px"><b>🥇 결승 전체 순위 (${fin.length}개 조합)</b> <span class="mut">같은 조건·같은 시나리오 5개로 비교</span> &nbsp; 상위 <input id="topn" type="number" min="1" value="${fin.length}" style="width:70px" oninput="(function(n){document.querySelectorAll('.rk').forEach(t=>[...t.rows].slice(1).forEach((r,i)=>r.style.display=i<n?'':'none'))})(+this.value||999)">개만 보기</p>`+TR(['순위','조합 구성','점수','쓸 만한 비율','질문 품질','응답(초)','끼어들기 F1','비용(질문 1,000개당)'],fin.map((x,i)=>[i+1,'<span class="mut">'+(x.cloud?'☁️ ':'')+cfgTxt(x.cfg)+'</span>','<b>'+f(x.score,1)+'</b>'+bar(x.score/100),pc(x.usable_rate),f(x.mean_quality,2),f(x.mean_e2e,2),f(x.interj_f1,1),costTxt(x)]))+`<p class="mut">±3점은 동률로 보세요. 1~2위는 점수 차가 2.7점이라 사실상 동률이에요. 끼어들기는 합성 음성에서는 모두 맞았지만(F1 1.0), 실제 사람 목소리에서는 규칙 방식이 잘못 끼어드는 문제가 있었어요.</p><p style="margin:12px 0 4px"><b>전체 랭킹</b> <span class="mut">(1·2단계 포함)</span></p>`}
+h+=rows.length?TR(['순위','단계','바꾼 것','조합 구성','점수','쓸 만한 비율','질문 품질','응답(초)','받아쓰기 틀린 비율','비용(질문 1,000개당)','표본','시험 전체 소요(초)'],rows.map(x=>[x.rank,x.stage,(x.cloud?'☁️ ':'')+x.label,'<span class="mut">'+cfgTxt(x.cfg)+'</span>'+(x.error?'<br><span class="err">오류: '+x.error+'</span>':''),'<b>'+f(x.score,1)+'</b>'+bar(x.score/100),pc(x.usable_rate),f(x.mean_quality,1),f(x.mean_e2e,2),x.mean_cer==null?'-':f(x.mean_cer,3),costTxt(x),x.n+'개',x.wall_sec??'-']))+`<p class="mut">전체 ${rows.length}개 조합(위 칸의 숫자로 상위 N개만 볼 수 있어요). 지표·계산식·전체 표: docs/RANKING.md</p><p class="mut"><b>응답(초)</b> = 내가 [답변 끝]을 누른 뒤 AI가 말을 시작할 때까지(체감 지연, 점수에 반영). <b>비용</b> = 질문 1,000개를 만들 때 드는 추정 클라우드 비용(USD, 입력 700·출력 150토큰 가정, OpenAI 공식 가격). 로컬 모델은 0이고 점수에 5% 반영돼요. <b>시험 전체 소요(초)</b> = 이 조합의 시험 하나(시나리오 3개 재생 + 채점 + <b>모델 불러오기</b>)에 걸린 전체 시간으로, 외장하드 모델은 처음 읽는 시간이 포함돼 크게 나오며 점수에는 쓰지 않아요.</p>`+((rk.unranked||[]).length?`<p class="mut"><b>순위에서 제외(측정 불가·재측정 중) ${rk.unranked.length}개:</b> ${rk.unranked.map(u=>u.label.replace('LLM=','')).join(', ')}</p>`:''):'<p class="mut">토너먼트가 진행 중이에요. 끝나면 여기에 나옵니다.</p>';h+='</div>'}catch(e){}
+// ---- 1 structure
+if(B&&A&&C){h+=S(1,'세 가지 구조 비교 — 누가 제일 빨리 말을 시작하나',tm.t6?.wall_sec,'같은 합성 음성 3개로 비교했어요. 시간이 짧을수록 좋습니다.');
+h+=T(['구조','보통','가장 느린 경우','2초 이내 비율','질문은 누가 만드나','내 목소리가 밖으로 나가나'],[
+['B. 내 컴퓨터에서만',f(B.p50,2)+'초',f(B.max,2)+'초',bar(B.under_2s),'우리 시스템(통제 가능)','아니요'],
+['A. 화상통화 기술(LiveKit) 경유',f(A.p50,2)+'초',f(A.max,2)+'초',bar(A.under_2s),'우리 시스템(통제 가능)','아니요(실험은 내 컴퓨터 안에서)'],
+['C. OpenAI 음성 모델','<b>'+f(C.p50,2)+'초</b>',f(C.max,2)+'초',bar(C.under_2s),'AI가 직접(통제 어려움)','<b>예</b>']])}
+// ---- 2 question strategies
+const sr=[['matrix_B_direct_hybrid','답을 듣고 → 분석한 뒤 → 새 질문 생성','분석 때문에 가장 느림'],['matrix_B_hybrid_hybrid','답을 듣고 → 분석한 뒤 → 필요하면 미리 만든 질문 사용','분석 때문에 느림'],['matrix_B_two_track_hybrid','빠른 판단으로 먼저 질문 생성, 정밀 분석은 나중에','2초 언저리'],['matrix_B_precomputed_hybrid','미리 만들어 둔 질문을 그대로 읽기','가장 빠르지만 답과 안 맞을 수 있음']];
+h+=S(2,'질문을 만드는 방식 4가지 비교',null,'합성 음성 13개로 비교했어요. 같은 컴퓨터, 같은 AI 모델(qwen2.5:7b)입니다.');
+h+=T(['방식','보통','2초 이내 비율','한 줄 평'],sr.filter(x=>syn[x[0]]).map(x=>[x[1],f(syn[x[0]].e2e.p50,2)+'초',bar(syn[x[0]].e2e.under_2s),x[2]]));
+if(m.t12){h+=`<p style="margin:8px 0 2px"><b>질문이 답과 얼마나 맞나요?</b> (3개 상황, 5점 만점) — 빠르다고 좋은 게 아니에요.</p>`+T(['방식','질문이 답에 맞는 정도','"빠르고 + 맞는" 비율'],Object.entries(m.t12.runs).map(([k,v])=>[({matrix_B_precomputed_hybrid:'미리 만든 질문 읽기',matrix_B_two_track_hybrid:'빠른 판단 + 나중에 정밀 분석',matrix_B_direct_hybrid:'분석 후 새로 생성'})[k]||k,f(v.mean_quality_1to5,1)+'점',v.usable_rate==0?'<span class="err">3개 중 0개</span>':pc(v.usable_rate)]))+`<p class="mut">※ "빠르고 맞는" = 2초 안에 말을 시작하면서 질문 점수가 3.5점 이상. 세 방식 모두 이 3개 상황에서는 기준을 못 넘었어요(2초를 넘기거나, 끼어들기가 일어난 상황은 평가가 안 됨).</p>`}
+// ---- 3 interjection
+h+=S(3,'AI가 말 도중에 끼어드는 기능',tm.t5?.wall_sec,'끼어들어야 할 상황(모순된 말, 딴소리, 같은 말 반복)에서 제대로 끼어드는지 봤어요.');
+const ij=[['matrix_B_two_track_rule','정해진 규칙으로 판단'],['matrix_B_two_track_llm','AI가 판단'],['matrix_B_two_track_hybrid','규칙으로 후보를 찾고 AI가 확인']];
+h+=T(['방식','끼어들어야 할 때 끼어든 비율','끼어들면 맞는 비율','잘못 끼어든 비율'],ij.filter(x=>syn[x[0]]).map(x=>{const i=syn[x[0]].interj;return [x[1],pc(i.recall),pc(i.precision),pc(i.false_interjection_rate??0)]}));
+h+=`<p class="mut">⚠ 합성 음성에서는 잘 맞았지만, <b>실제 사람이 말한 정상적인 대답 9번 중 7번에서 '딴소리'라며 잘못 끼어들었어요</b>(규칙 방식). 규칙이 한국어 말투에는 너무 거칠다는 뜻입니다.</p>`;
+// ---- 4 STT
+h+=S(4,'사람 말을 글로 옮기는 정확도 (받아쓰기)',tm.t1?.wall_sec,'회의에서 녹음한 실제 사람 목소리와, 주신 전사문을 정답으로 비교했어요. 틀린 비율이 낮을수록 좋아요.');
+const rows4=[];if(r.real_stt){const s=r.real_stt;rows4.push(['내 컴퓨터 · small(작은 모델) — 쉬운 부분 3개 / 전체 11개',f(m.t1?.['faster-whisper:small@mps']?.mean_cer,2)+' / '+f(s['faster-whisper:small@mps']?.mean_cer,2),'빠름']);rows4.push(['내 컴퓨터 · turbo(큰 모델) — 쉬운 부분 3개 / 전체 11개',f(m.t1?.['faster-whisper:large-v3-turbo@mps']?.mean_cer,2)+' / '+f(s['faster-whisper:large-v3-turbo@mps']?.mean_cer,2),'조금 느리지만 훨씬 정확']);}
+if(m.t10?.['gpt-transcribe'])rows4.push(['OpenAI · gpt-transcribe (합성 음성으로만 시험)',f(m.t10['gpt-transcribe'].mean_cer,2),'가장 정확. 단, 목소리가 외부로 나감']);
+h+=T(['방식','틀린 비율','한 줄 평'],rows4);
+// ---- 5 premature end
+if(r.real_endpointing){const e=r.real_endpointing.endpoints;h+=S(5,'사람이 말하다 쉬면 AI가 "끝났다"고 착각하는 문제',tm.t2?.wall_sec,'사람 대답 한 번을 AI가 몇 조각으로 끊었는지예요. <b>1이면 완벽</b>, 클수록 도중에 끊고 들어올 뻔했다는 뜻입니다.');
+h+=T(['"몇 초 동안 조용하면 끝난 걸로 볼까"','한 번의 대답을 끊은 횟수(평균)','의미'],Object.entries(e).map(([k,v])=>{const a=v.reduce((x,y)=>x+y,0)/v.length;return [f(k/1000,1)+'초',f(a,1)+'번',a<=1.5?'거의 정확':a<=3?'가끔 끊김':'자주 끊김']}))+`<p class="mut">기다리는 시간을 늘리면 덜 끊기지만, 그만큼 AI의 첫 응답이 늦어져요. 이 둘 사이에서 균형을 잡아야 합니다.</p>`}
+// ---- 6 before/after
+if(t4.length){h+=S(6,'개선 전/후 — 사람 목소리 3개로 해 본 결과',null,'"미리 질문을 준비해 두고, 1.5초 동안 말이 없을 때만 실제로 말하는" 방식을 넣었어요.');
+h+=T(['방식','평균 걸린 시간','2초 이내 비율','대답 한 번당 끊긴 횟수'],t4.map(x=>{const s=x.summary,e=s.e2e_after_clip_end;return [({'기본: small, 침묵 0.6초':'개선 전 (기본)','미리 생성+1.5초 확인, small':'개선 후 (작은 받아쓰기 모델)','미리 생성+1.5초 확인, turbo':'개선 후 (큰 받아쓰기 모델)'})[x.label]||x.label,f(e.mean,2)+'초',Math.round(e.under_2s*3)+'/3',f(s.avg_endpoints_per_answer,1)+'번']}))+`<p class="mut">끊김이 절반으로 줄고 평균도 빨라졌어요. 큰 받아쓰기 모델은 더 정확한 대신 2초를 넘기는 경우가 늘었습니다. 표본이 3개라 경향만 보세요.</p>`}
+// ---- 7 AI models
+h+=S(7,'질문을 만드는 AI 모델 비교',tm.t8?.wall_sec,'같은 상황에서 꼬리질문을 만들게 하고 속도와 품질(5점 만점, 다른 AI가 채점)을 봤어요.');
+const rows7=[];if(m.t7)Object.entries(m.t7.summary).filter(([k])=>k.startsWith('ollama')).forEach(([k,v])=>rows7.push(['내 컴퓨터 · '+k.replace('ollama:',''),f(v.mean_first_token_s,2)+'초',f(v.mean_quality_1to5,1)+'점']));
+if(m.t8)Object.entries(m.t8.summary).forEach(([k,v])=>rows7.push(['OpenAI · '+k,f(v.mean_first_token_s,2)+'초',f(v.mean_quality_1to5,1)+'점']));
+h+=T(['모델','첫 글자가 나오기까지','질문 품질'],rows7)+(()=>{const rr=(window.__rk||[]).filter(x=>x.stage=='2단계'||x.stage=='클라우드 라운드').sort((a,b)=>b.score-a.score);return rr.length?`<p style="margin:12px 0 2px"><b>실제 파이프라인에서 비교(토너먼트 2단계·클라우드 라운드)</b> — 받아쓰기·TTS까지 포함한 응답 시간이에요.</p>`+T(['모델','응답(초)','질문 품질','쓸 만한 비율','비용(질문 1,000개당)','점수'],rr.map(x=>[(x.cloud?'☁️ ':'')+(x.cfg.llm||'').replace('ollamax:','외장 ').replace('ollama:','내 컴퓨터 · ').replace('openai:',''),f(x.mean_e2e,2),f(x.mean_quality,1),pc(x.usable_rate),x.cloud?'$'+f(x.cost_per_1000,2):'0 (로컬)',f(x.score,1)]))+`<p class="mut">응답이 2초를 넘는 큰 모델(gemma4:12b, qwen3.5:9b, ministral-3:14b 등)은 품질이 좋아도 '쓸 만한 비율'이 0%예요. 발열 때문에 gemma4:26b, qwen3.6, gpt-oss:20b는 제외했습니다.</p>`:''})()+`<p class="mut">최신 GPT들은 품질이 모두 높아서(4.7~5.0) 서로 구별이 잘 안 돼요. 속도는 gpt-6.2-sol과 gpt-6.1-terra가 빠릅니다. 가격은 아래 10번에 정리했어요.</p>`;
+// ---- 8 realtime ladder
+if(m.t9){h+=S(8,'OpenAI 실시간 음성 모델 — 최신일수록?',tm.t9?.wall_sec,'모델 버전을 올려 가며 비교했어요.');
+h+=T(['모델','보통 걸린 시간','질문 품질'],[['gpt-realtime(앞서 시험한 기본)',f(C?.p50,2)+'초','-'],...Object.entries(m.t9.models).map(([k,v])=>[k,f(v.e2e.p50,2)+'초',f(v.mean_quality_1to5,1)+'점'])])+`<p class="mut">최신·고성능일수록 질문 품질은 오르지만 <b>더 느려져요</b>(2.1 버전은 2초를 넘김). 어떤 신형도 기본 모델(1.26초)보다 빠르지는 않았습니다.</p>`}
+// ---- 9 judge
+if(m.t11){h+=S(9,'채점하는 AI는 믿을 만한가?',tm.t11?.wall_sec,'질문 품질을 채점하는 AI끼리 얼마나 같은 결론을 내는지 봤어요(1에 가까울수록 일치).');
+h+=T(['채점 AI','가장 강한 AI와 일치도','판단'],Object.entries(m.t11).map(([k,v])=>[k.replace('ollama:','내 컴퓨터 · ').replace('openai:','OpenAI · '),f(v['pearson_vs_ref'],2),v['pearson_vs_ref']>=0.75?'꽤 믿을 만함':'참고용(점수가 너무 박함)']))+`<p class="mut">실제 녹음은 밖으로 못 보내서 내 컴퓨터 AI로만 채점했는데, 일치도가 낮아요. 그래서 실제 대화의 꼬리질문 점수는 <b>대략적인 순위로만</b> 봐야 합니다.</p>`}
+h+=S(10,'OpenAI 가격과 가성비 (공식 가격 페이지, 2026-11-19)',null,'백만 토큰당 달러예요. 질문 품질·속도는 위 시험 결과입니다.');
+h+=T(['모델','입력 가격','출력 가격','질문 품질','첫 글자까지','한 줄 평'],[['gpt-6-luna','$0.10','$0.50','4.75','1.19초','<b>가성비 최고</b> (질문 1,000개 약 $0.15)'],['gpt-6.1-terra','$1.00','$5.00','5.0','0.97초','품질 최우선일 때'],['gpt-6.2-sol','$2.00','$10.00','4.92','0.90초','가장 빠름, 중간 가격'],['gpt-6.2-astra','$8.00','$40.00','4.92','1.66초','가장 비싸고 느림 — 비추천']])+'<p style="margin:10px 0 2px"><b>실시간 음성 모델</b> (음성 토큰 1백만당)</p>'+T(['모델','입력','출력','보통 걸린 시간','품질','한 줄 평'],[['gpt-realtime-2.1-mini','$10','$20','1.69초','4.08','<b>가성비 최고</b>'],['gpt-realtime-2','$32','$64','1.80초','4.33','3배 비쌈'],['gpt-realtime-2.1','$32','$64','2.22초','4.67','품질 최고, 2초 넘김']])+'<p class="mut">음성 인식 gpt-transcribe는 분당 $0.0045(1시간 약 $0.27). 지금까지 쓴 비용은 상한 추정 약 $0.5 이하이고 정확한 값은 OpenAI 대시보드의 Usage에서 확인하세요. 자세한 표: docs/OPENAI_PRICING.md</p>';
+h+=(()=>{const cr=(window.__rk||[]).filter(x=>x.cloud&&x.stage=='클라우드 라운드'||x.cloud&&x.stage=='2단계').sort((a,b)=>b.score-a.score);return cr.length?`<p style="margin:12px 0 2px"><b>실제 파이프라인에서 잰 클라우드 LLM</b> (입력 700·출력 150토큰 가정)</p>`+T(['모델','응답(초)','질문 품질','질문 1,000개당 비용','점수'],cr.map(x=>[(x.cfg.llm||'').replace('openai:',''),f(x.mean_e2e,2),f(x.mean_quality,1),'$'+f(x.cost_per_1000,2),f(x.score,1)]))+`<p class="mut">가격표에는 있지만 아직 안 잰 모델: gpt-5.4-nano, gpt-5-mini, gpt-5-nano, gpt-4.1-mini, gpt-4o-mini 등. 채점은 gpt-6-luna가 해서 자기 모델에 후할 수 있어요.</p>`:''})();
+if(r.fastpath){const fp=r.fastpath,mx=a=>Math.max(...a),av=a=>a.reduce((s,x)=>s+x,0)/a.length;
+h+=S(11,'0.6초 안에 답하기 — 어디서 느려졌고 무엇을 바꿨나',null,'목표: 말이 끝난 뒤 AI 소리가 나기까지 2초 중 F1 목소리가 쓰는 시간을 빼고 0.6초 안에 끝내기. 측정 조건: '+esc(fp.setup));
+h+=`<h3>① 배경 작업이 답변을 막던 문제 (고쳐서 해결)</h3><p class="mut">${esc(fp.contention.title)}. 배경에서 질문을 만드는 AI 작업이 끝날 때까지 로컬 모델이 한 번에 하나만 처리해서 기다렸어요. 질문 은행이 다 만들어진 뒤에는 원래 없던 문제이고, 발표 직후나 지문이 길어 은행을 만드는 중일 때만 생겼어요.</p>`+T(['','가장 느린 경우','평균'],[['고치기 전',f(mx(fp.contention.before),2)+'초',f(av(fp.contention.before),2)+'초'],['고친 후(답변이 들어오면 배경 작업을 바로 멈춤)',f(mx(fp.contention.after),2)+'초',f(av(fp.contention.after),2)+'초']]);
+h+=`<h3>② 소리를 미리 만들어 두기</h3><p class="mut">${esc(fp.first_sound.title)}: 가장 느린 경우 ${f(mx(fp.first_sound.values),2)}초, 평균 ${f(av(fp.first_sound.values),2)}초(받아쓰기 0~0.5초는 별도). 질문, 꼬리질문 후보, 끼어들기 문장의 소리를 미리 만들어 두면 말할 때는 저장된 소리를 바로 틀어요. 아래 값은 서버가 소리를 내보내기 시작할 때까지이고, F1이 실제로 말하는 시간(질문 하나에 약 6초)은 그대로예요.</p>`+T(['말하는 경우','소리를 미리 만들지 않았을 때','미리 만들었을 때'],fp.paths.map(x=>[x.name,f(x.uncached,2)+'초',f(x.cached,2)+'초']));
+h+=`<h3>③ 참고: F1 목소리 합성 단계 수와 시간</h3><p class="mut">단계를 줄이면 빨라지지만 소리 품질은 측정하지 않았어요(지금은 6단계).</p>`+T(['단계 수','12글자 첫 조각','48글자 한 문장'],fp.tts_steps.map(x=>[x.steps+(x.note?' ('+x.note+')':''),f(x.chars12,2)+'초',f(x.chars48,2)+'초']));
+h+=`<ul class="mut">`+fp.notes.map(n=>`<li>${esc(n)}</li>`).join('')+`</ul>`}
+h+=`<p class="mut" style="margin-top:18px">자세한 방식과 사례: docs/MINI_SUITE.md · 시험 코드는 3개 샘플 단위라 숫자는 "이런 경향이 있다" 정도로 읽어 주세요.</p>`;
+$('#resout').className='';$('#resout').innerHTML=h}
+async function updateKeyBox(){const need=sel?.id=='C'||[...document.querySelectorAll('#opts select')].some(x=>String(x.value).startsWith('openai'));$('#keycard').hidden=!need;if(!need)return;try{const k=await (await fetch('/api/key_status')).json();$('#keystate').textContent=k.set?'✅ 등록된 OpenAI 키가 있습니다. 값은 화면에 표시하지 않습니다. 새로 등록하면 기존 키를 바꿉니다.':'아직 등록된 OpenAI 키가 없습니다.';$('#savekey').textContent=k.set?'새 키로 바꾸기':'저장 후 확인';$('#savekey').dataset.has=k.set?'1':''}catch(e){}}
+$('#savekey').onclick=async()=>{if($('#savekey').dataset.has&&!confirm('등록된 키가 있습니다. 새 키로 바꿀까요?'))return;const r=await fetch('/api/key',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({key:$('#key').value})});const j=await r.json();$('#key').value='';$('#keyres').textContent=j.ok?'✅ 유효한 키입니다 ('+j.detail+')':'❌ '+(j.error||j.detail);$('#keyres').className=j.ok?'':'err';init()};
+async function loadListen(){const r=await (await fetch('/api/listen')).json();const au=u=>u?`<audio controls preload="none" src="${u}" style="width:100%"></audio>`:'';
+$('#listenout').innerHTML=r.map(x=>`<div class="card" style="margin:8px 0"><b>${x.id}</b>
+<div style="margin-top:6px"><b>AI 질문</b><div>${x.question}</div>${au(x.q_audio)}</div>
+<div style="margin-top:6px"><b>사용자 답변</b><div>${x.user_text}</div>${au(x.user_audio)}<div class="mut">AI가 들은 것(STT): ${x.stt||'-'}</div></div>
+<div style="margin-top:6px"><b>AI 다음 질문</b> <span class="mut">${x.action||'-'} · ${x.e2e_s??'-'}s ${x.interjected?'· ⚡끼어들기 '+x.interjections.map(i=>i.kind+'@'+i.t_after_speech_start.toFixed(1)+'s').join(','):''}</span><div>${x.agent_question||'-'}</div>${au(x.agent_audio)}</div></div>`).join('')}
+async function delPair(id){if(!confirm(id+' 쌍(질문+답변)을 삭제할까요? (data/real_qa_deleted로 이동)'))return;const r=await (await fetch('/api/real_delete',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({id})})).json();if(r.ok)document.getElementById('pair-'+id)?.remove();else alert(r.error)}
+async function loadReal(){const r=await (await fetch('/api/listen_real')).json();const au=u=>u?`<audio controls preload="none" src="${u}" style="width:100%"></audio>`:'';
+$('#realout').innerHTML=`<div class="mut">총 ${r.length}쌍 · 수동 확인 ${r.filter(x=>!x.auto).length} · 자동 검출(미검증) ${r.filter(x=>x.auto).length}</div>`+r.map(x=>`<div class="card" id="pair-${x.id}" style="margin:8px 0"><button style="float:right" onclick="delPair('${x.id}')">삭제</button><b>${x.id}</b> <span class="mut">${x.src.slice(5).replace('-','/')} ${Math.floor(x.t/60)}:${String(Math.floor(x.t%60)).padStart(2,'0')} · 답변 ${x.answer_dur_s}s · ${x.auto?'자동 검출(미검증)':'수동 확인'}${x.endpoints_in_answer!=null?` · AI가 답변 도중 끝났다고 판단한 횟수 <b class="${x.endpoints_in_answer>1?'err':''}">${x.endpoints_in_answer}</b>`:''}</span>
+<div style="margin-top:6px"><b>질문</b><div>${x.question}</div>${au(x.q_audio)}${x.q_synth?'<div class="mut">(질문 음성 없음 — 질문자가 본인 마이크로 말해서 시스템 오디오 녹음에 들어가지 않음)</div>':''}</div>
+<div style="margin-top:6px"><b>답변</b><div>${x.answer}</div>${x.a_audio?`<audio controls preload="none" src="${x.a_audio}" style="width:100%"></audio>`:''}</div>
+${x.turns.length?`<div style="margin-top:6px"><b>AI 반응(끝점마다)</b>${x.turns.map(t=>`<div class="mut">@${t.vad_end_at_s}s [${t.action}] ${t.question}</div>`).join('')}</div>`:''}
+${x.human_followup?`<div style="margin-top:6px"><b>실제 사람의 꼬리질문</b><div>${x.human_followup}</div>${au(x.followup_audio)}</div>`:''}</div>`).join('')}
+init();
+setTimeout(()=>{const b=document.querySelector('[data-t="res"]');if(b&&location.hash.includes('res'))b.click()},300);   // opens on the experiment (mic) tab; use #res for the results tab
+</script></body></html>

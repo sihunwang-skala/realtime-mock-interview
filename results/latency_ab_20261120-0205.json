@@ -1,0 +1,55 @@
+{
+ "rules": {
+  "latency": "중앙값이 8% 이상 AND 0.05초 이상 줄고, CPU초가 15% 넘게 늘지 않음",
+  "heat": "CPU초가 15% 이상 줄고, 중앙값이 0.05초 넘게 늘지 않고, 최대값이 0.3초 넘게 늘지 않음"
+ },
+ "results": [
+  {
+   "name": "base",
+   "kind": "baseline",
+   "desc": "현재 설정 그대로",
+   "trials": [
+    {
+     "kind": "normal",
+     "ok": true,
+     "why": "",
+     "total_s": 0.54,
+     "stt_s": 0.54,
+     "generate_s": 0.0,
+     "tts_s": 0.0
+    },
+    {
+     "kind": "dontknow",
+     "ok": false,
+     "why": "아직 말씀하신 내용이 없습니다",
+     "total_s": null,
+     "stt_s": null,
+     "generate_s": null,
+     "tts_s": null
+    },
+    {
+     "kind": "normal",
+     "ok": false,
+     "why": "아직 말씀하신 내용이 없습니다",
+     "total_s": null,
+     "stt_s": null,
+     "generate_s": null,
+     "tts_s": null
+    }
+   ],
+   "median": 0.54,
+   "mean": 0.54,
+   "max": 0.54,
+   "cpu_s": 104.7,
+   "wall_s": 36.0,
+   "stt_calls": 4,
+   "stt_s": 1.9,
+   "guard": {
+    "load": 2.78,
+    "waited_s": 0
+   },
+   "verdict": "참고",
+   "why": ""
+  }
+ ]
+}

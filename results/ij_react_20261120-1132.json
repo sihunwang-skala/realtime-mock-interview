@@ -1,0 +1,66 @@
+[
+ {
+  "cond": "pe4",
+  "n": 5,
+  "hit": 5,
+  "median": 2.41,
+  "max": 2.42,
+  "whisper_calls": 20,
+  "whisper_s": 10.5,
+  "trials": [
+   {
+    "react_s": 2.4,
+    "kind": "contradiction_rfp"
+   },
+   {
+    "react_s": 2.41,
+    "kind": "contradiction_rfp"
+   },
+   {
+    "react_s": 2.41,
+    "kind": "contradiction_rfp"
+   },
+   {
+    "react_s": 2.42,
+    "kind": "contradiction_rfp"
+   },
+   {
+    "react_s": 2.41,
+    "kind": "contradiction_rfp"
+   }
+  ],
+  "trigger_s": 10.3
+ },
+ {
+  "cond": "pe2",
+  "n": 5,
+  "hit": 5,
+  "median": 0.32,
+  "max": 0.35,
+  "whisper_calls": 25,
+  "whisper_s": 11.9,
+  "trials": [
+   {
+    "react_s": 0.32,
+    "kind": "contradiction_rfp"
+   },
+   {
+    "react_s": 0.35,
+    "kind": "contradiction_rfp"
+   },
+   {
+    "react_s": 0.34,
+    "kind": "contradiction_rfp"
+   },
+   {
+    "react_s": 0.31,
+    "kind": "contradiction_rfp"
+   },
+   {
+    "react_s": 0.29,
+    "kind": "contradiction_rfp"
+   }
+  ],
+  "trigger_s": 10.3
+ }
+]

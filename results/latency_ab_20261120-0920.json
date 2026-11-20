@@ -1,0 +1,73 @@
+{
+ "rules": {
+  "latency": "중앙값이 8% 이상 AND 0.05초 이상 줄고, Whisper 시간이 15% 넘게 늘지 않음",
+  "heat": "Whisper 시간이 15% 이상 줄고, 중앙값이 0.05초 넘게 늘지 않고, 최대값이 0.3초 넘게 늘지 않음 (CPU초는 Ollama 재시작·다른 세션 때문에 믿을 수 없어 참고만)"
+ },
+ "results": [
+  {
+   "name": "base",
+   "kind": "baseline",
+   "desc": "현재 설정 그대로",
+   "trials": [
+    {
+     "kind": "normal",
+     "ok": true,
+     "why": "",
+     "total_s": 0.53,
+     "stt_s": 0.53,
+     "generate_s": 0.0,
+     "tts_s": 0.0
+    },
+    {
+     "kind": "dontknow",
+     "ok": true,
+     "why": "",
+     "total_s": 0.92,
+     "stt_s": 0.42,
+     "generate_s": 0.0,
+     "tts_s": 0.5
+    },
+    {
+     "kind": "normal",
+     "ok": true,
+     "why": "",
+     "total_s": 0.54,
+     "stt_s": 0.54,
+     "generate_s": 0.0,
+     "tts_s": 0.0
+    },
+    {
+     "kind": "dontknow",
+     "ok": true,
+     "why": "",
+     "total_s": 0.38,
+     "stt_s": 0.37,
+     "generate_s": 0.0,
+     "tts_s": 0.0
+    },
+    {
+     "kind": "normal",
+     "ok": true,
+     "why": "",
+     "total_s": 0.48,
+     "stt_s": 0.47,
+     "generate_s": 0.0,
+     "tts_s": 0.0
+    }
+   ],
+   "median": 0.53,
+   "mean": 0.57,
+   "max": 0.92,
+   "cpu_s": 156.9,
+   "wall_s": 42.0,
+   "stt_calls": 8,
+   "stt_s": 3.7,
+   "guard": {
+    "load": 3.92,
+    "waited_s": 70
+   },
+   "verdict": "참고",
+   "why": ""
+  }
+ ]
+}

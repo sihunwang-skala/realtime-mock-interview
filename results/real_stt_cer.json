@@ -1,0 +1,126 @@
+{
+ "faster-whisper:small@mps": {
+  "clips": 11,
+  "mean_cer": 0.322,
+  "mean_rtf": 0.032,
+  "rows": [
+   {
+    "id": "m1_a",
+    "cer_vs_provided_ref": 1.066,
+    "rtf": 0.038
+   },
+   {
+    "id": "m2_a",
+    "cer_vs_provided_ref": 0.136,
+    "rtf": 0.031
+   },
+   {
+    "id": "m3_a",
+    "cer_vs_provided_ref": 0.116,
+    "rtf": 0.034
+   },
+   {
+    "id": "r1_a",
+    "cer_vs_provided_ref": 0.189,
+    "rtf": 0.029
+   },
+   {
+    "id": "r2_a",
+    "cer_vs_provided_ref": 0.777,
+    "rtf": 0.035
+   },
+   {
+    "id": "r3_a",
+    "cer_vs_provided_ref": 0.119,
+    "rtf": 0.03
+   },
+   {
+    "id": "r4_a",
+    "cer_vs_provided_ref": 0.378,
+    "rtf": 0.033
+   },
+   {
+    "id": "r5_a",
+    "cer_vs_provided_ref": 0.188,
+    "rtf": 0.034
+   },
+   {
+    "id": "r6_a",
+    "cer_vs_provided_ref": 0.207,
+    "rtf": 0.032
+   },
+   {
+    "id": "r7_a",
+    "cer_vs_provided_ref": 0.192,
+    "rtf": 0.03
+   },
+   {
+    "id": "r8_a",
+    "cer_vs_provided_ref": 0.178,
+    "rtf": 0.028
+   }
+  ]
+ },
+ "faster-whisper:large-v3-turbo@mps": {
+  "clips": 11,
+  "mean_cer": 0.132,
+  "mean_rtf": 0.064,
+  "rows": [
+   {
+    "id": "m1_a",
+    "cer_vs_provided_ref": 0.258,
+    "rtf": 0.06
+   },
+   {
+    "id": "m2_a",
+    "cer_vs_provided_ref": 0.026,
+    "rtf": 0.065
+   },
+   {
+    "id": "m3_a",
+    "cer_vs_provided_ref": 0.15,
+    "rtf": 0.067
+   },
+   {
+    "id": "r1_a",
+    "cer_vs_provided_ref": 0.217,
+    "rtf": 0.066
+   },
+   {
+    "id": "r2_a",
+    "cer_vs_provided_ref": 0.064,
+    "rtf": 0.066
+   },
+   {
+    "id": "r3_a",
+    "cer_vs_provided_ref": 0.031,
+    "rtf": 0.068
+   },
+   {
+    "id": "r4_a",
+    "cer_vs_provided_ref": 0.163,
+    "rtf": 0.065
+   },
+   {
+    "id": "r5_a",
+    "cer_vs_provided_ref": 0.191,
+    "rtf": 0.066
+   },
+   {
+    "id": "r6_a",
+    "cer_vs_provided_ref": 0.102,
+    "rtf": 0.065
+   },
+   {
+    "id": "r7_a",
+    "cer_vs_provided_ref": 0.088,
+    "rtf": 0.065
+   },
+   {
+    "id": "r8_a",
+    "cer_vs_provided_ref": 0.158,
+    "rtf": 0.054
+   }
+  ]
+ }
+}

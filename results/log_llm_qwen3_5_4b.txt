@@ -1,0 +1,37 @@
+[2026-11-18 13:18:09.182] [ctranslate2] [thread 2271025] [warning] The Apple Metal (MPS) backend is experimental.
+s01_normal e2e 2.372 cer 0.024 interj False act DEEPEN | 그런데 그 1.2 초 목표가 실제 운영 환경에서 얼마나 견고하게 지켜질 수 있는지, 구체적인 성능 테스트 데
+s02_short e2e 3.307 cer 0.0 interj False act CLARIFY | 그럼 구체적인 암호화 알고리즘과 키 관리 방식을 좀 더 자세히 알려주실 수 있겠어요?
+s03_long e2e 4.039 cer 0.069 interj False act DEEPEN | 로드밸런서와 오토스케일링으로 동시 접속자 5000 명을 처리하더라도, 데이터베이스 읽기 복제본 두 개를 활용
+s04_pause e2e 1.75 cer 0.389 interj False act DEEPEN | 그런데 그 1.2 초라는 수치가 실제 부하 테스트 환경에서 어떻게 도출되었는지 근거가 어디에 있나요?
+s05_terms e2e 2.035 cer 0.022 interj False act DEEPEN | AES-256, 1 년 보관, HSM 사용이 구체적으로 어떻게 구현되는지 기술적 아키텍처를 자세히 설명해 주
+s06_numbers e2e 1.934 cer 0.158 interj False act DEEPEN | 그런데 이 성능 목표들을 실제로 달성하기 위한 구체적인 기술적 전략이나 아키텍처는 어떤가요?
+s07_vague e2e 2.087 cer 0.0 interj False act CLARIFY | 경험만으로 응답 시간 목표 달성을 보장할 수 있나요? 구체적인 기술적 방안이나 수치 기반의 계획을 알려주세요
+s08_contradict_rfp e2e 2.172 cer 0.0 interj True act CHALLENGE | RFP 의 2 초 목표와 실제 답변인 5 초가 충돌하는 건 아닌지, 그리고 부하 상황이라는 전제 조건이 RF
+s09_rfp_violation e2e 2.207 cer 0.0 interj True act CHALLENGE | 비용 절감만으로 1 년을 3 개월로 줄이는 건 개인정보 보호 의무를 위반하는 게 아니냐.
+s10_repeat_request e2e 1.736 cer 0.0 interj False act REPEAT | 개인정보 보호 방안을 설명해 주세요.
+s11_ramble e2e 1.62 cer 0.029 interj True act SWITCH | 보안 설계에서 접근 로그는 어떻게 관리하실 건가요?
+s12_noise e2e 1.914 cer 0.292 interj False act CLARIFY | 그렇게 응답 시간을 유지할 수 있는 근거나 구체적인 수치적 목표가 있으신가요?
+s13_repetition e2e 1.884 cer 0.833 interj False act CLARIFY | 그럼 구체적인 최적화 전략이나 기술적 접근법은 무엇인가요?
+{
+ "e2e": {
+  "n": 10,
+  "mean": 2.306,
+  "p50": 1.985,
+  "p90": 3.38,
+  "p95": 3.71,
+  "max": 4.039,
+  "under_2s": 0.5
+ },
+ "timeout_rate": 0.0,
+ "mean_cer": 0.14,
+ "interjection": {
+  "tp": 3,
+  "fp": 0,
+  "fn": 1,
+  "tn": 9,
+  "precision": 1.0,
+  "recall": 0.75,
+  "false_interjection_rate": 0.0,
+  "missed_rate": 0.25
+ }
+}

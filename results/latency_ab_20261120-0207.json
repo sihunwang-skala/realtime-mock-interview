@@ -1,0 +1,268 @@
+{
+ "rules": {
+  "latency": "중앙값이 8% 이상 AND 0.05초 이상 줄고, CPU초가 15% 넘게 늘지 않음",
+  "heat": "CPU초가 15% 이상 줄고, 중앙값이 0.05초 넘게 늘지 않고, 최대값이 0.3초 넘게 늘지 않음"
+ },
+ "results": [
+  {
+   "name": "base",
+   "kind": "baseline",
+   "desc": "현재 설정 그대로",
+   "trials": [
+    {
+     "kind": "normal",
+     "ok": true,
+     "why": "",
+     "total_s": 0.51,
+     "stt_s": 0.51,
+     "generate_s": 0.0,
+     "tts_s": 0.0
+    },
+    {
+     "kind": "dontknow",
+     "ok": true,
+     "why": "",
+     "total_s": 0.9,
+     "stt_s": 0.4,
+     "generate_s": 0.0,
+     "tts_s": 0.5
+    },
+    {
+     "kind": "normal",
+     "ok": true,
+     "why": "",
+     "total_s": 0.56,
+     "stt_s": 0.55,
+     "generate_s": 0.0,
+     "tts_s": 0.0
+    },
+    {
+     "kind": "dontknow",
+     "ok": true,
+     "why": "",
+     "total_s": 0.36,
+     "stt_s": 0.36,
+     "generate_s": 0.0,
+     "tts_s": 0.0
+    },
+    {
+     "kind": "normal",
+     "ok": true,
+     "why": "",
+     "total_s": 0.91,
+     "stt_s": 0.91,
+     "generate_s": 0.0,
+     "tts_s": 0.0
+    }
+   ],
+   "median": 0.56,
+   "mean": 0.648,
+   "max": 0.91,
+   "cpu_s": 134.0,
+   "wall_s": 42.4,
+   "stt_calls": 15,
+   "stt_s": 7.1,
+   "guard": {
+    "load": 2.42,
+    "waited_s": 0
+   },
+   "verdict": "참고",
+   "why": ""
+  },
+  {
+   "name": "pe4_pw8",
+   "kind": "heat",
+   "desc": "부분 받아쓰기 2초→4초마다, 창 14초→8초",
+   "trials": [
+    {
+     "kind": "normal",
+     "ok": true,
+     "why": "",
+     "total_s": 0.52,
+     "stt_s": 0.52,
+     "generate_s": 0.0,
+     "tts_s": 0.0
+    },
+    {
+     "kind": "dontknow",
+     "ok": true,
+     "why": "",
+     "total_s": 0.34,
+     "stt_s": 0.34,
+     "generate_s": 0.0,
+     "tts_s": 0.0
+    },
+    {
+     "kind": "normal",
+     "ok": true,
+     "why": "",
+     "total_s": 0.55,
+     "stt_s": 0.55,
+     "generate_s": 0.0,
+     "tts_s": 0.0
+    },
+    {
+     "kind": "dontknow",
+     "ok": true,
+     "why": "",
+     "total_s": 0.38,
+     "stt_s": 0.38,
+     "generate_s": 0.0,
+     "tts_s": 0.0
+    },
+    {
+     "kind": "normal",
+     "ok": true,
+     "why": "",
+     "total_s": 0.47,
+     "stt_s": 0.47,
+     "generate_s": 0.0,
+     "tts_s": 0.0
+    }
+   ],
+   "median": 0.47,
+   "mean": 0.452,
+   "max": 0.55,
+   "cpu_s": 22.3,
+   "wall_s": 41.1,
+   "stt_calls": 8,
+   "stt_s": 3.6,
+   "guard": {
+    "load": 2.19,
+    "waited_s": 0
+   },
+   "verdict": "채택",
+   "why": "CPU -83%, 중앙값 -0.09초, 최대 -0.36초"
+  },
+  {
+   "name": "ctx2048",
+   "kind": "latency",
+   "desc": "LLM 문맥 길이 4096→2048",
+   "trials": [
+    {
+     "kind": "normal",
+     "ok": true,
+     "why": "",
+     "total_s": 0.51,
+     "stt_s": 0.51,
+     "generate_s": 0.0,
+     "tts_s": 0.0
+    },
+    {
+     "kind": "dontknow",
+     "ok": true,
+     "why": "",
+     "total_s": 0.34,
+     "stt_s": 0.34,
+     "generate_s": 0.0,
+     "tts_s": 0.0
+    },
+    {
+     "kind": "normal",
+     "ok": true,
+     "why": "",
+     "total_s": 1.04,
+     "stt_s": 1.04,
+     "generate_s": 0.0,
+     "tts_s": 0.0
+    },
+    {
+     "kind": "dontknow",
+     "ok": true,
+     "why": "",
+     "total_s": 0.37,
+     "stt_s": 0.37,
+     "generate_s": 0.0,
+     "tts_s": 0.0
+    },
+    {
+     "kind": "normal",
+     "ok": true,
+     "why": "",
+     "total_s": 0.88,
+     "stt_s": 0.88,
+     "generate_s": 0.0,
+     "tts_s": 0.0
+    }
+   ],
+   "median": 0.51,
+   "mean": 0.628,
+   "max": 1.04,
+   "cpu_s": -306.1,
+   "wall_s": 41.9,
+   "stt_calls": 15,
+   "stt_s": 7.4,
+   "guard": {
+    "load": 1.94,
+    "waited_s": 0
+   },
+   "verdict": "채택",
+   "why": "중앙값 -0.05초(-9%), CPU -328%"
+  },
+  {
+   "name": "base",
+   "kind": "baseline",
+   "desc": "현재 설정 그대로",
+   "trials": [
+    {
+     "kind": "normal",
+     "ok": true,
+     "why": "",
+     "total_s": 0.56,
+     "stt_s": 0.56,
+     "generate_s": 0.0,
+     "tts_s": 0.0
+    },
+    {
+     "kind": "dontknow",
+     "ok": true,
+     "why": "",
+     "total_s": 0.35,
+     "stt_s": 0.35,
+     "generate_s": 0.0,
+     "tts_s": 0.0
+    },
+    {
+     "kind": "normal",
+     "ok": true,
+     "why": "",
+     "total_s": 1.03,
+     "stt_s": 1.03,
+     "generate_s": 0.0,
+     "tts_s": 0.0
+    },
+    {
+     "kind": "dontknow",
+     "ok": true,
+     "why": "",
+     "total_s": 0.36,
+     "stt_s": 0.36,
+     "generate_s": 0.0,
+     "tts_s": 0.0
+    },
+    {
+     "kind": "normal",
+     "ok": true,
+     "why": "",
+     "total_s": 0.88,
+     "stt_s": 0.88,
+     "generate_s": 0.0,
+     "tts_s": 0.0
+    }
+   ],
+   "median": 0.56,
+   "mean": 0.636,
+   "max": 1.03,
+   "cpu_s": 5.5,
+   "wall_s": 41.9,
+   "stt_calls": 15,
+   "stt_s": 7.4,
+   "guard": {
+    "load": 1.52,
+    "waited_s": 0
+   },
+   "verdict": "참고",
+   "why": ""
+  }
+ ]
+}

@@ -1,0 +1,104 @@
+{
+ "gpt-transcribe": {
+  "mean_cer": 0.061,
+  "mean_sec": 1.02,
+  "rows": [
+   {
+    "id": "s05_terms",
+    "cer": 0.022,
+    "sec": 1.02,
+    "text": "개인 정보는 AES-256으로 암호화하고, 접근 로그는 1년 이상 보관합니다. 키 관리는 HSM을 사용합니다."
+   },
+   {
+    "id": "s06_numbers",
+    "cer": 0.079,
+    "sec": 1.15,
+    "text": "목표 응답 시간은 평균 1.2초이고 동시 접속자는 5,000명, 가용성은 99.9%입니다."
+   },
+   {
+    "id": "s12_noise",
+    "cer": 0.083,
+    "sec": 0.9,
+    "text": "표시와 비동기 프로 응답 시간을 1.2초로 유지하겠습니다."
+   }
+  ]
+ },
+ "gpt-live-transcribe": {
+  "mean_cer": null,
+  "mean_sec": null,
+  "rows": [
+   {
+    "id": "s05_terms",
+    "error": "NotFoundError('Error code: 404 - Invalid URL (POST /v1/audio/transcriptions)')"
+   },
+   {
+    "id": "s06_numbers",
+    "error": "NotFoundError('Error code: 404 - Invalid URL (POST /v1/audio/transcriptions)')"
+   },
+   {
+    "id": "s12_noise",
+    "error": "NotFoundError('Error code: 404 - Invalid URL (POST /v1/audio/transcriptions)')"
+   }
+  ]
+ },
+ "gpt-realtime-whisper": {
+  "mean_cer": null,
+  "mean_sec": null,
+  "rows": [
+   {
+    "id": "s05_terms",
+    "error": "NotFoundError('Error code: 404 - Invalid URL (POST /v1/audio/transcriptions)')"
+   },
+   {
+    "id": "s06_numbers",
+    "error": "NotFoundError('Error code: 404 - Invalid URL (POST /v1/audio/transcriptions)')"
+   },
+   {
+    "id": "s12_noise",
+    "error": "NotFoundError('Error code: 404 - Invalid URL (POST /v1/audio/transcriptions)')"
+   }
+  ]
+ },
+ "local:small": {
+  "mean_cer": 0.157,
+  "mean_sec": 0.47,
+  "rows": [
+   {
+    "id": "s05_terms",
+    "cer": 0.022,
+    "sec": 0.5
+   },
+   {
+    "id": "s06_numbers",
+    "cer": 0.158,
+    "sec": 0.49
+   },
+   {
+    "id": "s12_noise",
+    "cer": 0.292,
+    "sec": 0.41
+   }
+  ]
+ },
+ "local:large-v3-turbo": {
+  "mean_cer": 0.122,
+  "mean_sec": 1.41,
+  "rows": [
+   {
+    "id": "s05_terms",
+    "cer": 0.0,
+    "sec": 1.43
+   },
+   {
+    "id": "s06_numbers",
+    "cer": 0.158,
+    "sec": 1.42
+   },
+   {
+    "id": "s12_noise",
+    "cer": 0.208,
+    "sec": 1.37
+   }
+  ]
+ }
+}

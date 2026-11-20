@@ -1,0 +1,37 @@
+[2026-11-18 11:41:31.742] [ctranslate2] [thread 2166818] [warning] The Apple Metal (MPS) backend is experimental.
+s01_normal e2e 5.596 cer 0.024 interj False act DEEPEN | 캐시와 비동기 Q를 사용해 평균 응답시간을 1.2초로 줄이는 구체적인 방법은 어떻게 계획되어 있나요?
+s02_short e2e 4.584 cer 0.0 interj False act VERIFY | 암호화 방법과 그 이유를 알려주실 수 있나요?
+s03_long e2e 7.351 cer 0.069 interj False act DEEPEN | 로드밸런서와 오토스케일링을 사용해 동시 접속자 5000명까지 대응한다는 계획이挺好，你能用中文流利地回答一个问题
+s04_pause e2e 0.956 cer 0.611 interj False act DEEPEN | 캐시를 활용한 응답시간 줄이기 계획에 대해 좀 더 구체적으로 설명해주실 수 있나요? 캐시의 크기나 정책 등은
+s05_terms e2e 5.185 cer 0.022 interj False act DEEPEN | AES-256 암호화와 HSM 키 관리 방안에 대해 더 자세히 설명해 주실 수 있나요?
+s06_numbers e2e 5.781 cer 0.158 interj False act VERIFY | 응답시간이 1.2초인 근거는 무엇인가요?
+s07_vague e2e 5.083 cer 0.0 interj False act CLARIFY | 불명확한 부분을 되묻습니다. 민원 접수 API의 응답시간 목표를 어떻게 달성하실 계획인가요?
+s08_contradict_rfp e2e 5.749 cer 0.0 interj True act CHALLENGE | RFP에 적힌 2초와 평균 5초의 차이, 이는 어떻게 설명하셔야 할까요?
+s09_rfp_violation e2e 5.244 cer 0.0 interj True act CHALLENGE | RFP에서 1년으로 제시된 것과 충돌하는 3개월이라는 기간을 어떻게 설명할 수 있을까요?
+s10_repeat_request e2e 4.173 cer 0.0 interj False act REPEAT | 개인정보 보호 방안을 설명해 주세요.
+s11_ramble e2e 7.496 cer 0.029 interj True act CHALLENGE | 민원 접수 API의 응답시간 개선을 위해 구체적으로 어떤 기술이나 방법을 사용할 계획인가요?
+s12_noise e2e 4.931 cer 0.292 interj False act VERIFY | 응답시간을 "의성위치"로 유지할 계획具体内容是什么意思？这句话在说什么？
+s13_repetition e2e 4.471 cer 0.833 interj False act CLARIFY | 응답시간을 빠르게 하기 위한 구체적인 계획이나 방법은 어떻게 계획하고 계신가요?
+{
+ "e2e": {
+  "n": 10,
+  "mean": 4.811,
+  "p50": 5.007,
+  "p90": 5.938,
+  "p95": 6.645,
+  "max": 7.351,
+  "under_2s": 0.1
+ },
+ "timeout_rate": 0.0,
+ "mean_cer": 0.157,
+ "interjection": {
+  "tp": 3,
+  "fp": 0,
+  "fn": 1,
+  "tn": 9,
+  "precision": 1.0,
+  "recall": 0.75,
+  "false_interjection_rate": 0.0,
+  "missed_rate": 0.25
+ }
+}

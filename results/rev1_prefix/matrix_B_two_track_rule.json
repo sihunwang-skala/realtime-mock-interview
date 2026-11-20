@@ -1,0 +1,549 @@
+{
+ "case": "B",
+ "opts": {
+  "llm": "ollama:qwen2.5:7b",
+  "stt": "small",
+  "interjection": "rule",
+  "strategy": "two_track"
+ },
+ "components": {
+  "llm": "ollama:qwen2.5:7b",
+  "stt": "faster-whisper:small@mps",
+  "tts": "macos-avspeech:Yuna",
+  "vad": "silero 600ms"
+ },
+ "hardware": {
+  "machine": "arm64",
+  "platform": "macOS-26.3.1-arm64-arm-64bit",
+  "cpu": "Apple M2 Pro 32GB"
+ },
+ "when": "2026-11-18 11:31:28",
+ "audio_path": "synthetic Yuna TTS wav -> real-time paced frames -> VoiceRuntime (VAD/STT/LLM/TTS). Playback = sink emission, no browser.",
+ "summary": {
+  "e2e": {
+   "n": 9,
+   "mean": 1.524,
+   "p50": 1.914,
+   "p90": 2.168,
+   "p95": 2.293,
+   "max": 2.418,
+   "under_2s": 0.667
+  },
+  "timeout_rate": 0.0,
+  "mean_cer": 0.157,
+  "interjection": {
+   "tp": 3,
+   "fp": 1,
+   "fn": 1,
+   "tn": 8,
+   "precision": 0.75,
+   "recall": 0.75,
+   "false_interjection_rate": 0.111,
+   "missed_rate": 0.25
+  }
+ },
+ "results": [
+  {
+   "id": "s01_normal",
+   "timed_out": false,
+   "interjected": false,
+   "interjections": [],
+   "interjection_responses": [],
+   "expect": {
+    "interject": false
+   },
+   "stt_text": "민원 접수 API는 캐시와 비동기 Q를 사용해서 평균 응답시간을 1.2초 수준으로 유지하겠습니다.",
+   "cer": 0.024,
+   "action": "DEEPEN",
+   "question": "캐시와 비동기 Q를 사용해 평균 응답시간을 1.2초로 유지하는 구체적인 방법은 무엇인가요?",
+   "assessment": {
+    "sufficiency": 0.7,
+    "contradictions": [],
+    "off_topic": 0.0,
+    "repetitive": false,
+    "unsupported_claims": [],
+    "covered_reqs": [],
+    "summary": "민원 접수 API는 캐시와 비동기 Q를 사용해서 평균 응답시간을 1.2초 수준으로 유지하겠습니다."
+   },
+   "e2e_s": 2.418,
+   "stages": {
+    "speech_end_to_vad_end": 0.6,
+    "stt_final": 0.901,
+    "answer_analysis": 0.0,
+    "first_token": 0.564,
+    "tts_first_chunk": 0.353
+   }
+  },
+  {
+   "id": "s02_short",
+   "timed_out": false,
+   "interjected": false,
+   "interjections": [],
+   "interjection_responses": [],
+   "expect": {
+    "interject": false
+   },
+   "stt_text": "네, 암호화하겠습니다.",
+   "cer": 0.0,
+   "action": "CLARIFY",
+   "question": "네가 암호화 방법은 무엇인가요?",
+   "assessment": {
+    "sufficiency": 0.25,
+    "contradictions": [],
+    "off_topic": 0.0,
+    "repetitive": false,
+    "unsupported_claims": [],
+    "covered_reqs": [],
+    "summary": "네, 암호화하겠습니다."
+   },
+   "e2e_s": 2.009,
+   "stages": {
+    "speech_end_to_vad_end": 0.61,
+    "stt_final": 0.659,
+    "answer_analysis": 0.0,
+    "first_token": 0.352,
+    "tts_first_chunk": 0.388
+   }
+  },
+  {
+   "id": "s03_long",
+   "timed_out": false,
+   "interjected": true,
+   "interjections": [
+    {
+     "t_after_speech_start": 14.56298274997971,
+     "kind": "off_topic",
+     "reason": "질문과 무관한 설명 지속",
+     "policy": "I1_rule",
+     "partial": "저희는 먼저 로드밸런서를 2대 2중화하고 오토스케일링으로 동시 접속자 5000명까지 대응합니다 또한 일기 요청은 레디스캣으로 처리하고 쓰기 요청은 메시지 퀴로 비동기 처리합니다 데이터베"
+    }
+   ],
+   "interjection_responses": [
+    {
+     "interjection": true,
+     "question": "응답시간 목표는 정확히 얼마인가요?",
+     "marks": {
+      "INTERJECTION_TRIGGERED": 143698.297267125,
+      "QUESTION_GENERATION_STARTED": 143698.297903,
+      "QUESTION_FIRST_TOKEN": 143698.857543166,
+      "TTS_FIRST_AUDIO_CHUNK": 143699.273150791,
+      "AUDIO_FIRST_PLAYED": 143699.273151916
+     },
+     "kind": "off_topic"
+    }
+   ],
+   "expect": {
+    "interject": false
+   },
+   "stt_text": "저희는 먼저 로드밸런서를 2대 2중화하고 오토스케일링으로 동시 접속자 5000명까지 대응합니다. 또한 읽기 요청은 레디스캣으로 처리하고 쓰기 요청은 메시지 퀴로 비동기 처리합니다. 데이터베이스는 읽기 복제본을 세대 두어 응답시간을 평균 1.2초 이내로 유지합니다. 부하 테스트는 100% 전에 매번 수행합니다.",
+   "cer": 0.069,
+   "action": "DEEPEN",
+   "question": "로드밸런서 2대 2중화와 오토스케일링을 통해 5000명 동시 접속자를 대응하는 구조에 대해 더 자세히 설명해 주실 수 있나요? 특히, 이 설정이 실제 사용자 로드와 어떻게 상호작용하는지 궁금합니다.",
+   "assessment": {
+    "sufficiency": 0.7999999999999999,
+    "contradictions": [],
+    "off_topic": 0.0,
+    "repetitive": false,
+    "unsupported_claims": [],
+    "covered_reqs": [],
+    "summary": "저희는 먼저 로드밸런서를 2대 2중화하고 오토스케일링으로 동시 접속자 5000명까지 대응합니다. 또한 읽기 "
+   },
+   "e2e_s": 3.105,
+   "stages": {
+    "speech_end_to_vad_end": 0.589,
+    "stt_final": 1.006,
+    "answer_analysis": 0.0,
+    "first_token": 0.859,
+    "tts_first_chunk": 0.65
+   },
+   "interjection_audio_after_speech_start_s": 15.585
+  },
+  {
+   "id": "s04_pause",
+   "timed_out": false,
+   "interjected": false,
+   "interjections": [],
+   "interjection_responses": [],
+   "expect": {
+    "interject": false,
+    "pause": true
+   },
+   "stt_text": "응답시간은 캐시로 줄이겠습니다.",
+   "cer": 0.611,
+   "action": "CLARIFY",
+   "question": "캐시 사용으로 응답시간을 줄이겠다고 말씀하셨는데, 구체적으로 어떤 캐시 전략을 사용하실 건가요?",
+   "assessment": {
+    "sufficiency": 0.25,
+    "contradictions": [],
+    "off_topic": 0.0,
+    "repetitive": false,
+    "unsupported_claims": [],
+    "covered_reqs": [],
+    "summary": "응답시간은 캐시로 줄이겠습니다."
+   },
+   "e2e_s": -1.817,
+   "stages": {
+    "speech_end_to_vad_end": -4.636,
+    "stt_final": 0.765,
+    "answer_analysis": 0.0,
+    "first_token": 1.452,
+    "tts_first_chunk": 0.602
+   }
+  },
+  {
+   "id": "s05_terms",
+   "timed_out": false,
+   "interjected": false,
+   "interjections": [],
+   "interjection_responses": [],
+   "expect": {
+    "interject": false
+   },
+   "stt_text": "개인정보는 AES-256으로 암호화하고 접근 로그는 1년 이상 보관합니다. 키 관리는 HSM을 사용합니다.",
+   "cer": 0.022,
+   "action": "DEEPEN",
+   "question": "DEEPEN: AES-256 암호화에 대해 더 자세히 설명해 줄 수 있나요? 예를 들어, 키 교환 과정이나 보안 강도에 대해 알려주실 수 있나요?",
+   "assessment": {
+    "sufficiency": 0.5,
+    "contradictions": [],
+    "off_topic": 0.0,
+    "repetitive": false,
+    "unsupported_claims": [],
+    "covered_reqs": [],
+    "summary": "개인정보는 AES-256으로 암호화하고 접근 로그는 1년 이상 보관합니다. 키 관리는 HSM을 사용합니다."
+   },
+   "e2e_s": 1.894,
+   "stages": {
+    "speech_end_to_vad_end": 0.614,
+    "stt_final": 0.512,
+    "answer_analysis": 0.0,
+    "first_token": 0.452,
+    "tts_first_chunk": 0.316
+   }
+  },
+  {
+   "id": "s06_numbers",
+   "timed_out": false,
+   "interjected": false,
+   "interjections": [],
+   "interjection_responses": [],
+   "expect": {
+    "interject": false
+   },
+   "stt_text": "목표 응답시간은 평균 1.2초이고, 동시 접속자는 5천 명, 가용성은 99.9%입니다.",
+   "cer": 0.158,
+   "action": "DEEPEN",
+   "question": "목표 응답시간 1.2초를 달성하기 위해 어떤 최적화 기법을 사용하실 계획인가요?",
+   "assessment": {
+    "sufficiency": 0.7,
+    "contradictions": [],
+    "off_topic": 0.0,
+    "repetitive": false,
+    "unsupported_claims": [],
+    "covered_reqs": [],
+    "summary": "목표 응답시간은 평균 1.2초이고, 동시 접속자는 5천 명, 가용성은 99.9%입니다."
+   },
+   "e2e_s": 1.914,
+   "stages": {
+    "speech_end_to_vad_end": 0.63,
+    "stt_final": 0.476,
+    "answer_analysis": 0.0,
+    "first_token": 0.555,
+    "tts_first_chunk": 0.252
+   }
+  },
+  {
+   "id": "s07_vague",
+   "timed_out": false,
+   "interjected": false,
+   "interjections": [],
+   "interjection_responses": [],
+   "expect": {
+    "interject": false,
+    "follow": "CLARIFY|VERIFY|DEEPEN"
+   },
+   "stt_text": "저희 회사는 경험이 많아서 잘 해결하겠습니다. 걱정하지 않으셔도 됩니다.",
+   "cer": 0.0,
+   "action": "CLARIFY",
+   "question": "클리어해주시면 감사하겠습니다. 현재 답변에서 어떻게 해결할 계획인지 구체적으로 설명해주실 수 있을까요?",
+   "assessment": {
+    "sufficiency": 0.25,
+    "contradictions": [],
+    "off_topic": 0.0,
+    "repetitive": false,
+    "unsupported_claims": [],
+    "covered_reqs": [],
+    "summary": "저희 회사는 경험이 많아서 잘 해결하겠습니다. 걱정하지 않으셔도 됩니다."
+   },
+   "e2e_s": 2.105,
+   "stages": {
+    "speech_end_to_vad_end": 0.635,
+    "stt_final": 0.743,
+    "answer_analysis": 0.0,
+    "first_token": 0.447,
+    "tts_first_chunk": 0.281
+   }
+  },
+  {
+   "id": "s08_contradict_rfp",
+   "timed_out": false,
+   "interjected": true,
+   "interjections": [
+    {
+     "t_after_speech_start": 6.198737291008001,
+     "kind": "contradiction_rfp",
+     "reason": "RFP(R1) '2초' vs 답변 '5초'",
+     "policy": "I1_rule",
+     "partial": "민원 접수 API 응답시간은 평균 5초 정도로 예상하고 있고 구축 기간은 12..."
+    }
+   ],
+   "interjection_responses": [
+    {
+     "interjection": true,
+     "question": "RFP에서는 2초 이내 응답시간을 요구하고 있는데, 답변에서는 5초라고 적혀 있습니다. 이 부분은 어떻게 설명할 수 있을까요?",
+     "marks": {
+      "INTERJECTION_TRIGGERED": 143762.916511791,
+      "QUESTION_GENERATION_STARTED": 143762.916562291,
+      "QUESTION_FIRST_TOKEN": 143763.368643875,
+      "TTS_FIRST_AUDIO_CHUNK": 143763.774897791,
+      "AUDIO_FIRST_PLAYED": 143763.774898541
+     },
+     "kind": "contradiction_rfp"
+    }
+   ],
+   "expect": {
+    "interject": true,
+    "kind": "contradiction_rfp"
+   },
+   "stt_text": "민원 접수 API 응답시간은 평균 5초 정도로 예상하고 있고 구축 기간은 12개월이 필요합니다. 그리고 계속 말씀드리면 부하 상황에서는 그렇습니다.",
+   "cer": 0.0,
+   "action": "CHALLENGE",
+   "question": "RFP에서 8개월 기간을 요구하는데, 답변에서는 12개월이라고 적혀 있습니다. 이 부분은 어떻게 설명할 수 있을까요?",
+   "assessment": {
+    "sufficiency": 0.7,
+    "contradictions": [
+     "RFP(R4) '8개월' vs 답변 '12개월'"
+    ],
+    "off_topic": 0.0,
+    "repetitive": false,
+    "unsupported_claims": [],
+    "covered_reqs": [],
+    "summary": "민원 접수 API 응답시간은 평균 5초 정도로 예상하고 있고 구축 기간은 12개월이 필요합니다. 그리고 계속"
+   },
+   "e2e_s": 2.212,
+   "stages": {
+    "speech_end_to_vad_end": 0.624,
+    "stt_final": 0.565,
+    "answer_analysis": 0.0,
+    "first_token": 0.65,
+    "tts_first_chunk": 0.374
+   },
+   "interjection_audio_after_speech_start_s": 7.07
+  },
+  {
+   "id": "s09_rfp_violation",
+   "timed_out": false,
+   "interjected": true,
+   "interjections": [
+    {
+     "t_after_speech_start": 6.217332415981218,
+     "kind": "contradiction_rfp",
+     "reason": "RFP(R3) '1년' vs 답변 '3개월'",
+     "policy": "I1_rule",
+     "partial": "개인정보 접근 로그는 비용 문제로 3개월만 보관하려고 합니다. 이 부분은 협의 가능한"
+    }
+   ],
+   "interjection_responses": [
+    {
+     "interjection": true,
+     "question": "3개월 보관이 RFP의 요구 1년과 모순되지 않는 해결책은 무엇인가요?",
+     "marks": {
+      "INTERJECTION_TRIGGERED": 143777.345907541,
+      "QUESTION_GENERATION_STARTED": 143777.34594975,
+      "QUESTION_FIRST_TOKEN": 143777.693015333,
+      "TTS_FIRST_AUDIO_CHUNK": 143778.005491041,
+      "AUDIO_FIRST_PLAYED": 143778.005492125
+     },
+     "kind": "contradiction_rfp"
+    }
+   ],
+   "expect": {
+    "interject": true,
+    "kind": "contradiction_rfp"
+   },
+   "stt_text": "개인정보 접근 로그는 비용 문제로 3개월만 보관하려고 합니다. 이 부분은 협의 가능하다고 생각합니다.",
+   "cer": 0.0,
+   "action": "CHALLENGE",
+   "question": "RFP에서 요구한 1년 보관 기간은 반드시 준수해야 합니다. 3개월로 줄이는 것은 가능하나, 이를 어떻게 근거로 설명할 수 있을까요?",
+   "assessment": {
+    "sufficiency": 0.7,
+    "contradictions": [
+     "RFP(R3) '1년' vs 답변 '3개월'"
+    ],
+    "off_topic": 0.0,
+    "repetitive": false,
+    "unsupported_claims": [],
+    "covered_reqs": [],
+    "summary": "개인정보 접근 로그는 비용 문제로 3개월만 보관하려고 합니다. 이 부분은 협의 가능하다고 생각합니다."
+   },
+   "e2e_s": 1.893,
+   "stages": {
+    "speech_end_to_vad_end": 0.619,
+    "stt_final": 0.517,
+    "answer_analysis": 0.0,
+    "first_token": 0.441,
+    "tts_first_chunk": 0.315
+   },
+   "interjection_audio_after_speech_start_s": 6.89
+  },
+  {
+   "id": "s10_repeat_request",
+   "timed_out": false,
+   "interjected": false,
+   "interjections": [],
+   "interjection_responses": [],
+   "expect": {
+    "interject": false,
+    "action": "REPEAT"
+   },
+   "stt_text": "죄송한데 질문을 다시 한 번 말씀해 주시겠어요?",
+   "cer": 0.0,
+   "action": "REPEAT",
+   "question": "개인정보 보호 방안을 설명해 주세요.",
+   "assessment": {
+    "sufficiency": 0.25,
+    "contradictions": [],
+    "off_topic": 0.0,
+    "repetitive": false,
+    "unsupported_claims": [],
+    "covered_reqs": [],
+    "summary": "죄송한데 질문을 다시 한 번 말씀해 주시겠어요?"
+   },
+   "e2e_s": 1.377,
+   "stages": {
+    "speech_end_to_vad_end": 0.629,
+    "stt_final": 0.748,
+    "answer_analysis": 0.0,
+    "first_token": 0.0,
+    "tts_first_chunk": 0.0
+   }
+  },
+  {
+   "id": "s11_ramble",
+   "timed_out": false,
+   "interjected": true,
+   "interjections": [
+    {
+     "t_after_speech_start": 12.449655417003669,
+     "kind": "off_topic",
+     "reason": "질문과 무관한 설명 지속",
+     "policy": "I1_rule",
+     "partial": "저희 회사는 2000년에 설립되어 지금까지 여러 프로젝트를 수행했습니다. 사무실은 판교에 있고 직원들은 매우 화목하며 매년 워크숍을 갑니다. 창립기념일에는 전 직원이"
+    }
+   ],
+   "interjection_responses": [
+    {
+     "interjection": true,
+     "question": "응답시간 목표를 위해 어떤 기술이나 방법을 사용하실 건가요?",
+     "marks": {
+      "INTERJECTION_TRIGGERED": 143800.929770833,
+      "QUESTION_GENERATION_STARTED": 143800.929813416,
+      "QUESTION_FIRST_TOKEN": 143801.489817208,
+      "TTS_FIRST_AUDIO_CHUNK": 143801.74692,
+      "AUDIO_FIRST_PLAYED": 143801.746920416
+     },
+     "kind": "off_topic"
+    }
+   ],
+   "expect": {
+    "interject": true,
+    "kind": "off_topic"
+   },
+   "stt_text": "저희 회사는 2000년에 설립되어 지금까지 여러 프로젝트를 수행했습니다. 사무실은 판교에 있고 직원들은 매우 화목하며 매년 워크숍을 갑니다. 창립기념일에는 전 직원이 모여 행사를 열고 산해 동호회도 활발합니다. 작년에는 봉사활동도 다녀왔고 올해는 체육대회를 계획하고 있습니다. 군의 식당 음식도 좋다는 평가를 받고 있습니다.",
+   "cer": 0.029,
+   "action": "CLARIFY",
+   "question": "근무 환경과 관련된 정보가 많네요. 워크숍과 봉사활동 등은 좋지만, RFP 답변에서는 사업적 내용이 주를 이룹니다. 워크숍이나 봉사활동과 응답시간 목표 달성 사이의 연관성을 설명해 주실 수 있나요?",
+   "assessment": {
+    "sufficiency": 0.7999999999999999,
+    "contradictions": [],
+    "off_topic": 0.8,
+    "repetitive": false,
+    "unsupported_claims": [],
+    "covered_reqs": [],
+    "summary": "저희 회사는 2000년에 설립되어 지금까지 여러 프로젝트를 수행했습니다. 사무실은 판교에 있고 직원들은 매우"
+   },
+   "e2e_s": 2.961,
+   "stages": {
+    "speech_end_to_vad_end": 0.618,
+    "stt_final": 1.02,
+    "answer_analysis": 0.0,
+    "first_token": 0.974,
+    "tts_first_chunk": 0.349
+   },
+   "interjection_audio_after_speech_start_s": 13.28
+  },
+  {
+   "id": "s12_noise",
+   "timed_out": false,
+   "interjected": false,
+   "interjections": [],
+   "interjection_responses": [],
+   "expect": {
+    "interject": false
+   },
+   "stt_text": "퀴시와 기동기툴로 응답시간을 의성위치로 유지하겠습니다.",
+   "cer": 0.292,
+   "action": "CLARIFY",
+   "question": "응답시간을 의성위치로 유지하기 위한 구체적인 방법은 무엇인가요?",
+   "assessment": {
+    "sufficiency": 0.25,
+    "contradictions": [],
+    "off_topic": 0.0,
+    "repetitive": false,
+    "unsupported_claims": [],
+    "covered_reqs": [],
+    "summary": "퀴시와 기동기툴로 응답시간을 의성위치로 유지하겠습니다."
+   },
+   "e2e_s": 1.863,
+   "stages": {
+    "speech_end_to_vad_end": 0.622,
+    "stt_final": 0.446,
+    "answer_analysis": 0.0,
+    "first_token": 0.449,
+    "tts_first_chunk": 0.345
+   }
+  },
+  {
+   "id": "s13_repetition",
+   "timed_out": false,
+   "interjected": false,
+   "interjections": [],
+   "interjection_responses": [],
+   "expect": {
+    "interject": true,
+    "kind": "repetition"
+   },
+   "stt_text": "응답시간을 빠르게 하겠습니다",
+   "cer": 0.833,
+   "action": "CLARIFY",
+   "question": "응답시간을 빠르게 하겠다는 계획이 구체적으로 어떤 것들이 있나요?",
+   "assessment": {
+    "sufficiency": 0.25,
+    "contradictions": [],
+    "off_topic": 0.0,
+    "repetitive": false,
+    "unsupported_claims": [],
+    "covered_reqs": [],
+    "summary": "응답시간을 빠르게 하겠습니다"
+   },
+   "e2e_s": 1.954,
+   "stages": {
+    "speech_end_to_vad_end": 0.605,
+    "stt_final": 0.528,
+    "answer_analysis": 0.0,
+    "first_token": 0.444,
+    "tts_first_chunk": 0.377
+   }
+  }
+ ]
+}

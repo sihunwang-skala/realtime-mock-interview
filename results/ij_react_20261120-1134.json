@@ -1,0 +1,34 @@
+[
+ {
+  "cond": "pe3",
+  "n": 5,
+  "hit": 5,
+  "median": 2.4,
+  "max": 2.44,
+  "whisper_calls": 25,
+  "whisper_s": 12.9,
+  "trials": [
+   {
+    "react_s": 2.38,
+    "kind": "contradiction_rfp"
+   },
+   {
+    "react_s": 2.37,
+    "kind": "contradiction_rfp"
+   },
+   {
+    "react_s": 2.4,
+    "kind": "contradiction_rfp"
+   },
+   {
+    "react_s": 2.4,
+    "kind": "contradiction_rfp"
+   },
+   {
+    "react_s": 2.44,
+    "kind": "contradiction_rfp"
+   }
+  ],
+  "trigger_s": 10.3
+ }
+]

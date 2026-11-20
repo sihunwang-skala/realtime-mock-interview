@@ -1,0 +1,215 @@
+{
+ "judge": "gpt-6.2-sol",
+ "summary": {
+  "gpt-6-luna": {
+   "mean_first_token_s": 1.19,
+   "mean_quality_1to5": 4.75
+  },
+  "gpt-6.1-terra": {
+   "mean_first_token_s": 0.97,
+   "mean_quality_1to5": 5.0
+  },
+  "gpt-6.2-astra": {
+   "mean_first_token_s": 1.66,
+   "mean_quality_1to5": 4.92
+  },
+  "gpt-6.2-sol": {
+   "mean_first_token_s": 0.9,
+   "mean_quality_1to5": 4.92
+  }
+ },
+ "rows": [
+  {
+   "llm": "gpt-6-luna",
+   "scenario": "s01_normal",
+   "action": "DEEPEN",
+   "first_token_s": 0.98,
+   "total_s": 3.56,
+   "question": "평균 1.2초를 측정하는 기준과 부하 조건은 어떻게 정하셨고, 캐시 적중률이 낮거나 큐가 적체될 때도 이 목표를 유지할 수 있는지 설명해 주시겠어요?",
+   "scores": {
+    "relevance": 5,
+    "grounded": 5,
+    "depth": 5,
+    "natural": 5,
+    "note": "평균 1.2초 목표의 측정 기준과 부하 조건을 짚고, 캐시 적중률 저하나 큐 적체 시에도 목표를 지킬 수 있는지 자연스럽게 파고듭니다."
+   },
+   "score": 5.0
+  },
+  {
+   "llm": "gpt-6-luna",
+   "scenario": "s08_contradict_rfp",
+   "action": "DEEPEN",
+   "first_token_s": 0.8,
+   "total_s": 3.43,
+   "question": "평균 5초라는 수치는 어떤 부하 조건과 측정 기준을 전제로 산정하셨고, 부하 상황에서도 이를 유지하기 위한 설계와 검증 계획은 무엇인가요?",
+   "scores": {
+    "relevance": 5,
+    "grounded": 5,
+    "depth": 5,
+    "natural": 4,
+    "note": "평균 5초와 부하 상황을 직접 짚어 산정 근거부터 설계·검증까지 묻지만, 구어체로는 다소 길고 격식적입니다."
+   },
+   "score": 4.75
+  },
+  {
+   "llm": "gpt-6-luna",
+   "scenario": "s11_ramble",
+   "action": "DEEPEN",
+   "first_token_s": 1.78,
+   "total_s": 4.15,
+   "question": "수행하신 여러 프로젝트 중 이번 사업과 가장 유사한 사례는 무엇이며, 그 경험이 이번 사업의 성과로 어떻게 이어지는지 구체적으로 말씀해 주시겠어요?",
+   "scores": {
+    "relevance": 5,
+    "grounded": 4,
+    "depth": 4,
+    "natural": 5,
+    "note": "답변에서 언급한 프로젝트 경험을 유사 사례와 이번 사업 성과로 연결해 묻지만, 핵심 요구사항인 API 응답시간 목표는 직접 짚지 않았습니다."
+   },
+   "score": 4.5
+  },
+  {
+   "llm": "gpt-6.1-terra",
+   "scenario": "s01_normal",
+   "action": "DEEPEN",
+   "first_token_s": 1.0,
+   "total_s": 3.53,
+   "question": "민원 접수 과정에서 어떤 데이터를 캐시하고 어떤 작업을 비동기 큐로 처리하며, 접수 완료 여부는 언제 응답하실 계획인가요?",
+   "scores": {
+    "relevance": 5,
+    "grounded": 5,
+    "depth": 5,
+    "natural": 5,
+    "note": "답변에서 제시한 캐시와 비동기 큐의 적용 범위를 구체화하고, 접수 완료를 알리는 시점까지 자연스럽게 짚었습니다."
+   },
+   "score": 5.0
+  },
+  {
+   "llm": "gpt-6.1-terra",
+   "scenario": "s08_contradict_rfp",
+   "action": "DEEPEN",
+   "first_token_s": 0.98,
+   "total_s": 3.31,
+   "question": "부하가 걸리는 상황에서 평균 5초의 응답시간을 유지하기 위해 어떤 성능 검증 기준과 대응 방안을 마련하실 건가요?",
+   "scores": {
+    "relevance": 5,
+    "grounded": 5,
+    "depth": 5,
+    "natural": 5,
+    "note": "답변에서 언급한 부하 상황과 평균 5초를 짚고, 성능 검증 기준과 대응 방안까지 구체적으로 묻습니다."
+   },
+   "score": 5.0
+  },
+  {
+   "llm": "gpt-6.1-terra",
+   "scenario": "s11_ramble",
+   "action": "DEEPEN",
+   "first_token_s": 0.93,
+   "total_s": 3.57,
+   "question": "수행하신 프로젝트 중 민원 접수 API와 유사한 사례에서 응답시간을 개선하기 위해 어떤 기술을 적용했고, 그 결과는 어땠나요?",
+   "scores": {
+    "relevance": 5,
+    "grounded": 5,
+    "depth": 5,
+    "natural": 5,
+    "note": "답변에서 언급한 프로젝트 경험을 원래 요구사항인 API 응답시간 목표에 연결하고, 유사 사례의 적용 기술과 성과를 구체적으로 묻는다."
+   },
+   "score": 5.0
+  },
+  {
+   "llm": "gpt-6.2-astra",
+   "scenario": "s01_normal",
+   "action": "DEEPEN",
+   "first_token_s": 2.22,
+   "total_s": 6.1,
+   "question": "평균 1.2초는 큐 등록 확인까지인지 민원 저장 완료까지인지 구분해서, 대기열이 길어질 때 이용자가 접수 완료를 확인하기까지의 시간은 어떻게 관리하실 건가요?",
+   "scores": {
+    "relevance": 5,
+    "grounded": 5,
+    "depth": 5,
+    "natural": 5,
+    "note": "평균 1.2초의 측정 종료점을 짚고, 대기열이 길어질 때 이용자가 실제로 접수 완료를 확인하기까지의 시간 관리 방안을 묻는 자연스러운 질문입니다."
+   },
+   "score": 5.0
+  },
+  {
+   "llm": "gpt-6.2-astra",
+   "scenario": "s08_contradict_rfp",
+   "action": "DEEPEN",
+   "first_token_s": 1.46,
+   "total_s": 4.66,
+   "question": "평균 5초를 예상하신 부하 조건은 초당 몇 건의 접수 요청이고, 그 조건에서 전체 요청의 95%는 몇 초 안에 응답할 것으로 보시나요?",
+   "scores": {
+    "relevance": 5,
+    "grounded": 5,
+    "depth": 5,
+    "natural": 5,
+    "note": "답변에서 언급한 평균 5초와 부하 상황을 바탕으로, 초당 요청 건수와 95백분위 응답시간을 짚어 성능 가정을 구체화합니다."
+   },
+   "score": 5.0
+  },
+  {
+   "llm": "gpt-6.2-astra",
+   "scenario": "s11_ramble",
+   "action": "DEEPEN",
+   "first_token_s": 1.3,
+   "total_s": 4.32,
+   "question": "말씀하신 프로젝트 중 민원 접수 API와 부하 특성이 비슷한 사례를 하나 골라, 어떤 병목을 해소했고 동일한 부하에서 응답시간이 전후로 어떻게 달라졌는지 설명해 주시겠어요?",
+   "scores": {
+    "relevance": 5,
+    "grounded": 4,
+    "depth": 5,
+    "natural": 5,
+    "note": "답변에서 언급한 프로젝트를 응답시간 목표와 연결해 병목 해소 전후의 성능을 묻지만, 유사한 프로젝트가 실제로 있었는지는 확인되지 않았습니다."
+   },
+   "score": 4.75
+  },
+  {
+   "llm": "gpt-6.2-sol",
+   "scenario": "s01_normal",
+   "action": "DEEPEN",
+   "first_token_s": 0.82,
+   "total_s": 3.87,
+   "question": "평균 1.2초는 큐에 요청을 넣기까지의 시간인가요, 아니면 접수가 확정돼 접수번호를 받기까지의 시간인가요?",
+   "scores": {
+    "relevance": 5,
+    "grounded": 5,
+    "depth": 5,
+    "natural": 5,
+    "note": "평균 1.2초의 측정 종료 시점이 큐 등록인지 접수번호 수신인지 짚어, 응답시간 목표가 민원인에게 어떤 의미인지 명확히 하는 질문입니다."
+   },
+   "score": 5.0
+  },
+  {
+   "llm": "gpt-6.2-sol",
+   "scenario": "s08_contradict_rfp",
+   "action": "DEEPEN",
+   "first_token_s": 0.85,
+   "total_s": 3.64,
+   "question": "평균 5초라고 예상하신 부하 조건은 초당 요청 몇 건이고, 그때 전체 요청의 95%는 몇 초 안에 처리할 수 있나요?",
+   "scores": {
+    "relevance": 5,
+    "grounded": 5,
+    "depth": 5,
+    "natural": 5,
+    "note": "답변의 평균 5초와 부하 상황을 직접 짚고, 초당 요청 건수와 95백분위 응답시간을 물어 성능 예측을 구체화합니다."
+   },
+   "score": 5.0
+  },
+  {
+   "llm": "gpt-6.2-sol",
+   "scenario": "s11_ramble",
+   "action": "DEEPEN",
+   "first_token_s": 1.04,
+   "total_s": 3.65,
+   "question": "말씀하신 프로젝트 중 민원 접수 API와 가장 비슷한 사례에서, 동시 요청이 몰렸을 때 어떤 병목을 해결했고 응답시간을 얼마나 줄이셨나요?",
+   "scores": {
+    "relevance": 5,
+    "grounded": 4,
+    "depth": 5,
+    "natural": 5,
+    "note": "답변에서 언급한 프로젝트 경험을 원래 질문의 응답시간 목표와 연결해 병목 해결과 개선 수치를 묻지만, 유사 사례나 동시 요청 상황은 답변에 제시되지 않았습니다."
+   },
+   "score": 4.75
+  }
+ ]
+}

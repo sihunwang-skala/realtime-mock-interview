@@ -1,0 +1,26 @@
+{
+ "ollama:qwen3:8b": {
+  "n": 12,
+  "pearson_vs_ref": 0.54,
+  "mean_abs_diff": 1.31,
+  "mean_score": 3.62,
+  "ref_mean_score": 4.9,
+  "sec_per_judgement": 2.06
+ },
+ "ollama:qwen2.5:7b": {
+  "n": 12,
+  "pearson_vs_ref": 0.606,
+  "mean_abs_diff": 2.44,
+  "mean_score": 2.46,
+  "ref_mean_score": 4.9,
+  "sec_per_judgement": 1.9
+ },
+ "openai:gpt-6-luna": {
+  "n": 12,
+  "pearson_vs_ref": 0.789,
+  "mean_abs_diff": 1.08,
+  "mean_score": 3.85,
+  "ref_mean_score": 4.9,
+  "sec_per_judgement": 2.66
+ }
+}

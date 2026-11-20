@@ -1,0 +1,95 @@
+{
+ "judge": "gpt-6-luna",
+ "runs": {
+  "matrix_B_precomputed_hybrid": {
+   "mean_quality_1to5": 3.5,
+   "usable_rate": 0.0,
+   "rows": [
+    {
+     "id": "s01_normal",
+     "e2e_s": 1.496,
+     "action": "DEEPEN",
+     "question": "보안 설계에서 접근 로그는 어떻게 관리하실 건가요?",
+     "quality": 2.5,
+     "usable": false
+    },
+    {
+     "id": "s08_contradict_rfp",
+     "e2e_s": 2.182,
+     "action": "CHALLENGE",
+     "question": "RFP에서 8개월이라는 기간이 명시되어 있는데, 답변에서는 12개월이라고 적혀 있습니다. 이 부분은 어떻게 설명하십니까?",
+     "quality": 4.5,
+     "usable": false
+    },
+    {
+     "id": "s11_ramble",
+     "e2e_s": 1.622,
+     "action": "CLARIFY",
+     "question": "AI 분류 정확도 90%를 어떻게 검증하실 계획인가요?",
+     "quality": null,
+     "usable": false
+    }
+   ]
+  },
+  "matrix_B_two_track_hybrid": {
+   "mean_quality_1to5": 4.5,
+   "usable_rate": 0.0,
+   "rows": [
+    {
+     "id": "s01_normal",
+     "e2e_s": 2.581,
+     "action": "DEEPEN",
+     "question": "캐시와 비동기 Q를 사용해 평균 응답시간을 1.2초로 유지할 계획이신데, 이 부분에 대한 구체적인 구현 방안은 어떻게 계획하고 계신가요?",
+     "quality": 4.5,
+     "usable": false
+    },
+    {
+     "id": "s08_contradict_rfp",
+     "e2e_s": 2.291,
+     "action": "CHALLENGE",
+     "question": "RFP에서 8개월이라는 기간을 요구하는데, 답변에서는 12개월이라고 적혀 있습니다. 이 차이가 무엇을 의미하는지 설명해 주실 수 있나요?",
+     "quality": null,
+     "usable": false
+    },
+    {
+     "id": "s11_ramble",
+     "e2e_s": 3.019,
+     "action": "DEEPEN",
+     "question": "사내 문화와 관련해서는 이해했습니다. 하지만 이 내용과는 별개로, 근거를 요구하는 부분에 대해 좀 더 구체적으로 설명해 주실 수 있나요? 예를 들면, 워크숍이나 봉사활동이 프로젝트 수행에 어떤 도움을 주는지에 대한 사례나 데이터는 없나요?",
+     "quality": null,
+     "usable": false
+    }
+   ]
+  },
+  "matrix_B_direct_hybrid": {
+   "mean_quality_1to5": 4.5,
+   "usable_rate": 0.0,
+   "rows": [
+    {
+     "id": "s01_normal",
+     "e2e_s": 5.596,
+     "action": "DEEPEN",
+     "question": "캐시와 비동기 Q를 사용해 평균 응답시간을 1.2초로 줄이는 구체적인 방법은 어떻게 계획되어 있나요?",
+     "quality": 4.25,
+     "usable": false
+    },
+    {
+     "id": "s08_contradict_rfp",
+     "e2e_s": 5.749,
+     "action": "CHALLENGE",
+     "question": "RFP에 적힌 2초와 평균 5초의 차이, 이는 어떻게 설명하셔야 할까요?",
+     "quality": 4.75,
+     "usable": false
+    },
+    {
+     "id": "s11_ramble",
+     "e2e_s": 7.496,
+     "action": "CHALLENGE",
+     "question": "민원 접수 API의 응답시간 개선을 위해 구체적으로 어떤 기술이나 방법을 사용할 계획인가요?",
+     "quality": null,
+     "usable": false
+    }
+   ]
+  }
+ }
+}

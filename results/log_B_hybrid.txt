@@ -1,0 +1,37 @@
+[2026-11-18 11:38:02.756] [ctranslate2] [thread 2162826] [warning] The Apple Metal (MPS) backend is experimental.
+s01_normal e2e 5.019 cer 0.024 interj False act SWITCH | 보안 설계에서 접근 로그는 어떻게 관리하실 건가요?
+s02_short e2e 4.821 cer 0.0 interj False act VERIFY | 암호화 방식은 무엇인가요?
+s03_long e2e 5.947 cer 0.069 interj False act SWITCH | 보안 설계에서 접근 로그는 어떻게 관리하실 건가요?
+s04_pause e2e 1.447 cer 0.611 interj False act DEEPEN | 캐시를 활용한 응답시간 줄이기 계획에 대해 좀 더 구체적으로 설명해주실 수 있으신가요? 예를 들어 캐시의 크
+s05_terms e2e 4.447 cer 0.022 interj False act SWITCH | 보안 설계에서 접근 로그는 어떻게 관리하실 건가요?
+s06_numbers e2e 6.211 cer 0.158 interj False act VERIFY | 응답시간이 1.2초인 근거는 무엇인가요?
+s07_vague e2e 4.723 cer 0.0 interj False act CLARIFY | 클리어해주시면 감사하겠습니다. 구체적인 계획이나 방법이 있으신가요?
+s08_contradict_rfp e2e 5.613 cer 0.0 interj True act CHALLENGE | 2초와 5초의 차이가 있을 수 있지만, 실제 시스템의 부하 상황에서는 5초가 목표라고 했는데, 이 부분은 어
+s09_rfp_violation e2e 5.641 cer 0.0 interj True act CHALLENGE | RFP에서 1년 보관을 요구하고 있지만, 답변에서 3개월로 줄이려고 한다는 부분이 모순되네요. 이 부분을 어
+s10_repeat_request e2e 4.123 cer 0.0 interj False act REPEAT | 개인정보 보호 방안을 설명해 주세요.
+s11_ramble e2e 6.217 cer 0.029 interj True act CHALLENGE | 민원 접수 API의 응답시간 목표를 달성하기 위한 구체적인 계획은 있으신가요? 회사의 역사나 문화와는 관련이
+s12_noise e2e 4.901 cer 0.292 interj False act VERIFY | 응답시간 목표를 달성하기 위해 어떤 수치나 데이터를 기준으로 의성위치를 유지한다고 보시나요?
+s13_repetition e2e 4.513 cer 0.833 interj False act CLARIFY | 응답시간을 빠르게 하기 위한 구체적인 계획이나 방법은 어떻게 계획하고 계신가요?
+{
+ "e2e": {
+  "n": 10,
+  "mean": 4.615,
+  "p50": 4.772,
+  "p90": 5.973,
+  "p95": 6.092,
+  "max": 6.211,
+  "under_2s": 0.1
+ },
+ "timeout_rate": 0.0,
+ "mean_cer": 0.157,
+ "interjection": {
+  "tp": 3,
+  "fp": 0,
+  "fn": 1,
+  "tn": 9,
+  "precision": 1.0,
+  "recall": 0.75,
+  "false_interjection_rate": 0.0,
+  "missed_rate": 0.25
+ }
+}

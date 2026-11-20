@@ -1,0 +1,74 @@
+{
+ "faster-whisper:base@mps": {
+  "mean_cer": 0.164,
+  "mean_rtf": 0.014,
+  "rows": [
+   {
+    "clip": "r1_a",
+    "cer": 0.105,
+    "rtf": 0.014,
+    "sec": 0.6
+   },
+   {
+    "clip": "r6_a",
+    "cer": 0.231,
+    "rtf": 0.014,
+    "sec": 0.6
+   },
+   {
+    "clip": "m1_a",
+    "cer": 0.156,
+    "rtf": 0.013,
+    "sec": 0.3
+   }
+  ]
+ },
+ "faster-whisper:small@mps": {
+  "mean_cer": 0.165,
+  "mean_rtf": 0.032,
+  "rows": [
+   {
+    "clip": "r1_a",
+    "cer": 0.162,
+    "rtf": 0.033,
+    "sec": 1.4
+   },
+   {
+    "clip": "r6_a",
+    "cer": 0.226,
+    "rtf": 0.032,
+    "sec": 1.5
+   },
+   {
+    "clip": "m1_a",
+    "cer": 0.107,
+    "rtf": 0.031,
+    "sec": 0.8
+   }
+  ]
+ },
+ "faster-whisper:large-v3-turbo@mps": {
+  "mean_cer": 0.111,
+  "mean_rtf": 0.068,
+  "rows": [
+   {
+    "clip": "r1_a",
+    "cer": 0.19,
+    "rtf": 0.07,
+    "sec": 3.1
+   },
+   {
+    "clip": "r6_a",
+    "cer": 0.103,
+    "rtf": 0.069,
+    "sec": 3.2
+   },
+   {
+    "clip": "m1_a",
+    "cer": 0.041,
+    "rtf": 0.064,
+    "sec": 1.7
+   }
+  ]
+ }
+}

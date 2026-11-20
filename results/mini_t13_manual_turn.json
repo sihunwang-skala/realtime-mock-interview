@@ -1,0 +1,86 @@
+{
+ "synthetic_manual": {
+  "wall_sec": 42.6,
+  "e2e": {
+   "n": 3,
+   "mean": 1.655,
+   "p50": 1.521,
+   "p90": 2.005,
+   "p95": 2.066,
+   "max": 2.126,
+   "under_2s": 0.667
+  },
+  "rows": [
+   [
+    "s01_normal",
+    2.126,
+    {
+     "speech_end_to_vad_end": -0.007,
+     "stt_final": 0.533,
+     "answer_analysis": 0.001,
+     "first_token": 1.246,
+     "tts_first_chunk": 0.353
+    },
+    "캐시와 비동기 Q를 사용해 평균 응답시간을 1.2초로 유지할 계획이지만, 이 방법만으로는 충분한가요? 추가적인 최적화 방법은 있으신가요?"
+   ],
+   [
+    "s05_terms",
+    1.318,
+    {
+     "speech_end_to_vad_end": -0.026,
+     "stt_final": 0.536,
+     "answer_analysis": 0.0,
+     "first_token": 0.485,
+     "tts_first_chunk": 0.323
+    },
+    "키 관리 과정에서 HSM을 사용한다고 하셨는데, 실제 키 생성, 저장, 사용 과정은 어떻게 이루어지는지 자세히 설명해 줄 수 있나요?"
+   ],
+   [
+    "s06_numbers",
+    1.521,
+    {
+     "speech_end_to_vad_end": -0.01,
+     "stt_final": 0.51,
+     "answer_analysis": 0.0,
+     "first_token": 0.606,
+     "tts_first_chunk": 0.414
+    },
+    "목표 응답시간이 평균 1.2초인 이유는 무엇인가요? 다른 요인들에 비해 이 수치가 특별한 이유가 있나요?"
+   ]
+  ]
+ },
+ "real_manual": {
+  "wall_sec": 136.2,
+  "summary": {
+   "clips": 3,
+   "avg_endpoints_per_answer": 1.0,
+   "e2e_after_clip_end": {
+    "n": 3,
+    "mean": 0.843,
+    "p50": 0.03,
+    "p90": 2.014,
+    "p95": 2.262,
+    "max": 2.51,
+    "under_2s": 0.667
+   },
+   "interjection_clips": 0
+  },
+  "rows": [
+   {
+    "id": "r1_a",
+    "endpoints": 1,
+    "e2e": 2.51
+   },
+   {
+    "id": "r6_a",
+    "endpoints": 1,
+    "e2e": 0.03
+   },
+   {
+    "id": "m1_a",
+    "endpoints": 1,
+    "e2e": -0.01
+   }
+  ]
+ }
+}

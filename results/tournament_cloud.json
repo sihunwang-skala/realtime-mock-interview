@@ -1,0 +1,224 @@
+{
+ "base": {
+  "llm": "ollama:qwen2.5:7b",
+  "stt": "small",
+  "tts": "av",
+  "strategy": "two_track",
+  "interjection": "off"
+ },
+ "axes": [
+  {
+   "axis": "클라우드 LLM(입출력 $5 이하)",
+   "field": "llm",
+   "rule": "usable",
+   "standings": [
+    {
+     "label": "LLM=openai:gpt-5.4-mini",
+     "cfg": {
+      "llm": "openai:gpt-5.4-mini",
+      "stt": "small",
+      "tts": "av",
+      "strategy": "two_track",
+      "interjection": "off"
+     },
+     "wall_sec": 43.0,
+     "mean_e2e": 1.71,
+     "under_2s": 1.0,
+     "mean_quality": 5.0,
+     "usable_rate": 1.0,
+     "mean_cer": 0.042,
+     "interj_f1": null,
+     "false_interj": 0,
+     "rows": [
+      {
+       "id": "s01_normal",
+       "e2e": 1.646,
+       "quality": 5.0,
+       "question": "캐시와 비동기 큐를 어떤 처리 구간에 각각 적용하실 건지, 그리고 평균 1.2초를 보장하는 기준 수치나 검증 방식은 어떻게 잡으실 건가요?",
+       "interjected": false
+      },
+      {
+       "id": "s05_terms",
+       "e2e": 1.616,
+       "quality": 5.0,
+       "question": "HSM을 사용하신다고 했는데, 키 생성·교체·폐기 절차와 키 접근 권한 통제는 어떻게 운영하시는지 설명해 주실 수 있나요?",
+       "interjected": false
+      },
+      {
+       "id": "s06_numbers",
+       "e2e": 1.877,
+       "quality": 5.0,
+       "question": "평균 1.2초의 측정 기준이 어떤 구간과 조건인지, 그리고 5000명 동시 접속과 99.9% 가용성을 어떻게 함께 검증하실 계획인지 구체적으로 말씀해 주시겠어요?",
+       "interjected": false
+      }
+     ]
+    },
+    {
+     "label": "LLM=openai:gpt-6.2-sol",
+     "cfg": {
+      "llm": "openai:gpt-6.2-sol",
+      "stt": "small",
+      "tts": "av",
+      "strategy": "two_track",
+      "interjection": "off"
+     },
+     "wall_sec": 45.8,
+     "mean_e2e": 1.77,
+     "under_2s": 1.0,
+     "mean_quality": 4.92,
+     "usable_rate": 1.0,
+     "mean_cer": 0.042,
+     "interj_f1": null,
+     "false_interj": 0,
+     "rows": [
+      {
+       "id": "s01_normal",
+       "e2e": 1.692,
+       "quality": 5.0,
+       "question": "평균 1.2초는 대기열에 등록됐다는 응답까지인가요, 아니면 민원이 유실되지 않도록 접수 내역을 저장하고 접수번호를 돌려주는 시점까지인가요?",
+       "interjected": false
+      },
+      {
+       "id": "s05_terms",
+       "e2e": 1.92,
+       "quality": 5.0,
+       "question": "암호화 키가 유출된 것으로 의심되면, 누가 어떤 기준으로 키를 폐기하고 기존 개인정보를 새 키로 다시 암호화하나요?",
+       "interjected": false
+      },
+      {
+       "id": "s06_numbers",
+       "e2e": 1.695,
+       "quality": 4.75,
+       "question": "동시 접속자 5,000명 조건에서 평균 응답시간 1.2초를 검증할 때, 초당 요청 건수와 시험 지속 시간은 각각 얼마로 잡으실 건가요?",
+       "interjected": false
+      }
+     ]
+    },
+    {
+     "label": "LLM=openai:gpt-5.6-luna",
+     "cfg": {
+      "llm": "openai:gpt-5.6-luna",
+      "stt": "small",
+      "tts": "av",
+      "strategy": "two_track",
+      "interjection": "off"
+     },
+     "wall_sec": 43.8,
+     "mean_e2e": 1.8,
+     "under_2s": 0.67,
+     "mean_quality": 4.92,
+     "usable_rate": 0.67,
+     "mean_cer": 0.042,
+     "interj_f1": null,
+     "false_interj": 0,
+     "rows": [
+      {
+       "id": "s01_normal",
+       "e2e": 1.445,
+       "quality": 5.0,
+       "question": "평균 1.2초라는 목표를 검증하기 위한 동시 사용자 수, 측정 구간, 성공률 기준과 부하 시험 결과를 제시해 주시겠어요?",
+       "interjected": false
+      },
+      {
+       "id": "s05_terms",
+       "e2e": 2.291,
+       "quality": 4.75,
+       "question": "암호화 적용 범위와 키 생성·보관·교체·폐기 절차를 구체적으로 설명해 주시고, 접근 로그의 위변조 방지와 이상 행위 탐지 방식도 함께 제시해 주실 수 있을까요?",
+       "interjected": false
+      },
+      {
+       "id": "s06_numbers",
+       "e2e": 1.654,
+       "quality": 5.0,
+       "question": "동시 접속자 5000명 환경에서 평균 응답시간 1.2초와 가용성 99.9%를 달성하기 위한 시스템 구성, 부하 시험 결과, 그리고 성능 저하 시 대응 기준을 구체적으로 제시해 주시겠어요?",
+       "interjected": false
+      }
+     ]
+    },
+    {
+     "label": "LLM=openai:gpt-6-luna",
+     "cfg": {
+      "llm": "openai:gpt-6-luna",
+      "stt": "small",
+      "tts": "av",
+      "strategy": "two_track",
+      "interjection": "off"
+     },
+     "wall_sec": 48.2,
+     "mean_e2e": 2.26,
+     "under_2s": 0.67,
+     "mean_quality": 4.75,
+     "usable_rate": 0.67,
+     "mean_cer": 0.042,
+     "interj_f1": null,
+     "false_interj": 0,
+     "rows": [
+      {
+       "id": "s01_normal",
+       "e2e": 1.777,
+       "quality": 5.0,
+       "question": "평균 1.2초라는 목표는 어떤 부하 조건과 측정 기준으로 검증하실 건가요? 캐시 적중률과 대기열이 밀릴 때의 처리 방안도 구체적으로 말씀해 주세요.",
+       "interjected": false
+      },
+      {
+       "id": "s05_terms",
+       "e2e": 3.48,
+       "quality": 4.25,
+       "question": "AES-256 암호화가 저장·전송 중 어디에 적용되고, HSM의 키 생성·권한 분리·교체·폐기와 접근 로그의 위",
+       "interjected": false
+      },
+      {
+       "id": "s06_numbers",
+       "e2e": 1.517,
+       "quality": 5.0,
+       "question": "동시 접속자 5,000명과 가용성 99.9%를 어떤 부하·장애 시험 기준으로 검증하고, 평균 1.2초가 지켜지지 않을 때는 어떻게 대응하실 건가요?",
+       "interjected": false
+      }
+     ]
+    },
+    {
+     "label": "LLM=openai:gpt-6.1-terra",
+     "cfg": {
+      "llm": "openai:gpt-6.1-terra",
+      "stt": "small",
+      "tts": "av",
+      "strategy": "two_track",
+      "interjection": "off"
+     },
+     "wall_sec": 42.8,
+     "mean_e2e": 2.22,
+     "under_2s": 0.0,
+     "mean_quality": 4.92,
+     "usable_rate": 0.0,
+     "mean_cer": 0.042,
+     "interj_f1": null,
+     "false_interj": 0,
+     "rows": [
+      {
+       "id": "s01_normal",
+       "e2e": 2.041,
+       "quality": 5.0,
+       "question": "민원 접수 과정에서 어떤 데이터를 캐시하고 어떤 처리를 비동기 큐로 넘길 계획이며, 접수 완료 여부는 언제 민원인에게 알려주시나요?",
+       "interjected": false
+      },
+      {
+       "id": "s05_terms",
+       "e2e": 2.247,
+       "quality": 5.0,
+       "question": "HSM에서 암호화 키의 생성부터 교체, 폐기까지 어떻게 관리하고, 키에 대한 접근 권한은 어떻게 통제하실 건가요?",
+       "interjected": false
+      },
+      {
+       "id": "s06_numbers",
+       "e2e": 2.381,
+       "quality": 4.75,
+       "question": "동시 접속자 5,000명 상황에서 평균 1.2초뿐 아니라 응답이 오래 걸리는 민원의 처리 시간은 어떤 기준으로 관리하실 건가요?",
+       "interjected": false
+      }
+     ]
+    }
+   ],
+   "survivors": []
+  }
+ ]
+}

@@ -1,0 +1,1967 @@
+[
+ {
+  "stage": "결승",
+  "axis": "-",
+  "label": "결승 phi4-mini:3.8b + small + 끼어들기 rule",
+  "cfg": {
+   "strategy": "two_track",
+   "tts": "av",
+   "llm": "ollamax:phi4-mini:3.8b",
+   "stt": "small",
+   "interjection": "rule"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers",
+   "s08_contradict_rfp",
+   "s11_ramble"
+  ],
+  "n": 5,
+  "wall_sec": 110.4,
+  "window": [
+   "11-19 15:51",
+   "11-19 16:16"
+  ],
+  "error": null,
+  "score": 95.5,
+  "parts": {
+   "usable": 1.0,
+   "quality": 0.85,
+   "speed": 0.99,
+   "cer": 0.86,
+   "interj": 1.0,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 1.02,
+  "mean_quality": 4.42,
+  "usable_rate": 1.0,
+  "mean_cer": 0.042,
+  "interj_f1": 1.0,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 1
+ },
+ {
+  "stage": "2단계",
+  "axis": "LLM",
+  "label": "LLM=ollamax:phi4-mini:3.8b",
+  "cfg": {
+   "llm": "ollamax:phi4-mini:3.8b",
+   "stt": "small",
+   "tts": "av",
+   "strategy": "two_track",
+   "interjection": "off"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers"
+  ],
+  "n": 3,
+  "wall_sec": 84.3,
+  "window": [
+   "11-19 13:45",
+   "11-19 15:49"
+  ],
+  "error": null,
+  "score": 93.7,
+  "parts": {
+   "usable": 1.0,
+   "quality": 0.88,
+   "speed": 0.91,
+   "cer": 0.86,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 1.18,
+  "mean_quality": 4.5,
+  "usable_rate": 1.0,
+  "mean_cer": 0.042,
+  "interj_f1": null,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 2
+ },
+ {
+  "stage": "2단계",
+  "axis": "LLM",
+  "label": "LLM=ollama:qwen3.5:4b",
+  "cfg": {
+   "llm": "ollama:qwen3.5:4b",
+   "stt": "small",
+   "tts": "av",
+   "strategy": "two_track",
+   "interjection": "off"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers"
+  ],
+  "n": 3,
+  "wall_sec": 47.4,
+  "window": [
+   "11-19 13:45",
+   "11-19 15:49"
+  ],
+  "error": null,
+  "score": 93.3,
+  "parts": {
+   "usable": 1.0,
+   "quality": 0.96,
+   "speed": 0.81,
+   "cer": 0.86,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 1.38,
+  "mean_quality": 4.83,
+  "usable_rate": 1.0,
+  "mean_cer": 0.042,
+  "interj_f1": null,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 3
+ },
+ {
+  "stage": "결승",
+  "axis": "-",
+  "label": "결승 qwen3.5:4b + small + 끼어들기 rule",
+  "cfg": {
+   "strategy": "two_track",
+   "tts": "av",
+   "llm": "ollama:qwen3.5:4b",
+   "stt": "small",
+   "interjection": "rule"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers",
+   "s08_contradict_rfp",
+   "s11_ramble"
+  ],
+  "n": 5,
+  "wall_sec": 95.6,
+  "window": [
+   "11-19 15:51",
+   "11-19 16:16"
+  ],
+  "error": null,
+  "score": 92.8,
+  "parts": {
+   "usable": 1.0,
+   "quality": 0.92,
+   "speed": 0.79,
+   "cer": 0.86,
+   "interj": 1.0,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 1.42,
+  "mean_quality": 4.67,
+  "usable_rate": 1.0,
+  "mean_cer": 0.042,
+  "interj_f1": 1.0,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 4
+ },
+ {
+  "stage": "1단계",
+  "axis": "TTS",
+  "label": "TTS=av",
+  "cfg": {
+   "llm": "ollama:qwen2.5:7b",
+   "stt": "small",
+   "tts": "av",
+   "strategy": "two_track",
+   "interjection": "rule"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers"
+  ],
+  "n": 3,
+  "wall_sec": 48.7,
+  "window": [
+   "11-19 13:32",
+   "11-19 13:44"
+  ],
+  "error": null,
+  "score": 92.7,
+  "parts": {
+   "usable": 1.0,
+   "quality": 0.92,
+   "speed": 0.82,
+   "cer": 0.86,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 1.35,
+  "mean_quality": 4.67,
+  "usable_rate": 1.0,
+  "mean_cer": 0.042,
+  "interj_f1": null,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 5
+ },
+ {
+  "stage": "1단계",
+  "axis": "질문 전략",
+  "label": "질문 전략=two_track",
+  "cfg": {
+   "llm": "ollama:qwen2.5:7b",
+   "stt": "small",
+   "tts": "av",
+   "strategy": "two_track",
+   "interjection": "off"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers"
+  ],
+  "n": 3,
+  "wall_sec": 42.0,
+  "window": [
+   "11-19 13:32",
+   "11-19 13:44"
+  ],
+  "error": null,
+  "score": 91.9,
+  "parts": {
+   "usable": 1.0,
+   "quality": 0.88,
+   "speed": 0.83,
+   "cer": 0.86,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 1.34,
+  "mean_quality": 4.5,
+  "usable_rate": 1.0,
+  "mean_cer": 0.042,
+  "interj_f1": null,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 6
+ },
+ {
+  "stage": "2단계",
+  "axis": "LLM",
+  "label": "LLM=ollamax:ax-4.0-light",
+  "cfg": {
+   "llm": "ollamax:ax-4.0-light",
+   "stt": "small",
+   "tts": "av",
+   "strategy": "two_track",
+   "interjection": "off"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers"
+  ],
+  "n": 3,
+  "wall_sec": 136.9,
+  "window": [
+   "11-19 13:45",
+   "11-19 15:49"
+  ],
+  "error": null,
+  "score": 91.7,
+  "parts": {
+   "usable": 1.0,
+   "quality": 0.85,
+   "speed": 0.84,
+   "cer": 0.86,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 1.32,
+  "mean_quality": 4.42,
+  "usable_rate": 1.0,
+  "mean_cer": 0.042,
+  "interj_f1": null,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 7
+ },
+ {
+  "stage": "결승",
+  "axis": "-",
+  "label": "결승 phi4-mini:3.8b + small + 끼어들기 llm",
+  "cfg": {
+   "strategy": "two_track",
+   "tts": "av",
+   "llm": "ollamax:phi4-mini:3.8b",
+   "stt": "small",
+   "interjection": "llm"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers",
+   "s08_contradict_rfp",
+   "s11_ramble"
+  ],
+  "n": 5,
+  "wall_sec": 83.8,
+  "window": [
+   "11-19 15:51",
+   "11-19 16:16"
+  ],
+  "error": null,
+  "score": 88.5,
+  "parts": {
+   "usable": 1.0,
+   "quality": 0.81,
+   "speed": 0.68,
+   "cer": 0.86,
+   "interj": 1.0,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 1.64,
+  "mean_quality": 4.25,
+  "usable_rate": 1.0,
+  "mean_cer": 0.042,
+  "interj_f1": 1.0,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 8
+ },
+ {
+  "stage": "2단계",
+  "axis": "LLM",
+  "label": "LLM=openai:gpt-6-luna",
+  "cfg": {
+   "llm": "openai:gpt-6-luna",
+   "stt": "small",
+   "tts": "av",
+   "strategy": "two_track",
+   "interjection": "off"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers"
+  ],
+  "n": 3,
+  "wall_sec": 46.5,
+  "window": [
+   "11-19 13:45",
+   "11-19 15:49"
+  ],
+  "error": null,
+  "score": 86.8,
+  "parts": {
+   "usable": 1.0,
+   "quality": 0.98,
+   "speed": 0.76,
+   "cer": 0.86,
+   "cost": 0.97,
+   "privacy": 0.0
+  },
+  "mean_e2e": 1.49,
+  "mean_quality": 4.92,
+  "usable_rate": 1.0,
+  "mean_cer": 0.042,
+  "interj_f1": null,
+  "cloud": true,
+  "cost_per_1000": 0.14,
+  "rank": 9
+ },
+ {
+  "stage": "클라우드 라운드",
+  "axis": "클라우드 LLM(입출력 $5 이하)",
+  "label": "LLM=openai:gpt-5.4-mini",
+  "cfg": {
+   "llm": "openai:gpt-5.4-mini",
+   "stt": "small",
+   "tts": "av",
+   "strategy": "two_track",
+   "interjection": "off"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers"
+  ],
+  "n": 3,
+  "wall_sec": 43.0,
+  "window": [
+   "11-19 16:31",
+   "11-19 16:35"
+  ],
+  "error": null,
+  "score": 83.7,
+  "parts": {
+   "usable": 1.0,
+   "quality": 1.0,
+   "speed": 0.65,
+   "cer": 0.86,
+   "cost": 0.76,
+   "privacy": 0.0
+  },
+  "mean_e2e": 1.71,
+  "mean_quality": 5.0,
+  "usable_rate": 1.0,
+  "mean_cer": 0.042,
+  "interj_f1": null,
+  "cloud": true,
+  "cost_per_1000": 1.2,
+  "rank": 10
+ },
+ {
+  "stage": "1단계",
+  "axis": "끼어들기 정책",
+  "label": "끼어들기 정책=hybrid",
+  "cfg": {
+   "llm": "ollama:qwen2.5:7b",
+   "stt": "small",
+   "tts": "av",
+   "strategy": "two_track",
+   "interjection": "hybrid"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s08_contradict_rfp",
+   "s11_ramble"
+  ],
+  "n": 3,
+  "wall_sec": 57.7,
+  "window": [
+   "11-19 13:32",
+   "11-19 13:44"
+  ],
+  "error": null,
+  "score": 83.6,
+  "parts": {
+   "speed": 0.62,
+   "cer": 0.94,
+   "interj": 1.0,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 1.76,
+  "mean_quality": null,
+  "usable_rate": 0.0,
+  "mean_cer": 0.018,
+  "interj_f1": 1.0,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 11
+ },
+ {
+  "stage": "1단계",
+  "axis": "끼어들기 정책",
+  "label": "끼어들기 정책=rule",
+  "cfg": {
+   "llm": "ollama:qwen2.5:7b",
+   "stt": "small",
+   "tts": "av",
+   "strategy": "two_track",
+   "interjection": "rule"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s08_contradict_rfp",
+   "s11_ramble"
+  ],
+  "n": 3,
+  "wall_sec": 53.7,
+  "window": [
+   "11-19 13:32",
+   "11-19 13:44"
+  ],
+  "error": null,
+  "score": 82.4,
+  "parts": {
+   "speed": 0.59,
+   "cer": 0.94,
+   "interj": 1.0,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 1.82,
+  "mean_quality": null,
+  "usable_rate": 0.0,
+  "mean_cer": 0.018,
+  "interj_f1": 1.0,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 12
+ },
+ {
+  "stage": "클라우드 라운드",
+  "axis": "클라우드 LLM(입출력 $5 이하)",
+  "label": "LLM=openai:gpt-6.2-sol",
+  "cfg": {
+   "llm": "openai:gpt-6.2-sol",
+   "stt": "small",
+   "tts": "av",
+   "strategy": "two_track",
+   "interjection": "off"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers"
+  ],
+  "n": 3,
+  "wall_sec": 45.8,
+  "window": [
+   "11-19 16:31",
+   "11-19 16:35"
+  ],
+  "error": null,
+  "score": 80.7,
+  "parts": {
+   "usable": 1.0,
+   "quality": 0.98,
+   "speed": 0.61,
+   "cer": 0.86,
+   "cost": 0.42,
+   "privacy": 0.0
+  },
+  "mean_e2e": 1.77,
+  "mean_quality": 4.92,
+  "usable_rate": 1.0,
+  "mean_cer": 0.042,
+  "interj_f1": null,
+  "cloud": true,
+  "cost_per_1000": 2.9,
+  "rank": 13
+ },
+ {
+  "stage": "2단계",
+  "axis": "LLM",
+  "label": "LLM=ollamax:exaone3.5:7.8b",
+  "cfg": {
+   "llm": "ollamax:exaone3.5:7.8b",
+   "stt": "small",
+   "tts": "av",
+   "strategy": "two_track",
+   "interjection": "off"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers"
+  ],
+  "n": 3,
+  "wall_sec": 133.1,
+  "window": [
+   "11-19 13:45",
+   "11-19 15:49"
+  ],
+  "error": null,
+  "score": 80.3,
+  "parts": {
+   "usable": 0.67,
+   "quality": 0.94,
+   "speed": 0.74,
+   "cer": 0.86,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 1.52,
+  "mean_quality": 4.75,
+  "usable_rate": 0.67,
+  "mean_cer": 0.042,
+  "interj_f1": null,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 14
+ },
+ {
+  "stage": "2단계",
+  "axis": "LLM",
+  "label": "LLM=ollama:qwen2.5:7b",
+  "cfg": {
+   "llm": "ollama:qwen2.5:7b",
+   "stt": "small",
+   "tts": "av",
+   "strategy": "two_track",
+   "interjection": "off"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers"
+  ],
+  "n": 3,
+  "wall_sec": 54.9,
+  "window": [
+   "11-19 13:45",
+   "11-19 15:49"
+  ],
+  "error": null,
+  "score": 78.8,
+  "parts": {
+   "usable": 0.67,
+   "quality": 0.9,
+   "speed": 0.71,
+   "cer": 0.86,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 1.57,
+  "mean_quality": 4.58,
+  "usable_rate": 0.67,
+  "mean_cer": 0.042,
+  "interj_f1": null,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 15
+ },
+ {
+  "stage": "2단계",
+  "axis": "LLM",
+  "label": "LLM=ollama:llama3.1:8b",
+  "cfg": {
+   "llm": "ollama:llama3.1:8b",
+   "stt": "small",
+   "tts": "av",
+   "strategy": "two_track",
+   "interjection": "off"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers"
+  ],
+  "n": 3,
+  "wall_sec": 47.9,
+  "window": [
+   "11-19 13:45",
+   "11-19 15:49"
+  ],
+  "error": null,
+  "score": 78.3,
+  "parts": {
+   "usable": 0.67,
+   "quality": 0.9,
+   "speed": 0.69,
+   "cer": 0.86,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 1.61,
+  "mean_quality": 4.58,
+  "usable_rate": 0.67,
+  "mean_cer": 0.042,
+  "interj_f1": null,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 16
+ },
+ {
+  "stage": "2단계",
+  "axis": "LLM",
+  "label": "LLM=ollama:qwen3:8b",
+  "cfg": {
+   "llm": "ollama:qwen3:8b",
+   "stt": "small",
+   "tts": "av",
+   "strategy": "two_track",
+   "interjection": "off"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers"
+  ],
+  "n": 3,
+  "wall_sec": 49.9,
+  "window": [
+   "11-19 13:45",
+   "11-19 15:49"
+  ],
+  "error": null,
+  "score": 77.9,
+  "parts": {
+   "usable": 0.67,
+   "quality": 0.94,
+   "speed": 0.64,
+   "cer": 0.86,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 1.73,
+  "mean_quality": 4.75,
+  "usable_rate": 0.67,
+  "mean_cer": 0.042,
+  "interj_f1": null,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 17
+ },
+ {
+  "stage": "2단계",
+  "axis": "LLM",
+  "label": "LLM=ollamax:aya-expanse:8b",
+  "cfg": {
+   "llm": "ollamax:aya-expanse:8b",
+   "stt": "small",
+   "tts": "av",
+   "strategy": "two_track",
+   "interjection": "off"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers"
+  ],
+  "n": 3,
+  "wall_sec": 147.7,
+  "window": [
+   "11-19 13:45",
+   "11-19 15:49"
+  ],
+  "error": null,
+  "score": 77.4,
+  "parts": {
+   "usable": 0.67,
+   "quality": 0.94,
+   "speed": 0.61,
+   "cer": 0.86,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 1.78,
+  "mean_quality": 4.75,
+  "usable_rate": 0.67,
+  "mean_cer": 0.042,
+  "interj_f1": null,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 18
+ },
+ {
+  "stage": "1단계",
+  "axis": "STT",
+  "label": "STT=small",
+  "cfg": {
+   "llm": "ollama:qwen2.5:7b",
+   "stt": "small",
+   "tts": "av",
+   "strategy": "two_track",
+   "interjection": "off"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers"
+  ],
+  "n": 3,
+  "wall_sec": 46.4,
+  "window": [
+   "11-19 13:32",
+   "11-19 13:44"
+  ],
+  "error": null,
+  "score": 77.1,
+  "parts": {
+   "usable": 0.67,
+   "quality": 0.71,
+   "speed": 0.82,
+   "cer": 0.86,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 1.35,
+  "mean_quality": 3.83,
+  "usable_rate": 0.67,
+  "mean_cer": 0.042,
+  "interj_f1": null,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 19
+ },
+ {
+  "stage": "결승",
+  "axis": "-",
+  "label": "결승 gpt-6-luna + small + 끼어들기 llm",
+  "cfg": {
+   "strategy": "two_track",
+   "tts": "av",
+   "llm": "openai:gpt-6-luna",
+   "stt": "small",
+   "interjection": "llm"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers",
+   "s08_contradict_rfp",
+   "s11_ramble"
+  ],
+  "n": 5,
+  "wall_sec": 84.9,
+  "window": [
+   "11-19 15:51",
+   "11-19 16:16"
+  ],
+  "error": null,
+  "score": 75.0,
+  "parts": {
+   "usable": 0.67,
+   "quality": 0.98,
+   "speed": 0.59,
+   "cer": 0.86,
+   "interj": 1.0,
+   "cost": 0.97,
+   "privacy": 0.0
+  },
+  "mean_e2e": 1.82,
+  "mean_quality": 4.92,
+  "usable_rate": 0.67,
+  "mean_cer": 0.042,
+  "interj_f1": 1.0,
+  "cloud": true,
+  "cost_per_1000": 0.14,
+  "rank": 20
+ },
+ {
+  "stage": "1단계",
+  "axis": "끼어들기 정책",
+  "label": "끼어들기 정책=llm",
+  "cfg": {
+   "llm": "ollama:qwen2.5:7b",
+   "stt": "small",
+   "tts": "av",
+   "strategy": "two_track",
+   "interjection": "llm"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s08_contradict_rfp",
+   "s11_ramble"
+  ],
+  "n": 3,
+  "wall_sec": 57.6,
+  "window": [
+   "11-19 13:32",
+   "11-19 13:44"
+  ],
+  "error": null,
+  "score": 74.8,
+  "parts": {
+   "speed": 0.4,
+   "cer": 0.94,
+   "interj": 1.0,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 2.2,
+  "mean_quality": null,
+  "usable_rate": 0.0,
+  "mean_cer": 0.018,
+  "interj_f1": 1.0,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 21
+ },
+ {
+  "stage": "결승",
+  "axis": "-",
+  "label": "결승 gpt-6-luna + small + 끼어들기 rule",
+  "cfg": {
+   "strategy": "two_track",
+   "tts": "av",
+   "llm": "openai:gpt-6-luna",
+   "stt": "small",
+   "interjection": "rule"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers",
+   "s08_contradict_rfp",
+   "s11_ramble"
+  ],
+  "n": 5,
+  "wall_sec": 84.5,
+  "window": [
+   "11-19 15:51",
+   "11-19 16:16"
+  ],
+  "error": null,
+  "score": 74.0,
+  "parts": {
+   "usable": 0.67,
+   "quality": 1.0,
+   "speed": 0.52,
+   "cer": 0.86,
+   "interj": 1.0,
+   "cost": 0.97,
+   "privacy": 0.0
+  },
+  "mean_e2e": 1.96,
+  "mean_quality": 5.0,
+  "usable_rate": 0.67,
+  "mean_cer": 0.042,
+  "interj_f1": 1.0,
+  "cloud": true,
+  "cost_per_1000": 0.14,
+  "rank": 22
+ },
+ {
+  "stage": "클라우드 라운드",
+  "axis": "클라우드 LLM(입출력 $5 이하)",
+  "label": "LLM=openai:gpt-5.6-luna",
+  "cfg": {
+   "llm": "openai:gpt-5.6-luna",
+   "stt": "small",
+   "tts": "av",
+   "strategy": "two_track",
+   "interjection": "off"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers"
+  ],
+  "n": 3,
+  "wall_sec": 43.8,
+  "window": [
+   "11-19 16:31",
+   "11-19 16:35"
+  ],
+  "error": null,
+  "score": 72.2,
+  "parts": {
+   "usable": 0.67,
+   "quality": 0.98,
+   "speed": 0.6,
+   "cer": 0.86,
+   "cost": 0.94,
+   "privacy": 0.0
+  },
+  "mean_e2e": 1.8,
+  "mean_quality": 4.92,
+  "usable_rate": 0.67,
+  "mean_cer": 0.042,
+  "interj_f1": null,
+  "cloud": true,
+  "cost_per_1000": 0.32,
+  "rank": 23
+ },
+ {
+  "stage": "결승",
+  "axis": "-",
+  "label": "결승 qwen3.5:4b + small + 끼어들기 rule + 전략 precomputed",
+  "cfg": {
+   "strategy": "precomputed",
+   "tts": "av",
+   "llm": "ollama:qwen3.5:4b",
+   "stt": "small",
+   "interjection": "rule"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers",
+   "s08_contradict_rfp",
+   "s11_ramble"
+  ],
+  "n": 5,
+  "wall_sec": 87.1,
+  "window": [
+   "11-19 15:51",
+   "11-19 16:16"
+  ],
+  "error": null,
+  "score": 68.1,
+  "parts": {
+   "usable": 0.33,
+   "quality": 0.48,
+   "speed": 1.0,
+   "cer": 0.86,
+   "interj": 1.0,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 0.5,
+  "mean_quality": 2.92,
+  "usable_rate": 0.33,
+  "mean_cer": 0.042,
+  "interj_f1": 1.0,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 24
+ },
+ {
+  "stage": "클라우드 라운드",
+  "axis": "클라우드 LLM(입출력 $5 이하)",
+  "label": "LLM=openai:gpt-6-luna",
+  "cfg": {
+   "llm": "openai:gpt-6-luna",
+   "stt": "small",
+   "tts": "av",
+   "strategy": "two_track",
+   "interjection": "off"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers"
+  ],
+  "n": 3,
+  "wall_sec": 48.2,
+  "window": [
+   "11-19 16:31",
+   "11-19 16:35"
+  ],
+  "error": null,
+  "score": 66.3,
+  "parts": {
+   "usable": 0.67,
+   "quality": 0.94,
+   "speed": 0.37,
+   "cer": 0.86,
+   "cost": 0.97,
+   "privacy": 0.0
+  },
+  "mean_e2e": 2.26,
+  "mean_quality": 4.75,
+  "usable_rate": 0.67,
+  "mean_cer": 0.042,
+  "interj_f1": null,
+  "cloud": true,
+  "cost_per_1000": 0.14,
+  "rank": 25
+ },
+ {
+  "stage": "1단계",
+  "axis": "질문 전략",
+  "label": "질문 전략=precomputed",
+  "cfg": {
+   "llm": "ollama:qwen2.5:7b",
+   "stt": "small",
+   "tts": "av",
+   "strategy": "precomputed",
+   "interjection": "off"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers"
+  ],
+  "n": 3,
+  "wall_sec": 42.4,
+  "window": [
+   "11-19 13:32",
+   "11-19 13:44"
+  ],
+  "error": null,
+  "score": 65.9,
+  "parts": {
+   "usable": 0.33,
+   "quality": 0.54,
+   "speed": 1.0,
+   "cer": 0.86,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 0.56,
+  "mean_quality": 3.17,
+  "usable_rate": 0.33,
+  "mean_cer": 0.042,
+  "interj_f1": null,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 26
+ },
+ {
+  "stage": "1단계",
+  "axis": "끼어들기 정책",
+  "label": "끼어들기 정책=off",
+  "cfg": {
+   "llm": "ollama:qwen2.5:7b",
+   "stt": "small",
+   "tts": "av",
+   "strategy": "two_track",
+   "interjection": "off"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s08_contradict_rfp",
+   "s11_ramble"
+  ],
+  "n": 3,
+  "wall_sec": 57.2,
+  "window": [
+   "11-19 13:32",
+   "11-19 13:44"
+  ],
+  "error": null,
+  "score": 63.6,
+  "parts": {
+   "speed": 0.62,
+   "cer": 0.94,
+   "interj": 0.0,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 1.76,
+  "mean_quality": null,
+  "usable_rate": 0.0,
+  "mean_cer": 0.018,
+  "interj_f1": 0.0,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 27
+ },
+ {
+  "stage": "결승",
+  "axis": "-",
+  "label": "결승 phi4-mini:3.8b + large-v3-turbo + 끼어들기 rule",
+  "cfg": {
+   "strategy": "two_track",
+   "tts": "av",
+   "llm": "ollamax:phi4-mini:3.8b",
+   "stt": "large-v3-turbo",
+   "interjection": "rule"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers",
+   "s08_contradict_rfp",
+   "s11_ramble"
+  ],
+  "n": 5,
+  "wall_sec": 85.4,
+  "window": [
+   "11-19 15:51",
+   "11-19 16:16"
+  ],
+  "error": null,
+  "score": 62.9,
+  "parts": {
+   "usable": 0.33,
+   "quality": 0.81,
+   "speed": 0.43,
+   "cer": 0.82,
+   "interj": 1.0,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 2.15,
+  "mean_quality": 4.25,
+  "usable_rate": 0.33,
+  "mean_cer": 0.053,
+  "interj_f1": 1.0,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 28
+ },
+ {
+  "stage": "1단계",
+  "axis": "STT",
+  "label": "STT=base",
+  "cfg": {
+   "llm": "ollama:qwen2.5:7b",
+   "stt": "base",
+   "tts": "av",
+   "strategy": "two_track",
+   "interjection": "off"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers"
+  ],
+  "n": 3,
+  "wall_sec": 51.7,
+  "window": [
+   "11-19 13:32",
+   "11-19 13:44"
+  ],
+  "error": null,
+  "score": 62.5,
+  "parts": {
+   "usable": 0.33,
+   "quality": 0.48,
+   "speed": 0.96,
+   "cer": 0.75,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 1.08,
+  "mean_quality": 2.92,
+  "usable_rate": 0.33,
+  "mean_cer": 0.074,
+  "interj_f1": null,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 29
+ },
+ {
+  "stage": "결승",
+  "axis": "-",
+  "label": "결승 qwen3.5:4b + small + 끼어들기 llm",
+  "cfg": {
+   "strategy": "two_track",
+   "tts": "av",
+   "llm": "ollama:qwen3.5:4b",
+   "stt": "small",
+   "interjection": "llm"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers",
+   "s08_contradict_rfp",
+   "s11_ramble"
+  ],
+  "n": 5,
+  "wall_sec": 84.1,
+  "window": [
+   "11-19 15:51",
+   "11-19 16:16"
+  ],
+  "error": null,
+  "score": 62.5,
+  "parts": {
+   "usable": 0.33,
+   "quality": 0.9,
+   "speed": 0.3,
+   "cer": 0.86,
+   "interj": 1.0,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 2.39,
+  "mean_quality": 4.58,
+  "usable_rate": 0.33,
+  "mean_cer": 0.042,
+  "interj_f1": 1.0,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 30
+ },
+ {
+  "stage": "결승",
+  "axis": "-",
+  "label": "결승 qwen3.5:4b + small + 끼어들기 rule + TTS say",
+  "cfg": {
+   "strategy": "two_track",
+   "tts": "say",
+   "llm": "ollama:qwen3.5:4b",
+   "stt": "small",
+   "interjection": "rule"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers",
+   "s08_contradict_rfp",
+   "s11_ramble"
+  ],
+  "n": 5,
+  "wall_sec": 83.9,
+  "window": [
+   "11-19 15:51",
+   "11-19 16:16"
+  ],
+  "error": null,
+  "score": 57.1,
+  "parts": {
+   "usable": 0.0,
+   "quality": 0.98,
+   "speed": 0.45,
+   "cer": 0.86,
+   "interj": 1.0,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 2.11,
+  "mean_quality": 4.92,
+  "usable_rate": 0.0,
+  "mean_cer": 0.042,
+  "interj_f1": 1.0,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 31
+ },
+ {
+  "stage": "결승",
+  "axis": "-",
+  "label": "결승 qwen3.5:4b + large-v3-turbo + 끼어들기 rule",
+  "cfg": {
+   "strategy": "two_track",
+   "tts": "av",
+   "llm": "ollama:qwen3.5:4b",
+   "stt": "large-v3-turbo",
+   "interjection": "rule"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers",
+   "s08_contradict_rfp",
+   "s11_ramble"
+  ],
+  "n": 5,
+  "wall_sec": 84.4,
+  "window": [
+   "11-19 15:51",
+   "11-19 16:16"
+  ],
+  "error": null,
+  "score": 53.9,
+  "parts": {
+   "usable": 0.0,
+   "quality": 0.97,
+   "speed": 0.23,
+   "cer": 1.0,
+   "interj": 1.0,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 2.55,
+  "mean_quality": 4.88,
+  "usable_rate": 0.0,
+  "mean_cer": 0.0,
+  "interj_f1": 1.0,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 32
+ },
+ {
+  "stage": "1단계",
+  "axis": "TTS",
+  "label": "TTS=say",
+  "cfg": {
+   "llm": "ollama:qwen2.5:7b",
+   "stt": "small",
+   "tts": "say",
+   "strategy": "two_track",
+   "interjection": "rule"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers"
+  ],
+  "n": 3,
+  "wall_sec": 45.6,
+  "window": [
+   "11-19 13:32",
+   "11-19 13:44"
+  ],
+  "error": null,
+  "score": 48.7,
+  "parts": {
+   "usable": 0.0,
+   "quality": 0.92,
+   "speed": 0.34,
+   "cer": 0.86,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 2.31,
+  "mean_quality": 4.67,
+  "usable_rate": 0.0,
+  "mean_cer": 0.042,
+  "interj_f1": null,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 33
+ },
+ {
+  "stage": "1단계",
+  "axis": "STT",
+  "label": "STT=large-v3-turbo",
+  "cfg": {
+   "llm": "ollama:qwen2.5:7b",
+   "stt": "large-v3-turbo",
+   "tts": "av",
+   "strategy": "two_track",
+   "interjection": "off"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers"
+  ],
+  "n": 3,
+  "wall_sec": 48.7,
+  "window": [
+   "11-19 13:32",
+   "11-19 13:44"
+  ],
+  "error": null,
+  "score": 48.1,
+  "parts": {
+   "usable": 0.0,
+   "quality": 0.94,
+   "speed": 0.31,
+   "cer": 0.82,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 2.37,
+  "mean_quality": 4.75,
+  "usable_rate": 0.0,
+  "mean_cer": 0.053,
+  "interj_f1": null,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 34
+ },
+ {
+  "stage": "2단계",
+  "axis": "LLM",
+  "label": "LLM=ollama:llama3.2:3b",
+  "cfg": {
+   "llm": "ollama:llama3.2:3b",
+   "stt": "small",
+   "tts": "av",
+   "strategy": "two_track",
+   "interjection": "off"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers"
+  ],
+  "n": 3,
+  "wall_sec": 63.5,
+  "window": [
+   "11-19 13:45",
+   "11-19 15:49"
+  ],
+  "error": null,
+  "score": 47.5,
+  "parts": {
+   "usable": 0.0,
+   "quality": 0.21,
+   "speed": 1.0,
+   "cer": 0.86,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 0.99,
+  "mean_quality": 1.83,
+  "usable_rate": 0.0,
+  "mean_cer": 0.042,
+  "interj_f1": null,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 35
+ },
+ {
+  "stage": "결승",
+  "axis": "-",
+  "label": "결승 qwen3.5:4b + large-v3-turbo + 끼어들기 llm",
+  "cfg": {
+   "strategy": "two_track",
+   "tts": "av",
+   "llm": "ollama:qwen3.5:4b",
+   "stt": "large-v3-turbo",
+   "interjection": "llm"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers",
+   "s08_contradict_rfp",
+   "s11_ramble"
+  ],
+  "n": 5,
+  "wall_sec": 87.9,
+  "window": [
+   "11-19 15:51",
+   "11-19 16:16"
+  ],
+  "error": null,
+  "score": 47.0,
+  "parts": {
+   "usable": 0.0,
+   "quality": 0.94,
+   "speed": 0.0,
+   "cer": 0.82,
+   "interj": 1.0,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 3.47,
+  "mean_quality": 4.75,
+  "usable_rate": 0.0,
+  "mean_cer": 0.053,
+  "interj_f1": 1.0,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 36
+ },
+ {
+  "stage": "결승",
+  "axis": "-",
+  "label": "결승 phi4-mini:3.8b + large-v3-turbo + 끼어들기 llm",
+  "cfg": {
+   "strategy": "two_track",
+   "tts": "av",
+   "llm": "ollamax:phi4-mini:3.8b",
+   "stt": "large-v3-turbo",
+   "interjection": "llm"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers",
+   "s08_contradict_rfp",
+   "s11_ramble"
+  ],
+  "n": 5,
+  "wall_sec": 85.2,
+  "window": [
+   "11-19 15:51",
+   "11-19 16:16"
+  ],
+  "error": null,
+  "score": 45.4,
+  "parts": {
+   "usable": 0.0,
+   "quality": 0.88,
+   "speed": 0.02,
+   "cer": 0.74,
+   "interj": 1.0,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 2.95,
+  "mean_quality": 4.5,
+  "usable_rate": 0.0,
+  "mean_cer": 0.079,
+  "interj_f1": 1.0,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 37
+ },
+ {
+  "stage": "클라우드 라운드",
+  "axis": "클라우드 LLM(입출력 $5 이하)",
+  "label": "LLM=openai:gpt-6.1-terra",
+  "cfg": {
+   "llm": "openai:gpt-6.1-terra",
+   "stt": "small",
+   "tts": "av",
+   "strategy": "two_track",
+   "interjection": "off"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers"
+  ],
+  "n": 3,
+  "wall_sec": 42.8,
+  "window": [
+   "11-19 16:31",
+   "11-19 16:35"
+  ],
+  "error": null,
+  "score": 43.9,
+  "parts": {
+   "usable": 0.0,
+   "quality": 0.98,
+   "speed": 0.39,
+   "cer": 0.86,
+   "cost": 0.71,
+   "privacy": 0.0
+  },
+  "mean_e2e": 2.22,
+  "mean_quality": 4.92,
+  "usable_rate": 0.0,
+  "mean_cer": 0.042,
+  "interj_f1": null,
+  "cloud": true,
+  "cost_per_1000": 1.45,
+  "rank": 38
+ },
+ {
+  "stage": "결승",
+  "axis": "-",
+  "label": "결승 gpt-6-luna + large-v3-turbo + 끼어들기 llm",
+  "cfg": {
+   "strategy": "two_track",
+   "tts": "av",
+   "llm": "openai:gpt-6-luna",
+   "stt": "large-v3-turbo",
+   "interjection": "llm"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers",
+   "s08_contradict_rfp",
+   "s11_ramble"
+  ],
+  "n": 5,
+  "wall_sec": 86.2,
+  "window": [
+   "11-19 15:51",
+   "11-19 16:16"
+  ],
+  "error": null,
+  "score": 43.7,
+  "parts": {
+   "usable": 0.0,
+   "quality": 0.98,
+   "speed": 0.05,
+   "cer": 0.82,
+   "interj": 1.0,
+   "cost": 0.97,
+   "privacy": 0.0
+  },
+  "mean_e2e": 2.9,
+  "mean_quality": 4.92,
+  "usable_rate": 0.0,
+  "mean_cer": 0.053,
+  "interj_f1": 1.0,
+  "cloud": true,
+  "cost_per_1000": 0.14,
+  "rank": 39
+ },
+ {
+  "stage": "결승",
+  "axis": "-",
+  "label": "결승 gpt-6-luna + large-v3-turbo + 끼어들기 rule",
+  "cfg": {
+   "strategy": "two_track",
+   "tts": "av",
+   "llm": "openai:gpt-6-luna",
+   "stt": "large-v3-turbo",
+   "interjection": "rule"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers",
+   "s08_contradict_rfp",
+   "s11_ramble"
+  ],
+  "n": 5,
+  "wall_sec": 88.8,
+  "window": [
+   "11-19 15:51",
+   "11-19 16:16"
+  ],
+  "error": null,
+  "score": 43.6,
+  "parts": {
+   "usable": 0.0,
+   "quality": 1.0,
+   "speed": 0.02,
+   "cer": 0.82,
+   "interj": 1.0,
+   "cost": 0.97,
+   "privacy": 0.0
+  },
+  "mean_e2e": 2.95,
+  "mean_quality": 5.0,
+  "usable_rate": 0.0,
+  "mean_cer": 0.053,
+  "interj_f1": 1.0,
+  "cloud": true,
+  "cost_per_1000": 0.14,
+  "rank": 40
+ },
+ {
+  "stage": "2단계",
+  "axis": "LLM",
+  "label": "LLM=ollamax:gemma4:12b",
+  "cfg": {
+   "llm": "ollamax:gemma4:12b",
+   "stt": "small",
+   "tts": "av",
+   "strategy": "two_track",
+   "interjection": "off"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers"
+  ],
+  "n": 3,
+  "wall_sec": 268.0,
+  "window": [
+   "11-19 13:45",
+   "11-19 15:49"
+  ],
+  "error": null,
+  "score": 42.9,
+  "parts": {
+   "usable": 0.0,
+   "quality": 1.0,
+   "speed": 0.0,
+   "cer": 0.86,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 3.3,
+  "mean_quality": 5.0,
+  "usable_rate": 0.0,
+  "mean_cer": 0.042,
+  "interj_f1": null,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 41
+ },
+ {
+  "stage": "2단계",
+  "axis": "LLM",
+  "label": "LLM=ollamax:qwen3.5:9b",
+  "cfg": {
+   "llm": "ollamax:qwen3.5:9b",
+   "stt": "small",
+   "tts": "av",
+   "strategy": "two_track",
+   "interjection": "off"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers"
+  ],
+  "n": 3,
+  "wall_sec": 167.8,
+  "window": [
+   "11-19 13:45",
+   "11-19 15:49"
+  ],
+  "error": null,
+  "score": 42.4,
+  "parts": {
+   "usable": 0.0,
+   "quality": 0.98,
+   "speed": 0.0,
+   "cer": 0.86,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 3.25,
+  "mean_quality": 4.92,
+  "usable_rate": 0.0,
+  "mean_cer": 0.042,
+  "interj_f1": null,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 42
+ },
+ {
+  "stage": "2단계",
+  "axis": "LLM",
+  "label": "LLM=ollamax:ministral-3:14b",
+  "cfg": {
+   "llm": "ollamax:ministral-3:14b",
+   "stt": "small",
+   "tts": "av",
+   "strategy": "two_track",
+   "interjection": "off"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers"
+  ],
+  "n": 3,
+  "wall_sec": 249.5,
+  "window": [
+   "11-19 13:45",
+   "11-19 15:49"
+  ],
+  "error": null,
+  "score": 41.5,
+  "parts": {
+   "usable": 0.0,
+   "quality": 0.94,
+   "speed": 0.0,
+   "cer": 0.86,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 4.21,
+  "mean_quality": 4.75,
+  "usable_rate": 0.0,
+  "mean_cer": 0.042,
+  "interj_f1": null,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 43
+ },
+ {
+  "stage": "1단계",
+  "axis": "질문 전략",
+  "label": "질문 전략=direct",
+  "cfg": {
+   "llm": "ollama:qwen2.5:7b",
+   "stt": "small",
+   "tts": "av",
+   "strategy": "direct",
+   "interjection": "off"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers"
+  ],
+  "n": 3,
+  "wall_sec": 49.1,
+  "window": [
+   "11-19 13:32",
+   "11-19 13:44"
+  ],
+  "error": null,
+  "score": 40.1,
+  "parts": {
+   "usable": 0.0,
+   "quality": 0.88,
+   "speed": 0.0,
+   "cer": 0.86,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 4.68,
+  "mean_quality": 4.5,
+  "usable_rate": 0.0,
+  "mean_cer": 0.042,
+  "interj_f1": null,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 44
+ },
+ {
+  "stage": "2단계",
+  "axis": "LLM",
+  "label": "LLM=ollamax:exaone-deep:7.8b",
+  "cfg": {
+   "llm": "ollamax:exaone-deep:7.8b",
+   "stt": "small",
+   "tts": "av",
+   "strategy": "two_track",
+   "interjection": "off"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers"
+  ],
+  "n": 3,
+  "wall_sec": 236.2,
+  "window": [
+   "11-19 13:45",
+   "11-19 15:49"
+  ],
+  "error": null,
+  "score": 36.5,
+  "parts": {
+   "usable": 0.0,
+   "quality": 0.31,
+   "speed": 0.4,
+   "cer": 0.86,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 2.2,
+  "mean_quality": 2.25,
+  "usable_rate": 0.0,
+  "mean_cer": 0.042,
+  "interj_f1": null,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 45
+ },
+ {
+  "stage": "1단계",
+  "axis": "질문 전략",
+  "label": "질문 전략=hybrid",
+  "cfg": {
+   "llm": "ollama:qwen2.5:7b",
+   "stt": "small",
+   "tts": "av",
+   "strategy": "hybrid",
+   "interjection": "off"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers"
+  ],
+  "n": 3,
+  "wall_sec": 50.0,
+  "window": [
+   "11-19 13:32",
+   "11-19 13:44"
+  ],
+  "error": null,
+  "score": 35.9,
+  "parts": {
+   "usable": 0.0,
+   "quality": 0.69,
+   "speed": 0.0,
+   "cer": 0.86,
+   "cost": 1.0,
+   "privacy": 1.0
+  },
+  "mean_e2e": 4.54,
+  "mean_quality": 3.75,
+  "usable_rate": 0.0,
+  "mean_cer": 0.042,
+  "interj_f1": null,
+  "cloud": false,
+  "cost_per_1000": 0.0,
+  "rank": 46
+ },
+ {
+  "stage": "1단계",
+  "axis": "STT",
+  "label": "STT=gpt-transcribe",
+  "cfg": {
+   "llm": "ollama:qwen2.5:7b",
+   "stt": "gpt-transcribe",
+   "tts": "av",
+   "strategy": "two_track",
+   "interjection": "off"
+  },
+  "scenarios": [
+   "s01_normal",
+   "s05_terms",
+   "s06_numbers"
+  ],
+  "n": 3,
+  "wall_sec": 58.6,
+  "window": [
+   "11-19 13:32",
+   "11-19 13:44"
+  ],
+  "error": null,
+  "score": 32.3,
+  "parts": {
+   "usable": 0.0,
+   "quality": 0.92,
+   "speed": 0.0,
+   "cer": 0.8,
+   "cost": 0.55,
+   "privacy": 0.0
+  },
+  "mean_e2e": 6.15,
+  "mean_quality": 4.67,
+  "usable_rate": 0.0,
+  "mean_cer": 0.06,
+  "interj_f1": null,
+  "cloud": true,
+  "cost_per_1000": 2.25,
+  "rank": 47
+ }
+]
