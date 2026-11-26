@@ -49,33 +49,7 @@ AI 심사위원이 제안서와 발표자료를 근거로 **음성으로 질문*
 
 ## 2. 전체 구조
 
-```mermaid
-flowchart LR
-    subgraph 준비
-      F[PDF · PPTX · DOCX<br/>XLSX · HTML · 자막] --> X[글자 추출]
-      X --> P[지문]
-      P --> B[질문 은행<br/>3개씩 생성]
-      U[사용자 추가 질문] --> Q[질문 대기열]
-      R[지난 연습의 복습 기록] --> Q
-      B --> Q
-    end
-    subgraph 실시간
-      M[마이크 16 kHz] --> V[Silero VAD]
-      V --> W[faster-whisper]
-      W -->|3초마다 부분 받아쓰기| FU[꼬리질문 선행 생성]
-      W -->|부분 받아쓰기| IJ[끼어들기 검사]
-      W -->|답변 끝| D{다음 질문 결정}
-      FU --> D
-      Q --> D
-      D --> T[TTS<br/>미리 합성한 음성 우선]
-    end
-    subgraph 종료_후
-      D --> L[(실험 기록<br/>질문 · 답변 · 출처 문장)]
-      L --> G[LLM 채점 · 모범 답안]
-      G --> RP[리포트]
-      G --> R
-    end
-```
+![전체 구조: 준비, 실시간, 종료 후 흐름](docs/images/architecture.svg)
 
 ### 실행 방식(Case) 비교
 

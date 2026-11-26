@@ -51,33 +51,7 @@ The product speaks and displays **Korean**.
 
 ## 2. Architecture
 
-```mermaid
-flowchart LR
-    subgraph Preparation
-      F[PDF · PPTX · DOCX<br/>XLSX · HTML · subtitles] --> X[Text extraction]
-      X --> P[Passage]
-      P --> B[Question bank<br/>batches of 3]
-      U[User-added questions] --> Q[Question queue]
-      R[Review ledger from past practices] --> Q
-      B --> Q
-    end
-    subgraph Live
-      M[Microphone 16 kHz] --> V[Silero VAD]
-      V --> W[faster-whisper]
-      W -->|partial transcript every 3 s| FU[Speculative follow-up]
-      W -->|partial transcript| IJ[Interjection check]
-      W -->|answer ends| D{Choose next question}
-      FU --> D
-      Q --> D
-      D --> T[TTS<br/>pre-synthesized audio first]
-    end
-    subgraph After_session
-      D --> L[(Run record<br/>question · answer · source sentence)]
-      L --> G[LLM grading · model answer]
-      G --> RP[Report]
-      G --> R
-    end
-```
+![Architecture: preparation, live, and after-session flow](docs/images/architecture.svg)
 
 ### Pipeline options ("Cases")
 
