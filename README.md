@@ -331,22 +331,7 @@ After each answer, waiting planned questions are re-checked by rule.
 
 ### 8.2 Choosing the next question
 
-```mermaid
-flowchart TD
-    A[Answer ends] --> C{Repeat request?}
-    C -- yes --> C1[Say the same question again, verbatim]
-    C -- no --> N{Numeric contradiction<br/>and no follow-up yet?}
-    N -- yes --> CH[Contradiction check · fixed sentence]
-    N -- no --> V{Quick verdict}
-    V -- don't know · wrong --> SW[Prepared question on a new area]
-    V -- correct · partly --> K{Fewer than 3 follow-ups in a row?}
-    K -- no --> SW
-    K -- yes --> S{Tailored follow-up from<br/>this answer still valid?}
-    S -- yes --> S1[Tailored follow-up]
-    S -- no --> P{Pre-made candidate available?}
-    P -- yes --> P1[Partly: probe the gap<br/>Correct: go deeper]
-    P -- no --> SW
-```
+<p align="center"><img src="docs/images/followup_flow_en.svg" alt="Choosing the next question" width="640"></p>
 
 The **quick verdict** uses no LLM and only steers the next question.
 

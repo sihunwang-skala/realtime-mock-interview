@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 454" width="720" height="454">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#55646f"/></marker>
+<style>text{font-family:-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif} .t{font-size:14px;font-weight:600;fill:#17323b} .m{font-size:13px;font-weight:600;fill:#17323b} .s{font-size:14px;font-weight:700;fill:#fff} .e{font-size:11.5px;fill:#55646f}</style></defs>
+<rect width="720" height="454" fill="#ffffff"/>
+<rect x="100" y="8" width="200" height="32" rx="16" fill="#17323b" stroke="#17323b" stroke-width="1.6"/>
+<text x="200.0" y="29.0" text-anchor="middle" class="s">답변 끝</text>
+<path d="M200,40 V58" fill="none" stroke="#55646f" stroke-width="1.6" marker-end="url(#a)"/>
+<rect x="10" y="58" width="380" height="38" rx="19" fill="#fff8e8" stroke="#b7791f" stroke-width="1.6"/>
+<text x="200.0" y="82.0" text-anchor="middle" class="t">재질문 요청인가?</text>
+<path d="M390,77 H458" fill="none" stroke="#55646f" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="424" y="71" text-anchor="middle" class="e">예</text>
+<rect x="460" y="58" width="250" height="38" rx="8" fill="#f4f6f8" stroke="#8a97a5" stroke-width="1.6"/>
+<text x="585.0" y="82.0" text-anchor="middle" class="t">같은 질문을 그대로 다시</text>
+<path d="M200,96 V114" fill="none" stroke="#55646f" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="222" y="109" text-anchor="middle" class="e">아니오</text>
+<rect x="10" y="114" width="380" height="38" rx="19" fill="#fff8e8" stroke="#b7791f" stroke-width="1.6"/>
+<text x="200.0" y="138.0" text-anchor="middle" class="t">숫자가 자료·이전 답과 다른가? (꼬리질문 전)</text>
+<path d="M390,133 H458" fill="none" stroke="#55646f" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="424" y="127" text-anchor="middle" class="e">예</text>
+<rect x="460" y="114" width="250" height="38" rx="8" fill="#fdf0ee" stroke="#b03a2e" stroke-width="1.6"/>
+<text x="585.0" y="138.0" text-anchor="middle" class="t">모순 확인 질문</text>
+<path d="M200,152 V170" fill="none" stroke="#55646f" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="222" y="165" text-anchor="middle" class="e">아니오</text>
+<rect x="10" y="170" width="380" height="38" rx="19" fill="#fff8e8" stroke="#b7791f" stroke-width="1.6"/>
+<text x="200.0" y="194.0" text-anchor="middle" class="t">판정이 ‘모름’ 또는 ‘틀림’인가?</text>
+<path d="M390,189 H458" fill="none" stroke="#55646f" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="424" y="183" text-anchor="middle" class="e">예</text>
+<rect x="460" y="170" width="250" height="38" rx="8" fill="#eef4fb" stroke="#2b5c8a" stroke-width="1.6"/>
+<text x="585.0" y="194.0" text-anchor="middle" class="t">새 영역의 준비된 질문</text>
+<path d="M200,208 V226" fill="none" stroke="#55646f" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="222" y="221" text-anchor="middle" class="e">아니오</text>
+<rect x="10" y="226" width="380" height="38" rx="19" fill="#fff8e8" stroke="#b7791f" stroke-width="1.6"/>
+<text x="200.0" y="250.0" text-anchor="middle" class="t">꼬리질문을 3번 연속 했는가?</text>
+<path d="M390,245 H458" fill="none" stroke="#55646f" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="424" y="239" text-anchor="middle" class="e">예</text>
+<rect x="460" y="226" width="250" height="38" rx="8" fill="#eef4fb" stroke="#2b5c8a" stroke-width="1.6"/>
+<text x="585.0" y="250.0" text-anchor="middle" class="t">새 영역의 준비된 질문</text>
+<path d="M200,264 V282" fill="none" stroke="#55646f" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="222" y="277" text-anchor="middle" class="e">아니오</text>
+<rect x="10" y="282" width="380" height="38" rx="19" fill="#fff8e8" stroke="#b7791f" stroke-width="1.6"/>
+<text x="200.0" y="306.0" text-anchor="middle" class="t">답변 중 만든 맞춤 꼬리질문이 유효한가?</text>
+<path d="M390,301 H458" fill="none" stroke="#55646f" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="424" y="295" text-anchor="middle" class="e">예</text>
+<rect x="460" y="282" width="250" height="38" rx="8" fill="#eef8f0" stroke="#2f6f4f" stroke-width="1.6"/>
+<text x="585.0" y="306.0" text-anchor="middle" class="t">맞춤 꼬리질문</text>
+<path d="M200,320 V338" fill="none" stroke="#55646f" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="222" y="333" text-anchor="middle" class="e">아니오</text>
+<rect x="10" y="338" width="380" height="38" rx="19" fill="#fff8e8" stroke="#b7791f" stroke-width="1.6"/>
+<text x="200.0" y="362.0" text-anchor="middle" class="t">미리 만든 후보가 있는가?</text>
+<path d="M390,357 H458" fill="none" stroke="#55646f" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="424" y="351" text-anchor="middle" class="e">예</text>
+<rect x="460" y="338" width="250" height="38" rx="8" fill="#eef8f0" stroke="#2f6f4f" stroke-width="1.6"/>
+<text x="585.0" y="353.5" text-anchor="middle" class="m">부분 맞음 → 빠진 부분</text>
+<text x="585.0" y="370.5" text-anchor="middle" class="m">맞음 → 한 단계 깊게</text>
+<path d="M200,376 V394" fill="none" stroke="#55646f" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="222" y="389" text-anchor="middle" class="e">아니오</text>
+<rect x="70" y="394" width="260" height="38" rx="8" fill="#eef4fb" stroke="#2b5c8a" stroke-width="1.6"/>
+<text x="200.0" y="418.0" text-anchor="middle" class="t">새 영역의 준비된 질문</text>
+</svg>
