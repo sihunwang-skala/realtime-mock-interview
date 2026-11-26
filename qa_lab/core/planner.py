@@ -20,7 +20,7 @@ Action 의미: DEEPEN=더 깊이 / CHALLENGE=모순·충돌 지적 / CLARIFY=불
 
 ANGLES = ["수치·근거", "한계·위험", "실제 적용 방법", "대안과 비교", "측정·검증 방법", "가정이 틀렸을 때"]
 
-PASSAGE_GEN_SYS = GEN_SYS.replace("까다롭지만 공정한 RFP 평가위원", "까다롭지만 공정한 면접관") + "\n지문 면접이다: '발표', '발표자', '제안서', 'RFP'라는 단어는 쓰지 않는다. 지문 내용과 답변자가 방금 한 말에 대해서만 묻는다.\n질문은 반드시 한 가지만 묻는다. '~와 ~'로 두 주제를 묶거나, '~하고 ~도 설명해 달라'처럼 두 개를 한 문장에 넣지 않는다. '이해하고 있나요?'처럼 예 아니오로 끝나는 질문도 하지 않고, 어떻게, 왜, 무엇을 같은 말로 시작해 50자 안팎으로 쓴다. 괄호와 같은 말 반복(예: 재현성(재현성))은 쓰지 않는다. 소리 내어 읽는 문장이다."
+PASSAGE_GEN_SYS = GEN_SYS.replace("까다롭지만 공정한 RFP 평가위원", "까다롭지만 공정한 면접관") + "\n지문 면접이다: '발표', '발표자', '제안서', 'RFP'라는 단어는 쓰지 않는다. 지문 내용과 답변자가 방금 한 말에 대해서만 묻는다.\n질문은 반드시 한 가지만 묻는다. '~와 ~'로 두 주제를 묶거나, '~하고 ~도 설명해 달라'처럼 두 개를 한 문장에 넣지 않는다. '이해하고 있나요?'처럼 예 아니오로 끝나는 질문도 하지 않고, 어떻게, 왜, 무엇을 같은 말로 시작해 50자 안팎으로 쓴다. 괄호와 같은 말 반복(예: 재현성(재현성))은 쓰지 않는다. 소리 내어 읽는 문장이다. 문법이 자연스러운 존댓말 의문문으로 쓴다('~인지 아니냐고', '~그렇지냐' 같은 반말·어색한 어미를 쓰지 않는다). 질문 하나에는 물음표가 하나이고, 쉼표로 이어 두 가지를 묻지 않는다. '핵심 내용을 본인의 말로 설명해 주시겠어요?'처럼 어느 제안서에나 쓸 수 있는 일반 질문은 하지 않는다. 지문에 나온 구체적인 용어·수치·주장 하나를 짚어 그 근거나 검증 방법을 묻는다."
 
 def gen_prompt(action: Action, last_q: str, answer: str, a: Assessment, evidence: str, asked: list[str], seed: str | None = None, verdict: str = "", ref: str = "") -> str:
     prev = "\n".join("- " + q for q in asked[-6:]) or "- (없음)"
@@ -69,6 +69,8 @@ def bad_question(q: str) -> bool:
     if re.search(r"전체 자막|자막 내용|영상에 포함된|본문 전체|전체 내용|지문 전체", q): return True            # asks about the document itself, not its content                                         # page / video-title debris
     if re.match(r"^이제\s", q) or re.match(r"^(이것|그것|저것)(이|은|을|과|와)", q) or re.match(r"^(이|그|저)\s", q): return True   # a spoken question must not start by pointing at something the listener cannot see
     if re.match(r"^(그|이|저)\s+(\S+\s+)?(내용|부분|상황|경우|결과|방식|이벤트|현상|유사성|차이|관계|사실|문제|이유|영향|사례|주장|점)", q): return True      # points at an unnamed thing ("이 아이러니적인 유사성은")
+    if re.search(r"핵심 내용|본인의 말로|이 글의", q): return True                                   # generic, could be asked about any document: not a coaching question for this proposal
+    if re.search(r"냐고|지냐|아니냐|냐\s*[?？]", q): return True                                  # blunt plain-form questions ("그렇지냐", "아니냐고") sound unnatural when spoken
     return not _POLITE_END.search(q)
 
 def clean_q(q: str) -> str:
@@ -93,10 +95,13 @@ def one_thing(q: str) -> bool:
     q = q.strip()
     if len(q) > 75: return False
     if re.search(r"(이해|알고|파악|숙지)\s*(하고)?\s*있(나요|습니까|으신가요)", q): return False                         # yes/no check, not a real question
-    if len(q) > 65: return False
+    if len(q) > 55: return False
+    if len(re.findall(r"[가-힣]+(?:하는|되는|차지하는|미치는|있는)\s", q)) >= 1 and len(re.findall(r"[가-힣]+의\s", q)) >= 1: return False   # stacked modifiers ("A 달성에 비중을 차지하는 전체 B …") read badly aloud
+    if len(re.findall(r"[가-힣]+의\s", q)) >= 2: return False                                                     # genitive chain ("A의 B의 C")
     if len(re.findall(r"[가-힣A-Za-z0-9)]\s*(?<![결효성])(?:와|과)\s|\s(?:및|그리고|또한)\s|하고\s", q)) >= 2: return False   # two or more subjects tied together
     if len(re.findall(r"(설명|구분|비교|말씀|알려)", q)) >= 2: return False                                                    # two requests in one
     if q.count("?") + q.count("？") > 1: return False
+    if re.search(r"(인지|는지|지|냐)\s*[,，]", q): return False                                                     # a comma after a yes/no-style clause: two questions in one ("~하는지, 그리고 …")
     return True
 
 def is_repeat(text: str, asked: list[str], th=0.6) -> bool: return any(similarity(text, q) >= th for q in asked)

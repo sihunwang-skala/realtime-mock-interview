@@ -128,8 +128,20 @@ async def first_question_text(eng, text: str) -> str:
         except Exception: buf = ""
         q = clean_q(buf)
         if "?" in q: q = q[:q.index("?") + 1]
-        if 8 <= len(q) <= 120 and ko_ok(q): return q
-    return "이 글의 핵심 내용을 본인의 말로 설명해 주시겠어요?"
+        if 8 <= len(q) <= 120 and ko_ok(q) and not _general_q(q): return q
+    return evidence_fallback(head)
+
+_EVIDENCE_TMPL = "{t}의 근거나 수치를 말씀해 주시겠어요?"
+_EVIDENCE_GENERAL = "제안서의 수치나 기간 중 하나를 골라 그 근거를 말씀해 주시겠어요?"
+def _general_q(q: str) -> bool:
+    """A question that could be asked about any proposal ('핵심 내용을 본인의 말로 설명해 주시겠어요?'): not allowed, the coaching must be about the passage's own evidence."""
+    return bool(re.search(r"핵심 내용|본인의 말로|이 글의|이 부분의", q))
+def evidence_fallback(text: str) -> str:
+    """Grounded fallback: names one concrete term from the passage and asks for its evidence or numbers. Never a generic question."""
+    cands = [t for t in re.findall(r"[A-Za-z][A-Za-z0-9_\-]{2,}|[가-힣]{3,}", text) if not any(g in t for g in _GENERIC_Q)]
+    if not cands: return _EVIDENCE_GENERAL
+    t = re.sub(r"(으로만|로만|에서|으로|에게|에|의|은|는|이|가|을|를|과|와|도)$", "", max(cands, key=len))   # "운영방안으로만" -> "운영방안"
+    return _EVIDENCE_TMPL.format(t=t) if len(t) >= 2 else _EVIDENCE_GENERAL
 
 async def apply_passage(eng, text: str) -> int:
     """Re-point an existing QAEngine at the passage and make the FIRST question from just the opening lines (about 1 s).
@@ -229,7 +241,7 @@ async def _fill(b: dict, n: int):
         if not (8 <= len(q) <= 120 and ko_ok(q) and not bad_question(q)) or is_repeat(q, old, th=0.5) or _kw_dup(q, old): return False
         item = {"q": q, "a": None, "ref": ref[:300], "src": src}
         if len(b["qs"]) < target and (not ref or grounded(q, ref)) and one_thing(q): b["qs"].append(item); return True
-        if not ref or grounded(q, ref, soft=True): b.setdefault("soft", []).append(item)          # fails only the strict checks: kept as a reserve so the bank cannot run dry
+        if (not ref or grounded(q, ref, soft=True)) and one_thing(q): b.setdefault("soft", []).append(item)          # fails only the strict checks: kept as a reserve so the bank cannot run dry
         return False
     if not b["head"]:
         b["head"] = True; await _idle()

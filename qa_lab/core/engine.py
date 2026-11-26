@@ -9,6 +9,7 @@ from .llm import LLM
 from .planner import bad_question, decide_action, gen_prompt, fu_prompt, interject_prompt, GEN_SYS, is_repeat, is_repeat_request, clean_q, ko_ok, one_thing
 from .interjection import numeric_conflict, numbers, _unit, _num, _kw
 from .question_queue import QuestionQueue
+from . import clarify
 
 SEG_SYS = """RFP 평가 보조기. 발표 구간을 보고 JSON만: {"covered":[{"req":"id","score":0~1,"quote":"발표 인용"}],"questions":[{"text":"평가위원이 할 꼬리질문(한국어 1문장)","req":"id","priority":0~1,"evidence":"근거"}]}
 발표가 요구사항을 충분히 설명했으면 covered에 넣고 질문은 만들지 않는다. 수치 근거가 없거나 RFP와 다르거나 빠진 부분만 질문한다. 질문은 최대 2개."""
@@ -410,7 +411,11 @@ class QAEngine:
         while True:
             q = self.queue.pop()
             if q is None: return None
-            if not self._seen(q.text): return q
+            if not self._seen(q.text) and not self._blocked(q): return q
+    def _blocked(self, q) -> bool:
+        """Questions the person has mastered in earlier practices (ledger): never asked again."""
+        fn = getattr(self, "blocked_fn", None)
+        return bool(fn and fn(q))
     def _next_topic(self, hint: str = "") -> str | None:
         """Next passage sentence for a question made on the spot: the one FARTHEST from the sentences already used (early -> middle -> late, never the neighbourhood of the last topic)."""
         allr = self._all(); used = self.__dict__.setdefault("used_topics", set())
@@ -425,8 +430,8 @@ class QAEngine:
     def _topic_template(self, sent: str) -> str:
         """Safe question when the model could not make one: about the rarest term of the sentence (never the raw sentence, which carries timestamps / fragments)."""
         cands = [t for t in re.findall(r"[A-Za-z][A-Za-z0-9_\-]{2,}|[가-힣]{3,}", sent) if re.search(r"[A-Za-z]", t) or self._term_ok(t)]
-        if not cands: return "이 부분의 핵심 내용을 본인의 말로 설명해 주시겠어요?"
-        return f"{min(cands, key=lambda t: (self._df(t), -len(t)))}에 대해 본인의 말로 설명해 주시겠어요?"
+        if not cands: return "제안서의 수치나 기간 중 하나를 골라 그 근거를 말씀해 주시겠어요?"
+        return f"{min(cands, key=lambda t: (self._df(t), -len(t)))}의 근거나 수치를 말씀해 주시겠어요?"
 
     def first_question(self) -> Question | None:
         q = self.queue.pop()
@@ -463,6 +468,11 @@ class QAEngine:
 
     async def plan_and_stream(self, answer: str, a: Assessment, forced_action: Action | None = None, verdict: dict | None = None, interject_kind: str | None = None):
         """Decide action, then yield (action, token) pairs. Question strategy changes which path is used."""
+        _clar = clarify.classify(answer) if (self.cur and interject_kind is None) else None
+        if _clar:                                                    # "다시 말씀해 주세요" / "더 쉽게 말씀해 주세요": not an answer; the SAME question word for word (easier wording is NOT given: the questioner keeps its stance)
+            self.last_clarify = _clar                                # runtime flags the turn (never graded) and tells the screen
+            for w in re.findall(r"\S+\s*", self.cur.text): yield Action.REPEAT, w
+            return
         elapsed = (time.monotonic() - self.t0) / 1800
         act = forced_action or decide_action(a, self.followups, self.queue.peek() is not None, elapsed_ratio=elapsed)
         if act == Action.END and getattr(self, "keep_going", False): act = Action.DEEPEN     # live experiment: only the user ends the session (never run out of questions)

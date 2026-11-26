@@ -31,3 +31,6 @@ data/live_runs/
 models/
 samples/tts/
 backups/
+# local practice records (transcripts, passage text, review ledger)
+data/
+.pytest_cache/

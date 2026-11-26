@@ -5,8 +5,11 @@ Latency marks (monotonic seconds, name -> t):
  QUESTION_GENERATION_STARTED, QUESTION_FIRST_TOKEN, TTS_FIRST_AUDIO_CHUNK, AUDIO_FIRST_PLAYED (browser-reported, or sink-emission estimate in harness)
 """
 from __future__ import annotations
-import asyncio, contextvars, time, numpy as np
+import asyncio, contextvars, re, time, numpy as np
 from ..contracts import Action, Event, EventType
+
+CLOSING_TEXT = "네~ 여기까지 들었습니다. 오늘 발표 수고하셨습니다."
+TIME_UP_SILENCE_S = 10.0        # after the time limit: if nobody speaks for this long, close without waiting for an answer
 from ..core.engine import QAEngine
 from ..providers.tts import chunk_sentences, cached_audio, prewarm_audio
 
@@ -263,6 +266,7 @@ class VoiceRuntime:
         self.mark("STT_FINALIZED")
         if not text.strip(): return                                              # silence / hallucination: no turn, no question
         ev(EventType.ANSWER_COMPLETED, text=text)
+        if getattr(self, "time_up", False): await self._speak_closing(); return     # time limit reached: this answer was heard, no new question
         if self.e.strategy in ("two_track", "precomputed"):
             a = self.e.fast_assess(text); self.mark("ANSWER_ANALYSIS_COMPLETED")        # fast track: heuristics only
             defer_bg = text
@@ -274,12 +278,16 @@ class VoiceRuntime:
         self.mark("QUESTION_DECISION_COMPLETED")
         act, q = await self._speak_stream(gen, "followup")
         pa = self.e.get_answer(prevq) if getattr(self.e, "keep_going", False) else None     # model answer of the question that was just answered (instant)
-        if self.e.strategy in ("two_track", "precomputed"): self.bg = asyncio.create_task(self.e.analyze_answer(text))   # deep track runs while the user answers, never competes with question generation
+        if self.e.strategy in ("two_track", "precomputed") and not getattr(self.e, "last_clarify", None): self.bg = asyncio.create_task(self.e.analyze_answer(text))   # deep track runs while the user answers, never competes with question generation
         from ..core.engine import MAX_FU
         _isfu = bool(act is not None and act.value in ("DEEPEN", "CLARIFY", "VERIFY", "CHALLENGE")); _cf = getattr(self.e, "cur_fu", None) if _isfu else None; self.e.cur_fu = None
         _why = self._why_action(v, prevq, act)
         self.responses.append({"stt_text": text, "fu_note": _why, "is_fu": _isfu, "fu_type": ((_cf or {}).get("type") or "새로 만든 질문") if _isfu else None, "fu_depth": ((_cf or {}).get("depth") or self.e.followups) if _isfu else None, "assessment": a.__dict__, "action": act.value if act else None, "question": q.strip(), "model_answer": (pa or {}).get("text") or "", "answered_q": qprev, "ref_text": prevref, "verdict_pending": True, "at_end": dict(getattr(self, "_snap", {}) or {}), "marks": mk if hold is not None else dict(self._cur()), "interjected_during": self.interjected, "speculative": hold is not None, "quick_verdict": v and v["verdict"], "verdict": v and v["verdict"], "why": v and v["why"], "ref": v and v["ref"], "model_answer": (pa or {}).get("text"), "model_answer_src": (pa or {}).get("src")})
-        ev(EventType.QUESTION_STARTED, text=q, followup=_isfu, fu_type=((_cf or {}).get("type") or "새로 만든 질문") if _isfu else None, fu_depth=((_cf or {}).get("depth") or self.e.followups) if _isfu else None, fu_max=MAX_FU, prev_q=qprev, prev_answer=(pa or {}).get("text"), prev_src=(pa or {}).get("src"))
+        _cl = getattr(self.e, "last_clarify", None); self.e.last_clarify = None                 # "repeat" | "easier" | None: the person asked to hear it again / more simply (not an answer, never graded)
+        _cq = getattr(self.e, "cur", None)                                                      # where the question just asked came from: user | bank | answer(follow-up) ... and its priority
+        _meta = {"clarify": _cl} if _cl else {"q_source": "followup" if _isfu else getattr(_cq, "source", None), "q_priority": round(getattr(_cq, "priority", 0.0), 3), "q_user_text": getattr(_cq, "user_text", None)}
+        self.responses[-1].update(_meta)
+        ev(EventType.QUESTION_STARTED, text=q, followup=_isfu and not _cl, fu_type=((_cf or {}).get("type") or "새로 만든 질문") if _isfu else None, fu_depth=((_cf or {}).get("depth") or self.e.followups) if _isfu else None, fu_max=MAX_FU, prev_q=qprev, prev_answer=(pa or {}).get("text"), prev_src=(pa or {}).get("src"), **_meta)
         self.e.start_answer(self.e.cur)                                          # write the model answer for the question just asked, while the person answers
         # the question each answer belongs to and its source sentence are stored with every answer (answered_q, ref_text above); the report uses only these
         self.e.start_prefetch()                                                 # prepare the next questions while the person answers
@@ -365,6 +373,32 @@ class VoiceRuntime:
     def client_played(self, t_server: float):
         """Browser-reported first audible playback (server clock). Overrides the sink-emission estimate."""
         self.marks["AUDIO_FIRST_PLAYED_BROWSER"] = t_server
+    def arm_time_limit(self, seconds: float):
+        """Session length (10/20/30 min). When it runs out no new question is asked. The answer being given is still heard
+        (the answer is processed in _respond_inner, which then speaks the closing line). If nobody speaks for TIME_UP_SILENCE_S, the closing line is spoken anyway."""
+        self.time_up = False; self.closing_done = False
+        async def watch():
+            await asyncio.sleep(seconds)
+            self.time_up = True; self.emit(EventType.TIME_UP, state="limit_reached")
+            idle = 0.0
+            while not self.closing_done:
+                busy = self.in_speech or self.agent_speaking or (self.agent_task is not None and not self.agent_task.done())
+                idle = 0.0 if busy else idle + 0.2
+                if idle >= TIME_UP_SILENCE_S: await self._speak_closing(); return
+                await asyncio.sleep(0.2)
+        self._limit_task = asyncio.create_task(watch())
+    async def _speak_closing(self):
+        """Natural ending line, spoken once. No question, no LLM call."""
+        if self.closing_done: return
+        self.closing_done = True
+        async def g():
+            for w in re.findall(r"\S+\s*", CLOSING_TEXT): yield Action.END, w
+        try:
+            if self.agent_task is not None and self.agent_task is not asyncio.current_task() and not self.agent_task.done(): await self.agent_task
+        except Exception: pass
+        self.emit(EventType.TIME_UP, state="closing")
+        await self._speak_stream(g(), "closing")
+        self.emit(EventType.TIME_UP, state="closed")
     async def close(self):
-        for t in (self.agent_task, self.partial_task, getattr(self, "bg", None), getattr(self, "_audio_task", None), getattr(self, "_refill_task", None)):
+        for t in (self.agent_task, self.partial_task, getattr(self, "bg", None), getattr(self, "_audio_task", None), getattr(self, "_refill_task", None), getattr(self, "_limit_task", None)):
             if t and not t.done(): t.cancel()

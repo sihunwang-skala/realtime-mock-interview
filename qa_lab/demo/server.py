@@ -2,7 +2,7 @@
 from __future__ import annotations
 import asyncio, json, time, pathlib, importlib
 import numpy as np
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request, UploadFile, File
 from fastapi.responses import FileResponse, JSONResponse
 from ..cases.registry import CASES, status, OPT
 from ..contracts import Action, Cmd, EventType, Question
@@ -54,6 +54,7 @@ def _grade_targets(rep: dict) -> list:
     cur = (rep.get("asked") or [""])[0]; out = []
     for i, t in enumerate(rep.get("turns", [])):
         if t.get("interjection"): continue
+        if t.get("clarify"): continue                                    # "다시/더 쉽게 말씀해 주세요": not an answer, never graded; the question being answered stays the same
         if t.get("stt_text"): out.append((i, t.get("answered_q") or cur))
         if t.get("question"): cur = t["question"]
     return out
@@ -87,6 +88,46 @@ async def grade_one(rid: str, body: dict):
     t["answered_q"] = q; t["verdict"], t["why"], t["ref"], t["model_answer"] = g["verdict"], g["why"], g["ref"], g["model_answer"]; t.pop("verdict_pending", None)
     f.write_text(json.dumps(d, ensure_ascii=False, indent=1, default=str)); return {"ok": True}
 
+GRADE_LOCK = asyncio.Lock()
+async def _grade_and_ledger(rid: str, opts: dict, led, practice: int):
+    """Background, AFTER the report was sent: LLM-grade the answers (same grading as the report), then credit the ledger and write the credit text into the run file.
+    One at a time, and never during a practice (it starts only after the session ended)."""
+    from ..core import ledger as LD
+    from ..core.llm import make_llm
+    from ..core.engine import QAEngine
+    f = LIVE / f"{pathlib.Path(rid).name}.json"
+    try:
+        async with GRADE_LOCK:
+            d = json.loads(f.read_text()); rep = d.get("report", {}); llm = make_llm(str(opts.get("llm") or "ollama:phi4-mini:3.8b"))
+            for idx, q in _grade_targets(rep):
+                t = rep["turns"][idx]
+                if t.get("verdict") and not t.get("verdict_pending") and t.get("model_answer"): continue
+                ref = (t.get("ref_text") or "").strip()[:300]
+                if not ref: continue
+                if t.get("model_answer"):                          # the model answer was already prepared during the practice: only the verdict is missing (short call; "모름" needs no call at all)
+                    g = await QAEngine.judge_with(llm, ref, q, t["stt_text"]); g["model_answer"] = t["model_answer"]
+                else: g = await QAEngine.grade_with(llm, ref, q, t["stt_text"])
+                t["answered_q"] = q; t["verdict"], t["why"], t["ref"], t["model_answer"] = g["verdict"], g["why"], g["ref"], g["model_answer"]; t.pop("verdict_pending", None)
+            res = LD.collect(rep)
+            credits = led.apply(practice, [{k: v for k, v in r.items() if k != "turn"} for r in res])
+            for r in res: r["turn"]["credit"] = credits[LD.qkey(r["q"], r["ref"])]
+            f.write_text(json.dumps(d, ensure_ascii=False, indent=1, default=str)); led.save()
+    except Exception as ex: print("[ledger] grading/update failed:", repr(ex)[:300], flush=True)
+
+@app.post("/api/ledger/rebuild")
+def ledger_rebuild(body: dict):
+    """Build the ledger of a passage from earlier saved runs (oldest first; only LLM-graded answers count). Practice numbers follow the run order."""
+    from ..core import ledger as LD
+    key = LD.pkey(str(body.get("passage") or STATE.get("passage") or "")); led = LD.Ledger(key); led.d = {"practice": 0, "items": {}}; n = 0
+    runs = sorted((json.loads(p.read_text()) for p in LIVE.glob("s*.json")), key=lambda d: d.get("saved_at", ""))
+    for d in runs:
+        if LD.pkey(d.get("passage_text") or "") != key: continue
+        res = LD.collect(d.get("report", {}))
+        if not res: continue
+        n += 1; led.apply(n, [{k: v for k, v in r.items() if k != "turn"} for r in res])
+    led.d["practice"] = n; led.save()
+    return {"ok": True, "key": key, "practices": n, "questions": len(led.items), "retired": len(led.retired())}
+
 def _summary_md(d: dict) -> str:
     """One readable report per run: settings, every number, every question and answer with timings, and the verdicts. Written next to the run file so it can be shared as is."""
     import statistics as st
@@ -119,12 +160,21 @@ def _summary_md(d: dict) -> str:
             ij = (rep.get("interjections") or [])[ij_n] if ij_n < len(rep.get("interjections") or []) else {}; ij_n += 1
             if ij.get("partial"): L += ["", f"**나 (끼어들기 전 말)**: {ij['partial']}"]
             sec = ij.get("t_after_speech_start"); L.append(f"- ⚡ AI 끼어들기 ({round(sec) if sec is not None else '?'}초째 · {ij.get('kind','')}{' · ' + ij['reason'] if ij.get('reason') else ''}): {t.get('question','')}"); continue
+        if t.get("clarify"):                                             # asked to hear it again / more simply: not an answer, not graded
+            L += ["", f"**나 (요청)**: {t.get('stt_text','')} → {'질문을 그대로 다시 들려줌' if t['clarify'] == 'repeat' else '쉽게 설명해 달라는 요청은 반영하지 않고 같은 질문을 그대로 다시 들려줌 (질문자 스탠스 유지)'}"]
+            if t.get("question"): L += ["", f"**AI**: {t['question']}"]
+            continue
         if t.get("stt_text"):
             L += ["", f"**나**: {t['stt_text']}"]
             if t.get("verdict"): L.append(f"- 평가: {t['verdict']}. {t.get('why','')}")
+            if (t.get("credit") or {}).get("text"): L.append(f"- 누적 기록: {t['credit']['text']}")
             if t.get("model_answer"): L.append(f"- 실제 정답(모범 답안): {t['model_answer']}")
             elif t.get("verdict_pending") or not t.get("verdict"): L.append("- 평가와 정답: 아직 안 만들었어요 (내 실험 결과에서 상세를 열면 만들어져요)")
-        if t.get("question"): L += ["", f"**AI**: {t['question']}"]
+        if t.get("question"):
+            SRC = {"user": "내가 추가한 질문", "bank": "랜덤 질문(지문 기반)", "passage": "첫 질문", "seed": "기본 질문", "skip": "건너뛰기로 만든 질문", "answer": "꼬리질문", "followup": "꼬리질문"}
+            src_ = f" _({SRC.get(t.get('q_source'), t.get('q_source') or '출처 미상')} · 우선순위 점수 {t.get('q_priority', '')})_" if t.get("q_source") else ""
+            L += ["", f"**AI**: {t['question']}{src_}"]
+            if t.get("q_user_text"): L.append(f"- 내가 쓴 원문: {t['q_user_text']}")
     return "\n".join(L) + "\n"
 
 @app.get("/api/live_runs/{rid}/summary")
@@ -156,6 +206,26 @@ async def set_passage(body: dict):
         asyncio.create_task(build_bank(STATE["passage"], llm))
     return {"ok": True, "chars": len(STATE["passage"]), "key": key}
 
+MAX_UPLOAD_TEXT = 150000
+
+@app.post("/api/upload")
+async def upload_material(file: UploadFile = File(...)):
+    """Any document (PDF, PPTX, DOCX, XLSX, HTML, SRT/VTT, JSON, TXT ...): plain text out, format detected from the bytes. Nothing is stored."""
+    from ..core.extract import extract
+    raw = await file.read(); res = await asyncio.to_thread(extract, file.filename or "", raw)
+    return {"ok": bool(res.text.strip()), "name": file.filename, "fmt": res.fmt, "doc_type": res.doc_type, "pages": res.pages,
+            "chars": len(res.text), "text": res.text[:MAX_UPLOAD_TEXT], "warnings": res.warnings}
+
+@app.post("/api/user_questions")
+async def set_user_questions(body: dict):
+    """Questions the user wants asked (rough wording is fine). Stored for the next session start, like the passage; sessions turn them into proper questions."""
+    from ..core.user_questions import MAX_USER_Q, convert
+    from ..core.llm import make_llm
+    qs = [" ".join(str(x).split())[:300] for x in (body.get("questions") or []) if str(x).strip()][:MAX_USER_Q]
+    llm = make_llm(str(body.get("llm") or "ollama:phi4-mini:3.8b"))
+    STATE["user_questions"] = [await convert(llm, x, STATE.get("passage") or "") for x in qs]       # converted NOW (before the practice, nobody is waiting), so starting a session needs no LLM call
+    return {"ok": True, "n": len(qs), "items": STATE["user_questions"]}
+
 @app.get("/api/passage_status/{key}")
 def passage_status(key: str):
     from ..core.passage import BANK
@@ -164,6 +234,9 @@ def passage_status(key: str):
 
 @app.get("/")
 def index(): return FileResponse(STATIC / "index.html", headers={"Cache-Control": "no-store, max-age=0"})
+
+@app.get("/v2")
+def index_v2(): return FileResponse(STATIC / "index_v2.html", headers={"Cache-Control": "no-store, max-age=0"})
 SAMPLES = pathlib.Path(__file__).resolve().parents[2] / "samples" / "tts"      # voice comparison samples (git-ignored)
 
 @app.get("/api/tts_samples")
@@ -349,6 +422,8 @@ async def ws_voice(ws: WebSocket):
     sid = f"s{int(time.time())}"; T_START = time.monotonic(); out: asyncio.Queue = asyncio.Queue(); rt = None
     me = asyncio.current_task(); STATE["active"] = me
     try:
+        from ..core import ledger as LD0
+        _w = asyncio.ensure_future(LD0.wait_pending())             # waits for the last session's grading IN PARALLEL with the model load below (costs nothing extra)
         _t0 = time.monotonic(); _cached = (case, json.dumps(opts, sort_keys=True)) in _BUILT
         make_engine, make_runtime, info = await asyncio.to_thread(get_build, case, opts)
         _t1 = time.monotonic()
@@ -360,7 +435,19 @@ async def ws_voice(ws: WebSocket):
             print(f"[timing] models {'cached' if _cached else 'LOADED'} {_t1-_t0:.1f}s | first question {time.monotonic()-_t1:.1f}s", flush=True)
         else:
             for t in SEED_BANK: eng.queue.add(Question(t, source="seed", priority=.6))
-        serverplay = q.get("serverplay") == "1"                    # play the AI voice on this Mac directly (afplay) -> independent of the browser's audio output
+        UQ_RES = []
+        if STATE.get("user_questions"):                            # questions the user typed before starting (already converted, no LLM call): queued right after the opening question
+            from ..core.user_questions import add_converted
+            UQ_RES = add_converted(eng, STATE["user_questions"])
+        from ..core import ledger as LD                            # earlier practices: wrong answers come back, mastered questions never do (one small file read, no LLM)
+        LED = None; LEDP = 0
+        try:
+            await _w                                               # the previous session's grading (it ran while the models loaded above), at most 8 s
+            LED = LD.Ledger(LD.pkey(passage)); LEDP = LED.practice + 1
+            REVIEW = LD.inject(eng, LED, LEDP)
+            if REVIEW: UQ_RES.append({"raw": "", "q": f"복습 질문 {len(REVIEW)}개를 넣었어요 (연습 {LEDP})", "status": "review"})
+        except Exception as ex_: print("[ledger] skipped:", repr(ex_)[:200], flush=True); LED = None
+        serverplay = q.get("serverplay") == "1"                   # play the AI voice on this Mac directly (afplay) -> independent of the browser's audio output
         SP = {"buf": [], "proc": None}
         def sp_kill():
             p_ = SP["proc"]
@@ -392,6 +479,7 @@ async def ws_voice(ws: WebSocket):
             else: out.put_nowait(("b", (np.clip(pcm, -1, 1) * 32767).astype(np.int16).tobytes()))
         rt = make_runtime(eng, on_ev, on_aud)
         rt.sid = sid
+        TIME_LIMIT_MIN = int(q.get("time_limit") or 0)            # session length chosen on the page: 0 = no limit, else 10 / 20 / 30 minutes
         rt.start_audio_prewarm()                                   # voice the prepared questions / follow-ups / interjection templates ahead of time (local voices only)
         try:                                                       # Whisper vocabulary hint: the passage's own terms (or the default RFP terms when no passage)
             if hasattr(rt.stt, "prompt"):
@@ -404,6 +492,7 @@ async def ws_voice(ws: WebSocket):
                 k, v = await out.get()
                 await (ws.send_json(v) if k == "j" else ws.send_bytes(v))
         st = asyncio.create_task(sender()); await ws.send_json({"type": "SESSION_READY", "session_id": sid, "components": info, "seq": 0})
+        if UQ_RES: await ws.send_json({"type": "QUESTION_ADDED", "session_id": sid, "results": UQ_RES})
         started = False; PAIR_LABELS: list[str] = []; SAVED = [False]
         while True:
             m = await ws.receive()
@@ -414,6 +503,11 @@ async def ws_voice(ws: WebSocket):
             d = json.loads(m["text"]); t = d.get("type")
             if t == "ping": await ws.send_json({"type": "pong", "t0": d["t0"], "server_ts": time.monotonic()}); continue
             if t == "ptt": rt.ptt = bool(d.get("on")); continue
+            if t == "add_question":                                # a question added during the session: queued as the next one (same conversion/dedup as the ones typed before start)
+                from ..core.user_questions import add_converted, quick_convert, ref_for     # no LLM mid-session: it would slow the next turn
+                _raw = " ".join(str(d.get("text", "")).split())[:300]
+                res_ = add_converted(eng, [{"raw": _raw, "q": quick_convert(_raw), "ref": ref_for(passage, _raw)}])
+                await ws.send_json({"type": "QUESTION_ADDED", "session_id": sid, "results": res_}); continue
             if t == "pair_label": PAIR_LABELS.append(str(d.get("label", ""))[:20]); continue
             if t == "audio_started": rt.client_played(d["server_clock_ts"]); continue
             if t == "played": eng.mark_played(int(len(eng.spoken_full) * min(1, d["seconds"] / max(d["total"], 1e-6)))); continue
@@ -421,7 +515,9 @@ async def ws_voice(ws: WebSocket):
             try:
                 if cmd == Cmd.START.value:
                     if started: res.update(ok=False, error="already started")
-                    else: started = True; q0 = eng.first_question(); await rt.speak_text(q0.text); res["question_id"] = q0.id
+                    else:
+                        started = True; q0 = eng.first_question(); await rt.speak_text(q0.text); res["question_id"] = q0.id
+                        if TIME_LIMIT_MIN: rt.arm_time_limit(TIME_LIMIT_MIN * 60)     # 10/20/30 min: the clock starts with the first question
                 elif not started and cmd: res.update(ok=False, error="session not started")
                 elif cmd == Cmd.REPEAT_QUESTION.value: await rt.speak_text(eng.cur.text, Action.REPEAT)
                 elif cmd == Cmd.SKIP_QUESTION.value:
@@ -445,7 +541,9 @@ async def ws_voice(ws: WebSocket):
                     out.put_nowait(("j", {"type": "REPORT_PROCESSING", "session_id": sid})); await rt.close()
                     out.put_nowait(("j", {"type": "SESSION_ENDED", "session_id": sid}))
                     report = {"asked": eng.asked_texts, "turns": rt.responses, "interjections": rt.interjections, "coverage": eng.cov.report(), "metrics": __import__("qa_lab.demo.metrics", fromlist=["build"]).build(rt, eng, opts, time.monotonic() - T_START, PAIR_LABELS)}
+                    report["practice"] = LEDP
                     report["run_id"] = save_run(sid, opts, report, len(passage), passage); SAVED[0] = True
+                    if LED is not None: LD.PENDING["task"] = asyncio.create_task(_grade_and_ledger(sid, opts, LED, LEDP))      # after the report is out: grade, credit the ledger (never during the practice)
                     out.put_nowait(("j", {"type": "REPORT_READY", "session_id": sid, "report": report}))
                     out.put_nowait(("j", {"type": "CMD_RESULT", "cmd": cmd, "ok": True})); await asyncio.sleep(0.5); await ws.close(); break
                 else: res.update(ok=False, error=f"unknown command {cmd}")
@@ -457,7 +555,9 @@ async def ws_voice(ws: WebSocket):
             if rt and rt.responses and not SAVED[0]:
                 rep = {"asked": eng.asked_texts, "turns": rt.responses, "interjections": rt.interjections, "coverage": eng.cov.report(), "partial_save": True,
                        "metrics": __import__("qa_lab.demo.metrics", fromlist=["build"]).build(rt, eng, opts, time.monotonic() - T_START, PAIR_LABELS)}
+                rep["practice"] = LEDP
                 save_run(sid, opts, rep, len(passage), passage)
+                if LED is not None: LD.PENDING["task"] = asyncio.create_task(_grade_and_ledger(sid, opts, LED, LEDP))
         except Exception: pass
         try: sp_kill()
         except Exception: pass
