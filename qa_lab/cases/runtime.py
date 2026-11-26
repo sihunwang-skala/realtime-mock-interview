@@ -78,6 +78,12 @@ class VoiceRuntime:
                 self.last_partial_n = n
                 self.partial_task = asyncio.create_task(self._partial(np.concatenate(self.buf)[self.ij_cut:][-int(self.partial_window * SR):], time.monotonic() - self.speech_t0))
 
+    def _reset_vad(self):
+        """The button ended the turn, possibly before the detector heard enough silence: without a reset it stays "still speaking",
+        reports no new start, and the NEXT answer is rejected as empty."""
+        for v in (self.vad, self.vad_late):
+            if v is not None and hasattr(v, "reset"): v.reset()
+
     def _commit_chunk(self):
         """Manual mode, natural pause: transcribe the audio since the last cut in the background so the final press only needs the tail."""
         total = np.concatenate(self.buf); seg = total[self.cut:]; self.cut = len(total)
@@ -95,7 +101,7 @@ class VoiceRuntime:
         """Manual mode: the user pressed 'answer done'. Returns (ok, reason). Latency clock for this turn starts at the press."""
         if not self.in_speech: return False, "아직 말씀하신 내용이 없습니다"
         if self.agent_speaking: return False, "AI가 말하는 중입니다"
-        press = time.monotonic(); self.in_speech = False
+        press = time.monotonic(); self.in_speech = False; self._reset_vad()
         total = np.concatenate(self.buf); tail = total[self.cut:]; self.buf = []; self.cut = 0
         tasks, self.chunk_tasks = self.chunk_tasks, []
         self.marks = {"VAD_END_DETECTED": press, "BUTTON_PRESSED": press}
@@ -285,7 +291,7 @@ class VoiceRuntime:
         self.responses.append({"stt_text": text, "fu_note": _why, "is_fu": _isfu, "fu_type": ((_cf or {}).get("type") or "새로 만든 질문") if _isfu else None, "fu_depth": ((_cf or {}).get("depth") or self.e.followups) if _isfu else None, "assessment": a.__dict__, "action": act.value if act else None, "question": q.strip(), "model_answer": (pa or {}).get("text") or "", "answered_q": qprev, "ref_text": prevref, "verdict_pending": True, "at_end": dict(getattr(self, "_snap", {}) or {}), "marks": mk if hold is not None else dict(self._cur()), "interjected_during": self.interjected, "speculative": hold is not None, "quick_verdict": v and v["verdict"], "verdict": v and v["verdict"], "why": v and v["why"], "ref": v and v["ref"], "model_answer": (pa or {}).get("text"), "model_answer_src": (pa or {}).get("src")})
         _cl = getattr(self.e, "last_clarify", None); self.e.last_clarify = None                 # "repeat" | "easier" | None: the person asked to hear it again / more simply (not an answer, never graded)
         _cq = getattr(self.e, "cur", None)                                                      # where the question just asked came from: user | bank | answer(follow-up) ... and its priority
-        _meta = {"clarify": _cl} if _cl else {"q_source": "followup" if _isfu else getattr(_cq, "source", None), "q_priority": round(getattr(_cq, "priority", 0.0), 3), "q_user_text": getattr(_cq, "user_text", None)}
+        _meta = {"clarify": _cl} if _cl else {"q_source": "followup" if _isfu else getattr(_cq, "source", None), "q_priority": round(getattr(_cq, "priority", 0.0), 3), "q_user_text": getattr(_cq, "user_text", None), "q_reason": getattr(_cq, "reason", None)}
         self.responses[-1].update(_meta)
         ev(EventType.QUESTION_STARTED, text=q, followup=_isfu and not _cl, fu_type=((_cf or {}).get("type") or "새로 만든 질문") if _isfu else None, fu_depth=((_cf or {}).get("depth") or self.e.followups) if _isfu else None, fu_max=MAX_FU, prev_q=qprev, prev_answer=(pa or {}).get("text"), prev_src=(pa or {}).get("src"), **_meta)
         self.e.start_answer(self.e.cur)                                          # write the model answer for the question just asked, while the person answers
@@ -363,7 +369,7 @@ class VoiceRuntime:
         a prepared (speculative) answer is confirmed at once; an answer already being processed counts as submitted; an utterance that just ended and was not handled yet is handled now."""
         if self.in_speech:
             if self.spec_hold is not None: self._confirm(); return True, ""                       # the answer was prepared at the first pause: release it now instead of waiting for the 1.5 s confirmation
-            self.in_speech = False; self.marks = {}; self.mark("VAD_END_DETECTED"); audio = np.concatenate(self.buf); self.buf = []
+            self.in_speech = False; self._reset_vad(); self.marks = {}; self.mark("VAD_END_DETECTED"); audio = np.concatenate(self.buf); self.buf = []
             self.agent_task = asyncio.create_task(self._respond(audio)); return True, ""
         if self.agent_task and not self.agent_task.done(): return True, "답변이 이미 접수돼서 AI가 처리 중이에요"
         la = getattr(self, "last_audio", None)

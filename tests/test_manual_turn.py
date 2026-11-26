@@ -35,3 +35,14 @@ def test_manual_turn_waits_for_button_and_merges_chunks():
 
 def test_manual_finish_without_speech_is_rejected():
     rt = make(); ok, why = asyncio.run(rt.finish_answer()); assert not ok and "말씀" in why
+
+
+def test_button_press_resets_the_speech_detector():
+    """Pressing "answer done" before the detector heard enough silence must not leave it stuck in "speaking"."""
+    from qa_lab.cases.runtime import VoiceRuntime
+    class VAD:
+        n = 0
+        def reset(self): self.n += 1
+    rt = VoiceRuntime.__new__(VoiceRuntime); rt.vad = VAD(); rt.vad_late = None
+    rt._reset_vad()
+    assert rt.vad.n == 1

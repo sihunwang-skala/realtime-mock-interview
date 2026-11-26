@@ -387,7 +387,9 @@ class QAEngine:
         if not b: return
         i = getattr(self, "_bank_i", 0)
         for e in b["qs"][i:]:
-            q = Question(e["q"], Action.DEEPEN if i == 0 else Action.SWITCH, None, 1.0 - 0.02 * i, "bank", ""); q.bank = e; self.queue.add(q); i += 1
+            prio = 1.0 - 0.02 * i
+            if i and getattr(self, "has_plan", False): from .importance import bank_priority; prio = bank_priority(i)     # planned (important) questions come first; the opening question stays first
+            q = Question(e["q"], Action.DEEPEN if i == 0 else Action.SWITCH, None, prio, "bank", ""); q.bank = e; self.queue.add(q); i += 1
         self._bank_i = i
     async def _topic_question(self, topic: str) -> str:
         buf = ""
@@ -411,7 +413,8 @@ class QAEngine:
         while True:
             q = self.queue.pop()
             if q is None: return None
-            if not self._seen(q.text) and not self._blocked(q): return q
+            seen = q.text in self.asked_texts if q.source == "plan" else self._seen(q.text)      # planned questions share a sentence shape: only the exact same one counts as asked
+            if not seen and not self._blocked(q): return q
     def _blocked(self, q) -> bool:
         """Questions the person has mastered in earlier practices (ledger): never asked again."""
         fn = getattr(self, "blocked_fn", None)
@@ -473,6 +476,8 @@ class QAEngine:
             self.last_clarify = _clar                                # runtime flags the turn (never graded) and tells the screen
             for w in re.findall(r"\S+\s*", self.cur.text): yield Action.REPEAT, w
             return
+        if interject_kind is None and getattr(self, "has_plan", False) and not self._dont_know(answer):
+            from .importance import revise_plan; revise_plan(self, answer)     # points just explained are not asked for again
         elapsed = (time.monotonic() - self.t0) / 1800
         act = forced_action or decide_action(a, self.followups, self.queue.peek() is not None, elapsed_ratio=elapsed)
         if act == Action.END and getattr(self, "keep_going", False): act = Action.DEEPEN     # live experiment: only the user ends the session (never run out of questions)

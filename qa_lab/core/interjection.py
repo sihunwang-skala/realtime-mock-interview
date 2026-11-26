@@ -5,18 +5,15 @@ from dataclasses import dataclass
 from ..contracts import Requirement
 from .answer_analyzer import repetition_ratio, numbers
 from .llm import LLM
+from .quantities import parse
 from .question_queue import similarity
 
 @dataclass
 class Decision:
     interject: bool; reason: str = ""; kind: str = ""; policy: str = ""
 
-def _unit(s):
-    u = re.sub(r"[\d.\s]+", "", s); return "개월" if u in ("개월", "년") else u
-def _num(s):
-    m = re.match(r"\d+(?:\.\d+)?", s)
-    if not m: return None
-    v = float(m.group(0)); return v * 12 if "년" in s and "개월" not in s else v
+def _unit(s): return parse(s)[0]
+def _num(s): return parse(s)[1]
 def _kw(t): return {(w[:2] if len(w) >= 3 else w) for w in re.findall(r"[가-힣A-Za-z]{2,}", t)}   # stem-ish: Korean particles differ (로그는/로그를)
 
 def numeric_conflict(text: str, reqs: list[Requirement]) -> str | None:

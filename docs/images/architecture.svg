@@ -25,7 +25,12 @@
 <text x="345.0" y="111.0" text-anchor="middle" class="node-b">글자 추출</text>
 <rect x="460" y="75" width="150" height="60" rx="10" fill="#ffffff" stroke="#1f4e5a" stroke-width="2"/>
 <text x="535.0" y="100.0" text-anchor="middle" class="node-b">지문</text>
-<text x="535.0" y="122.0" text-anchor="middle" class="node">최대 15만 자</text>
+<text x="535.0" y="122.0" text-anchor="middle" class="node">자료 종류 구분</text>
+<rect x="460" y="168" width="150" height="56" rx="10" fill="#fff3d6" stroke="#b7791f" stroke-width="2"/>
+<text x="535.0" y="191.0" text-anchor="middle" class="node-b">우선순위 계산</text>
+<text x="535.0" y="213.0" text-anchor="middle" class="node">규칙 · 전사 대조</text>
+<path d="M535,135 V168" fill="none" stroke="#b7791f" stroke-width="2.2" marker-end="url(#arr)"/>
+<path d="M610,208 Q640,240 700,240 H860 Q885,240 900,206" fill="none" stroke="#b7791f" stroke-width="2.2" marker-end="url(#arr)"/>
 <rect x="650" y="26" width="180" height="56" rx="10" fill="#ffffff" stroke="#1f4e5a" stroke-width="2"/>
 <text x="740.0" y="49.0" text-anchor="middle" class="node-b">질문 은행</text>
 <text x="740.0" y="71.0" text-anchor="middle" class="node">3개씩 미리 생성</text>
@@ -37,10 +42,10 @@
 <text x="740.0" y="219.0" text-anchor="middle" class="node">틀린 질문 우선</text>
 <rect x="885" y="56" width="170" height="150" rx="10" fill="#ffffff" stroke="#1f4e5a" stroke-width="2"/>
 <text x="970.0" y="93.0" text-anchor="middle" class="node-b">질문 대기열</text>
-<text x="970.0" y="115.0" text-anchor="middle" class="node">우선순위 점수</text>
-<text x="970.0" y="137.0" text-anchor="middle" class="node">사용자 질문 0.99</text>
-<text x="970.0" y="159.0" text-anchor="middle" class="node">복습 0.985</text>
-<text x="970.0" y="181.0" text-anchor="middle" class="node">은행 1.00 − 0.02·순번</text>
+<text x="970.0" y="115.0" text-anchor="middle" class="node">사용자 질문 0.99</text>
+<text x="970.0" y="137.0" text-anchor="middle" class="node">복습(틀림) 0.985</text>
+<text x="970.0" y="159.0" text-anchor="middle" class="node">핵심·우선 0.93~0.98</text>
+<text x="970.0" y="181.0" text-anchor="middle" class="node">일반 질문 은행</text>
 <path d="M230,105 H270" fill="none" stroke="#1f4e5a" stroke-width="2.2" marker-end="url(#arr)"/>
 <path d="M420,105 H460" fill="none" stroke="#1f4e5a" stroke-width="2.2" marker-end="url(#arr)"/>
 <path d="M610,105 H650" fill="none" stroke="#1f4e5a" stroke-width="2.2" marker-end="url(#arr)"/>

@@ -15,7 +15,7 @@ def repetition_ratio(text: str) -> float:
     grams = [" ".join(toks[i:i+3]) for i in range(len(toks) - 2)]
     return 1 - len(set(grams)) / len(grams)
 
-def numbers(text: str) -> set[str]: return set(re.findall(r"\d+(?:\.\d+)?\s?(?:%|퍼센트|초|ms|개월|년|개|명|억|만원|원|일|TPS|건)", text))
+from .quantities import numbers          # numbers with units ("1,200만원", "32억 5천만 원"), see core/quantities.py
 
 class AnswerAnalyzer:
     def __init__(self, llm: LLM, reqs: list[Requirement]):

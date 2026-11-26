@@ -51,7 +51,7 @@ The product speaks and displays **Korean**.
 
 ## 2. Architecture
 
-![Architecture: preparation, live, and after-session flow](docs/images/architecture.svg)
+![Architecture: preparation, live, and after-session flow](docs/images/architecture_en.svg)
 
 ### Pipeline options ("Cases")
 
@@ -228,22 +228,98 @@ Questions that fail only the strict grounding check are held in a **reserve** so
 
 ## 7. Question priority
 
-The **priority score** shown in the UI and report is a value between 0 and 1 that decides *what to ask next*. It is neither a percentage nor an importance rating.
+**The engine reads your materials and your talk, then decides what to ask first.** Importance is **computed by rules in code**, not scored by a model. It takes milliseconds, so neither the first nor the next question waits, and every rank comes with a **reason**.
 
-| Question type | Score | Intent |
+![Preview of the questions to be asked first](docs/images/plan_preview.png)
+
+*The materials in this screenshot are synthetic samples.*
+
+### 7.1 Options considered
+
+| Approach | Assessment |
+|---|---|
+| Generation order (previous) | No guarantee that important points came first |
+| An LLM scores every sentence 0–1 | More model calls mean more latency and heat, and we judged a small model's scores hard to calibrate or explain. (We did not measure score quality.) |
+| **Rules, with the model as a helper (chosen)** | Numbers, evaluation points, and cross-document comparison are rule-based. The model is used only optionally to pick *the numbers of sentences* that state a differentiator, so it cannot invent content. |
+
+### 7.2 Material types
+
+A priority plan is built when materials carry header lines. Uploading a file adds one automatically, and you can edit it.
+
+`[RFP: name]` · `[제안서: name]` (proposal) · `[발표자료: name]` (slides) · `[발표 전사: name]` (speech transcript)
+
+- **The transcript is used for comparison only.** So that recognition errors never become "facts", it is excluded from the question bank, grading references, and review ledger.
+- Plain pasted text without headers behaves as before and gets no plan.
+
+### 7.3 Core items
+
+Key points such as budget and targets are **asked even when the talk has no problem.**
+
+| Category | Cues (matched in Korean) |
+|---|---|
+| Budget | budget, project cost, labor cost, money amounts |
+| Mandatory requirement | required, must, obligation, compliance |
+| Goals and outcomes | target, outcome, indicator, achieve, improve |
+| Differentiator | differentiation, key strategy, strength, plus optional model picks |
+| Delivery structure | governance, organization, staffing, partner institutions |
+| Scope and schedule | audience, headcount, duration, schedule |
+
+Up to 2 sentences per category, preferring those with numbers, higher evaluation points, and repetition across documents.
+
+**Evaluation points** are read from RFP lines shaped like `criterion 20점` or `criterion | 30`.
+
+### 7.4 Tiers and scores
+
+| Tier | Condition | Base score |
 |---|---|---|
-| Opening question | `1.00` | Asked first |
-| User-added | `0.99 − 0.001 × index` | Right after the opening |
-| Review: answered wrong last time | `0.985 − 0.001 × index` | After user questions, before new ones |
-| Question bank | `1.00 − 0.02 × generation index` | Asked in **generation order** |
-| Review: answered right once | random in `0.3–0.9` | Mixed among new questions to avoid a memorized order |
-| Generated on the spot (e.g. skip) | `0.4` | Used when nothing is prepared |
+| 1 | A core value **differs between documents and talk, or between documents** | `0.975` |
+| 2 | A core item is **missing from the talk or lacks a basis** | `0.965` |
+| 3 | A core item was **explained with its basis** → one step deeper | `0.955` |
+| 4 | Another number differs | `0.945` |
+| 5 | An evaluation criterion is missing from the talk | `0.935` |
+| 6 | A criterion is mentioned without a basis | `0.925` |
 
-- At most 12 questions wait in the queue; the lowest-scored overflow is dropped.
-- Questions retired after two correct answers are removed.
-- Follow-ups do not wait in the queue; they attach directly to the answer just given.
+- **score = base + points × 0.00008.** Even 100 points add only 0.008, below the 0.01 tier gap, so points reorder questions **within a tier only.**
+- At most 10 planned questions. Core tiers sort first, so core questions take their places first.
+- An explained core item is not asked about again in the same way. If you explained the budget, you get a question about its biggest risk instead.
+- Without a transcript, core items are asked for their basis.
+- Because transcripts can be wrong, mismatches with the talk are phrased as **confirmations** ("I heard 100 in the talk. Which is correct?").
+- Amounts are normalized before comparison, so `1,200만원` equals `12,000,000원`.
 
-> **To be explicit:** the current code **does not rank questions by assessed importance.** Bank order is generation order; coverage comes from spreading sentence selection across the passage. Importance-based ranking is on the [roadmap](#18-verification-limitations-and-roadmap).
+### 7.5 Updates during practice
+
+After each answer, waiting planned questions are re-checked by rule.
+
+| Waiting question | If an earlier answer already explained it with a basis |
+|---|---|
+| Core item, basis or omission (tier 2) | Replaced by a **deeper question (tier 3)** |
+| Evaluation criterion (tiers 5, 6) | Removed from the queue |
+| Value mismatch (tiers 1, 4) | Kept, because it needs explicit confirmation |
+
+### 7.6 Overall order
+
+| Question type | Score |
+|---|---|
+| Opening question | `1.00` |
+| User-added | `0.99 − 0.001 × index` |
+| Review: answered wrong last time | `0.985 − 0.001 × index` |
+| **Planned (core and priority)** | `0.925 – 0.984` |
+| Question bank | `0.6 − 0.005 × index` with a plan, otherwise `1.00 − 0.02 × index` |
+| Review: answered right once | random in `0.3–0.9` |
+| Generated on the spot | `0.4` |
+
+- The score only decides **order**; it is not a percentage.
+- A similar waiting question is merged, keeping the higher score.
+- Follow-ups bypass the queue, so **with many follow-ups, not every planned question may fit in a fixed number of turns.**
+
+### 7.7 Limitations
+
+- Categories and comparisons are **keyword rules**. Heavy paraphrase is missed, and an unrelated sentence can be picked as core.
+- A mismatch requires **the same unit and at least 2 shared key terms**, a deliberately conservative bar.
+- Only the two score-line shapes above are parsed.
+- **Verified on synthetic materials only.** Accuracy on real RFPs, and agreement with human-assigned priority, are not yet measured.
+- The **accuracy of the optional model pick** for differentiator sentences has not been evaluated; if it fails, the rule results are used as they are.
+- The transcript arrives as an **uploaded file** (subtitles or text). Live transcription of the presentation is not connected yet.
 
 ---
 
@@ -383,6 +459,7 @@ In button mode, speech before each pause is **transcribed ahead of time**, leavi
 | Hallucinated sign-offs on silence, such as a news anchor line | Known phrases removed |
 | Long runs of one repeated character | Removed |
 | One-syllable answers such as "yes" were discarded | Genuine one-syllable answers are kept |
+| Pressing the button right after speaking made the next answer fail as empty | The speech detector (VAD) is reset when the button ends a turn |
 | Domain terms transcribed incorrectly | English terms from the passage are passed as hints |
 
 ### 10.4 Speech synthesis
@@ -469,6 +546,7 @@ During the session only what grading needs is stored: the question, the transcri
 ### 13.4 What the report contains
 
 - Each question's **origin** (opening, passage-based, user-added, follow-up type and depth, interjection) and priority score
+- **Why a planned question was asked first** (category and finding)
 - Your answer, verdict and reason, and a model answer
 - Why a follow-up did or did not happen
 - Review history: which correct answer this is, and when it was missed
@@ -614,6 +692,8 @@ qa_lab/
 │   ├── passage.py         passage cleanup, opening question, question bank
 │   ├── planner.py         prompts and question quality filters
 │   ├── question_queue.py  priority queue and de-duplication
+│   ├── importance.py      material types, core items, transcript comparison, plan
+│   ├── quantities.py      money, numbers, and units
 │   ├── interjection.py    interjection policies
 │   ├── clarify.py         repeat-request detection
 │   ├── user_questions.py  user question conversion and queuing
@@ -650,7 +730,8 @@ Most documents are in Korean.
 ## 18. Verification, limitations, and roadmap
 
 ### Verified
-- Automated tests: queue, follow-ups, repeat requests, user questions, review ledger, manual turns, time limit, file extraction
+- An end-to-end server run with synthetic materials and speech: planned questions came out in tier order and updated after answers
+- Automated tests: priority plan, amount parsing, queue, follow-ups, repeat requests, user questions, review ledger, manual turns, time limit, file extraction
 - Model and configuration comparisons and latency experiments on synthetic speech
 - File upload: extraction checked on synthetic samples, plus an in-browser upload
 
@@ -661,15 +742,16 @@ Most documents are in Korean.
 
 ### Known limitations
 - A small local model can produce awkward Korean questions.
-- Multiple uploads are **concatenated into one passage**; the engine does not yet distinguish material types.
+- Priority uses keyword rules and has not been validated on real RFPs ([Section 7.7](#77-limitations)).
 - No OCR, `.hwp`, or legacy `.ppt` support.
 
-### Roadmap (design stage, not implemented)
-1. **Cross-material questions:** compare the proposal, slides, and speech transcript, and ask about conflicting figures or claims and items left out of the talk.
-2. **Reviewer personas:** role, evaluation concerns, and questioning intensity.
-3. **Evidence scope:** *uploaded material only*, or *with external references*. External mode would cite sources, search at upload time to avoid live latency, and run as a separate mode whose search queries do not contain proposal text.
-4. **Importance-based question priority.**
-5. Calibrating interjection thresholds on real speech; per-session storage and authentication.
+### Roadmap (not implemented)
+1. **Semantic cross-material comparison.** Today, number mismatches, omissions, and missing bases are found by rules; conflicting claims worded differently are not.
+2. **Live presentation transcript** feeding the plan during the talk.
+3. **Validation on real RFPs** against human-ranked questions, then tuning the rules and starting values.
+4. **Reviewer personas:** role, evaluation concerns, and questioning intensity.
+5. **Evidence scope:** *uploaded material only*, or *with external references*, cited, searched ahead of time, in a separate mode whose queries contain no proposal text.
+6. Calibrating interjection thresholds on real speech; per-session storage and authentication.
 
 ---
 

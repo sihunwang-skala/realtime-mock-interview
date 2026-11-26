@@ -118,7 +118,8 @@ async def _grade_and_ledger(rid: str, opts: dict, led, practice: int):
 def ledger_rebuild(body: dict):
     """Build the ledger of a passage from earlier saved runs (oldest first; only LLM-graded answers count). Practice numbers follow the run order."""
     from ..core import ledger as LD
-    key = LD.pkey(str(body.get("passage") or STATE.get("passage") or "")); led = LD.Ledger(key); led.d = {"practice": 0, "items": {}}; n = 0
+    from ..core.importance import reference_text
+    key = LD.pkey(reference_text(str(body.get("passage") or STATE.get("passage") or ""))); led = LD.Ledger(key); led.d = {"practice": 0, "items": {}}; n = 0
     runs = sorted((json.loads(p.read_text()) for p in LIVE.glob("s*.json")), key=lambda d: d.get("saved_at", ""))
     for d in runs:
         if LD.pkey(d.get("passage_text") or "") != key: continue
@@ -171,10 +172,11 @@ def _summary_md(d: dict) -> str:
             if t.get("model_answer"): L.append(f"- 실제 정답(모범 답안): {t['model_answer']}")
             elif t.get("verdict_pending") or not t.get("verdict"): L.append("- 평가와 정답: 아직 안 만들었어요 (내 실험 결과에서 상세를 열면 만들어져요)")
         if t.get("question"):
-            SRC = {"user": "내가 추가한 질문", "bank": "랜덤 질문(지문 기반)", "passage": "첫 질문", "seed": "기본 질문", "skip": "건너뛰기로 만든 질문", "answer": "꼬리질문", "followup": "꼬리질문"}
+            SRC = {"user": "내가 추가한 질문", "bank": "랜덤 질문(지문 기반)", "passage": "첫 질문", "seed": "기본 질문", "skip": "건너뛰기로 만든 질문", "plan": "핵심·우선 질문", "answer": "꼬리질문", "followup": "꼬리질문"}
             src_ = f" _({SRC.get(t.get('q_source'), t.get('q_source') or '출처 미상')} · 우선순위 점수 {t.get('q_priority', '')})_" if t.get("q_source") else ""
             L += ["", f"**AI**: {t['question']}{src_}"]
             if t.get("q_user_text"): L.append(f"- 내가 쓴 원문: {t['q_user_text']}")
+            if t.get("q_reason"): L.append(f"- 먼저 물어본 이유: {t['q_reason']}")
     return "\n".join(L) + "\n"
 
 @app.get("/api/live_runs/{rid}/summary")
@@ -200,13 +202,27 @@ def live_delete(rid: str):
 @app.post("/api/passage")
 async def set_passage(body: dict):
     from ..core.passage import BANK, bank_key, build_bank, MAX_CHARS
-    STATE["passage"] = str(body.get("text", ""))[:MAX_CHARS]; llm = str(body.get("llm") or "ollama:phi4-mini:3.8b"); key = bank_key(STATE["passage"], llm)
-    if STATE["passage"].strip() and key not in BANK:                            # start preparing questions + model answers right away, in the background
+    from ..core.importance import reference_text, planned, split_materials
+    STATE["passage"] = str(body.get("text", ""))[:MAX_CHARS]; llm = str(body.get("llm") or "ollama:phi4-mini:3.8b")
+    ref = reference_text(STATE["passage"]); key = bank_key(ref, llm)                 # questions are built from the documents, never from the speech transcript
+    if ref.strip() and (key not in BANK or STATE["passage"] not in PLAN_EXTRA):      # start preparing right away, in the background
         if llm.startswith("ollamax:"): await asyncio.to_thread(ensure_ext_ollama)
-        asyncio.create_task(build_bank(STATE["passage"], llm))
-    return {"ok": True, "chars": len(STATE["passage"]), "key": key}
+        asyncio.create_task(_prepare_materials(ref, STATE["passage"], llm, key))
+    mats = split_materials(STATE["passage"])
+    return {"ok": True, "chars": len(STATE["passage"]), "key": key, "materials": [{"type": m.type, "name": m.name, "chars": len(m.text)} for m in mats],
+            "plan": [{"tier": x.tier, "question": x.question, "reason": x.reason} for x in planned(STATE["passage"], PLAN_EXTRA.get(STATE["passage"]))]}
 
-MAX_UPLOAD_TEXT = 150000
+PLAN_EXTRA: dict = {}          # material text -> sentences the model pointed at (differentiators); filled in the background, optional
+async def _prepare_materials(ref: str, full: str, llm: str, key: str):
+    """Question bank first (it is needed first), then one optional model call that points at differentiator sentences. Both give way to live answers."""
+    from ..core.passage import BANK, build_bank, _interruptible
+    from ..core.importance import planned, model_picks
+    from ..core.llm import make_llm
+    if key not in BANK: await build_bank(ref, llm)
+    if full not in PLAN_EXTRA and planned(full):
+        PLAN_EXTRA[full] = {}
+        try: m = make_llm(llm); PLAN_EXTRA[full] = await _interruptible(lambda: model_picks(m, full))
+        except Exception: pass
 
 @app.post("/api/upload")
 async def upload_material(file: UploadFile = File(...)):
@@ -223,7 +239,7 @@ async def set_user_questions(body: dict):
     from ..core.llm import make_llm
     qs = [" ".join(str(x).split())[:300] for x in (body.get("questions") or []) if str(x).strip()][:MAX_USER_Q]
     llm = make_llm(str(body.get("llm") or "ollama:phi4-mini:3.8b"))
-    STATE["user_questions"] = [await convert(llm, x, STATE.get("passage") or "") for x in qs]       # converted NOW (before the practice, nobody is waiting), so starting a session needs no LLM call
+    STATE["user_questions"] = [await convert(llm, x, __import__("qa_lab.core.importance", fromlist=["reference_text"]).reference_text(STATE.get("passage") or "")) for x in qs]       # converted NOW (before the practice, nobody is waiting), so starting a session needs no LLM call
     return {"ok": True, "n": len(qs), "items": STATE["user_questions"]}
 
 @app.get("/api/passage_status/{key}")
@@ -428,10 +444,14 @@ async def ws_voice(ws: WebSocket):
         make_engine, make_runtime, info = await asyncio.to_thread(get_build, case, opts)
         _t1 = time.monotonic()
         eng = make_engine(); eng.keep_going = True
-        passage = (STATE.get("passage") or "").strip() if q.get("passage") == "1" else ""
+        material_text = (STATE.get("passage") or "").strip() if q.get("passage") == "1" else ""
+        from ..core.importance import reference_text, planned, add_plan
+        passage = reference_text(material_text).strip()          # documents only: the speech transcript is used for comparison, not as the source of facts
         if passage:
             from ..core.passage import apply_passage
             await apply_passage(eng, passage)
+            n_plan = add_plan(eng, planned(material_text, PLAN_EXTRA.get(material_text)))      # important questions first (rules only: milliseconds)
+            if n_plan: print(f"[plan] {n_plan} priority questions queued", flush=True)
             print(f"[timing] models {'cached' if _cached else 'LOADED'} {_t1-_t0:.1f}s | first question {time.monotonic()-_t1:.1f}s", flush=True)
         else:
             for t in SEED_BANK: eng.queue.add(Question(t, source="seed", priority=.6))

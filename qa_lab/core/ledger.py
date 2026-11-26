@@ -18,7 +18,7 @@ CORRECT = "맞음"                  # "부분 맞음", "틀림", "모름" all co
 RETIRE_AFTER = 2
 GAP = (2, 4)                    # practices to wait after a correct answer before it may return
 MAX_REVIEW = 8                  # at most this many review questions are put in the queue per practice (wrong ones first)
-TRACKED = {"bank", "user", "seed", "passage", "review", "first"}
+TRACKED = {"bank", "user", "seed", "passage", "review", "first", "plan"}
 WRONG_PRIO = 0.985              # right after the opening question (1.0) and the user's own questions (0.99)
 PENDING: dict = {"task": None}  # background grading + ledger update of the last session
 
@@ -105,7 +105,7 @@ def inject(eng, led: Ledger, p: int, rng=random) -> list[dict]:
         q.bank = {"q": it["q"], "a": it.get("a") or None, "ref": it.get("ref", ""), "src": -1}              # instant model answer
         q.review = {"streak": it.get("streak", 0), "history": it.get("history", [])}
         eng.queue.add(q)
-    eng.blocked_fn = lambda q: led.is_retired(q.text, eng.ref_of(q))                                         # retired questions are skipped when popped
+    eng.blocked_fn = lambda q: led.is_retired(q.text, "" if q.source == "plan" else eng.ref_of(q))        # retired questions are skipped when popped
     pend = eng.queue.pending(); keep = [x for x in pend if not led.is_retired(x.text, eng.ref_of(x))]
     if keep:
         for x in pend:
@@ -120,7 +120,7 @@ def collect(report: dict) -> list[dict]:
         aq = t.get("answered_q") or ""
         if t.get("stt_text") and aq and t.get("verdict") and not t.get("verdict_pending"):
             src = src_by_q.get(aq, "first")
-            if src in TRACKED: out.append({"q": aq, "ref": t.get("ref_text") or "", "a": t.get("model_answer") or "", "ok": t["verdict"] == CORRECT, "verdict": t["verdict"], "turn": t})
+            if src in TRACKED: out.append({"q": aq, "ref": "" if src == "plan" else t.get("ref_text") or "", "a": t.get("model_answer") or "", "ok": t["verdict"] == CORRECT, "verdict": t["verdict"], "turn": t})
         if t.get("question"): src_by_q[t["question"]] = t.get("q_source") or "bank"
     return out
 
